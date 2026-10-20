@@ -6,6 +6,10 @@
 @{
     // This C# block sets the title used by the browser tab in _Layout.cshtml
     ViewData["Title"] = "Home";
+
+    @* Connects this page to the IndexModel class in Index.cshtml.cs.
+   This is what lets us write Model.Features below *@
+    @model IndexModel
 }
 
 @* ===== HERO SECTION (the big opening area of the page) ===== *@
@@ -74,5 +78,45 @@
             </div>
         </div>
 
+    </div>
+</section>
+
+@* ===== FEATURES SECTION ("Everything in one place") ===== *@
+<section class="features">
+    <div class="container">
+
+        @* The centered heading area above the cards *@
+        <div class="section-head">
+            @* Small blue label with a thin line on each side (the lines are drawn by CSS) *@
+            <p class="eyebrow eyebrow-lines">Everything in one place</p>
+            <h2>Built around how students actually review</h2>
+            <p class="section-sub">
+                No clutter, no noisy dashboards. Just the tools you need to prepare for the next quiz,
+                finals or board exam.
+            </p>
+        </div>
+
+        @* The grid that holds the six cards (3 columns on desktop) *@
+        <div class="feature-grid">
+
+            @* @foreach repeats the markup inside the braces once for EACH item in the list.
+               "f" is the current item. Model.Features comes from Index.cshtml.cs *@
+            @foreach (var f in Model.Features)
+            {
+                @* <article> is the HTML tag for a self-contained piece of content, like a card *@
+                <article class="feature-card">
+
+                    @* The round icon badge. "tone-@f.Tone" builds a class name like "tone-blue",
+                       which the CSS uses to pick the badge color.
+                       model="f.Icon" passes the icon name to _Icon.cshtml (no extra quotes,
+                       because f.Icon is a C# value, not typed text) *@
+                    <span class="icon-chip tone-@f.Tone"><partial name="_Icon" model="f.Icon" /></span>
+
+                    @* @f.Title and @f.Description print the values from the list *@
+                    <h3>@f.Title</h3>
+                    <p>@f.Description</p>
+                </article>
+            }
+        </div>
     </div>
 </section>
