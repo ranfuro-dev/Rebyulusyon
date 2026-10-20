@@ -1,31 +1,542 @@
-html {
-  font-size: 14px;
+/* ==========================================================
+   site.css
+   All the styling for the website: colors, fonts, spacing, layout.
+   Color theme: based on the Philippine flag (blue, red, yellow).
+   Fonts: Fredoka (headings) and Nunito (body), both open-source.
+   ========================================================== */
+
+
+/* ===== 1. VARIABLES =====
+   Named values we define once and reuse. Write var(--blue) to use one.
+   To change a color or font across the whole site, change it here only. */
+:root {
+    /* --- Philippine flag colors --- */
+    --blue: #0038a8; /* flag blue: buttons, active link, logo box */
+    --blue-dark: #002a80; /* darker blue shown when hovering a blue button */
+    --blue-soft: #e6edfb; /* very pale blue for backgrounds and icon circles */
+    --red: #ce1126; /* flag red: accents and highlights */
+    --red-soft: #fdebed; /* very pale red for backgrounds */
+    --yellow: #fcd116; /* flag sun yellow: badges and highlights */
+    --yellow-soft: #fff5c2; /* very pale yellow for backgrounds and badges */
+    /* --- Neutral colors --- */
+    --ink: #0b1b3f; /* very dark navy for main text (softer than pure black) */
+    --muted: #4b5a78; /* gray-blue for less important text */
+    --bg: #f0f4ff; /* very light blue page background */
+    --line: #dfe5f3; /* light gray-blue for thin divider lines */
+    /* --- Fonts ---
+       The browser uses the first font it has, then falls back to the next */
+    --font-body: "Nunito", system-ui, -apple-system, "Segoe UI", sans-serif; /* body text: soft and rounded */
+    --font-head: "Fredoka", "Nunito", system-ui, sans-serif; /* headings and logo: playful and rounded */
 }
 
-@media (min-width: 768px) {
-  html {
-    font-size: 16px;
-  }
+
+/* ===== 2. BASE RULES (apply to the whole site) ===== */
+
+/* Makes an element's width INCLUDE its padding and border.
+   Without this, adding padding would make boxes wider than you set. */
+*, *::before, *::after {
+    box-sizing: border-box;
 }
 
-.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
-}
-
-html {
-  position: relative;
-  min-height: 100%;
-}
-
+/* Style for the whole page: remove the default outer margin,
+   set the font, text color, background, and the spacing between lines of text */
 body {
-  margin-bottom: 60px;
+    margin: 0;
+    font-family: var(--font-body);
+    color: var(--ink);
+    background: var(--bg);
+    line-height: 1.6;
 }
 
-.form-floating > .form-control-plaintext::placeholder, .form-floating > .form-control::placeholder {
-  color: var(--bs-secondary-color);
-  text-align: end;
+/* Links: remove the default blue underline and use the surrounding text color */
+a {
+    color: inherit;
+    text-decoration: none;
 }
 
-.form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
-  text-align: start;
+/* The centered column used by every section.
+   max-width stops it from getting too wide on big screens;
+   margin: 0 auto centers it; padding keeps text off the screen edges */
+.container {
+    width: 100%;
+    max-width: 1136px;
+    margin: 0 auto;
+    padding: 0 24px;
+}
+
+/* Icons are exactly as big as the text next to them (1em = one font size).
+   flex: none stops them from being squished */
+.icon {
+    width: 1em;
+    height: 1em;
+    flex: none;
+}
+
+/* A helper class that turns text blue (used on "lusyon" in the logo) */
+.accent {
+    color: var(--blue);
+}
+
+
+/* ===== 3. HEADER (the top bar) ===== */
+
+/* The full-width white bar */
+.site-header {
+    position: sticky; /* scrolls normally, then sticks to the top of the screen */
+    top: 0; /* the position where it sticks */
+    z-index: 50; /* puts the bar in front of content scrolling under it */
+    background: #fff;
+    border-bottom: 1px solid var(--line); /* thin line under the bar */
+}
+
+    /* OPTIONAL: thin tricolor stripe across the top of the header.
+   ::before creates an extra element before the header's content, with no extra HTML.
+   Delete this whole rule if you do not want the stripe. */
+    .site-header::before {
+        content: ""; /* required: a ::before element does not appear without content */
+        position: absolute; /* placed relative to the header (sticky counts as positioned) */
+        top: 0; /* sits at the very top edge */
+        left: 0;
+        right: 0; /* stretches across the full width */
+        height: 4px; /* thickness of the stripe */
+        /* A gradient with hard color stops: blue for the first third,
+       yellow for the middle third, red for the last third */
+        background: linear-gradient(90deg, var(--blue) 0 33.33%, var(--yellow) 33.33% 66.66%, var(--red) 66.66% 100%);
+    }
+
+/* The row that holds logo, menu, and buttons */
+.header-inner {
+    display: flex; /* places the children side by side */
+    align-items: center; /* centers them vertically */
+    justify-content: space-between; /* pushes first to the left, last to the right */
+    gap: 16px; /* minimum space between children */
+    min-height: 62px; /* bar height (it can grow if needed) */
+}
+
+/* --- Logo --- */
+
+/* The whole logo: icon box and text side by side */
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+/* The blue rounded square holding the icon */
+.brand-mark {
+    width: 38px;
+    height: 38px;
+    border-radius: 10px; /* rounds the corners */
+    background: var(--blue);
+    color: #fff; /* icon color (icons use currentColor, so they turn white) */
+    display: grid; /* grid + place-items is a short way to center the icon */
+    place-items: center;
+    font-size: 22px; /* icon size, because .icon is 1em */
+}
+
+/* Holds the name and tagline. flex-direction: column STACKS them vertically */
+.brand-text {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.15;
+}
+
+/* "Rebyulusyon" */
+.brand-name {
+    font-family: var(--font-head);
+    font-weight: 600;
+    font-size: 20px;
+}
+
+/* "REBYU. TANDAAN. PUMASA." small spaced-out capital letters */
+.brand-tag {
+    font-size: 10px;
+    letter-spacing: .2em; /* space between letters */
+    text-transform: uppercase; /* shows text in capitals */
+    color: var(--muted);
+    font-weight: 700;
+}
+
+/* --- Menu links --- */
+
+/* The row of links */
+.main-nav {
+    display: flex;
+    gap: 6px;
+}
+
+/* Each link. border-radius: 999px makes a pill shape */
+.nav-link {
+    padding: 9px 16px;
+    border-radius: 999px;
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--muted);
+}
+
+    /* When the mouse is over a link, make the text darker */
+    .nav-link:hover {
+        color: var(--ink);
+    }
+
+    /* The current page's link: blue pill with white text.
+   No space between .nav-link and .active = "an element with BOTH classes" */
+    .nav-link.active {
+        background: var(--blue);
+        color: #fff;
+    }
+
+/* --- Right side of the bar --- */
+
+/* Row holding "Log In" and the Get Started button */
+.header-actions {
+    display: flex;
+    align-items: center;
+    gap: 22px;
+}
+
+/* The "Log In" text link */
+.link-login {
+    font-size: 15px;
+    font-weight: 700;
+}
+
+
+/* ===== 4. BUTTONS =====
+   Build a button by combining classes: btn + a color + a size,
+   for example class="btn btn-primary btn-sm" */
+
+/* Shared shape for all buttons */
+.btn {
+    display: inline-flex; /* flex, but only as wide as its content */
+    align-items: center;
+    justify-content: center;
+    gap: 8px; /* space between the icon and the text */
+    padding: 14px 24px; /* space inside the button (top/bottom, left/right) */
+    border-radius: 999px; /* fully rounded ends */
+    font-weight: 700;
+    font-size: 16px;
+    border: 2px solid transparent; /* invisible border; other buttons can show a color here */
+    cursor: pointer; /* hand cursor on hover */
+    transition: transform .15s ease, background .15s ease; /* makes hover changes smooth */
+}
+
+    /* On hover, lift the button up 1px */
+    .btn:hover {
+        transform: translateY(-1px);
+    }
+
+/* Size: small button (used in the header) */
+.btn-sm {
+    padding: 10px 18px;
+    font-size: 15px;
+}
+
+/* Color: solid flag-blue button with a soft blue glow.
+   box-shadow values are: sideways offset, downward offset, blur, color.
+   rgba(0, 56, 168, .3) is the flag blue at 30% opacity */
+.btn-primary {
+    background: var(--blue);
+    color: #fff;
+    box-shadow: 0 8px 20px rgba(0, 56, 168, .3);
+}
+
+    /* On hover, the blue becomes darker */
+    .btn-primary:hover {
+        background: var(--blue-dark);
+    }
+
+
+/* ===== 5. SMALL REUSABLE PARTS =====
+   Small pieces used in the hero now, and again in later sections */
+
+/* Rounded capsule used for badges ("Para sa mga estudyanteng Pilipino", "7 days") */
+.pill {
+    display: inline-flex; /* icon and text side by side, only as wide as the content */
+    align-items: center; /* centers them vertically */
+    gap: 8px; /* space between icon and text */
+    padding: 7px 14px; /* space inside the capsule */
+    border-radius: 999px; /* fully rounded ends */
+    font-size: 14px;
+    font-weight: 700;
+}
+
+/* Color version: pale yellow with a darker yellow border and dark brown text */
+.pill-yellow {
+    background: var(--yellow-soft);
+    color: #5a4500;
+    border: 1px solid #f3dc7a;
+}
+
+/* Smaller size, used for the "7 days" badge on the progress card */
+.pill-sm {
+    padding: 4px 10px;
+    font-size: 12px;
+}
+
+/* The small spaced-out tagline above the headline */
+.eyebrow {
+    font-size: 13px;
+    font-weight: 800;
+    letter-spacing: .22em; /* wide space between letters */
+    text-transform: uppercase; /* shows text in capitals */
+    color: var(--blue);
+}
+
+/* Size: large button (used in the hero) */
+.btn-lg {
+    padding: 14px 26px;
+    font-size: 17px;
+}
+
+/* Color: white button with a soft blue border, for the secondary action */
+.btn-outline {
+    background: #fff;
+    color: var(--ink);
+    border-color: #cfd9f3;
+}
+
+    /* On hover, the border becomes the flag blue */
+    .btn-outline:hover {
+        border-color: var(--blue);
+    }
+
+/* Helper classes that only change text color (used on the stats) */
+.text-blue {
+    color: var(--blue);
+}
+
+.text-red {
+    color: var(--red);
+}
+
+.text-ink {
+    color: var(--ink);
+}
+
+
+/* ===== 6. HERO SECTION ===== */
+
+/* The whole hero area: spacing, and a soft background made of layered gradients */
+.hero {
+    position: relative;
+    overflow: hidden; /* hides anything (like the glows) that sticks out past the edges */
+    padding: 80px 0 100px; /* space above and below the content */
+    /* Three backgrounds stacked: a blue glow top-left, a yellow glow bottom-right,
+       and a plain pale blue gradient underneath. The first one listed is on top */
+    background: radial-gradient(420px 300px at 8% 8%, rgba(0, 56, 168, .14), transparent 70%), radial-gradient(520px 380px at 95% 95%, rgba(252, 209, 22, .28), transparent 70%), linear-gradient(180deg, #eaf0ff, #f4f6ff);
+}
+
+/* Two columns: the text gets slightly more room than the picture.
+   "fr" means "fraction of the free space": 1.05fr vs 1fr */
+.hero-grid {
+    display: grid;
+    grid-template-columns: 1.05fr 1fr;
+    gap: 48px; /* space between the columns */
+    align-items: center; /* centers both columns vertically */
+}
+
+/* Space under the badge */
+.hero-copy .pill {
+    margin-bottom: 22px;
+}
+
+/* The big headline. clamp(min, preferred, max) lets the size grow with the
+   window width (5vw = 5% of the window) but never below 2.6rem or above 3.6rem */
+.hero h1 {
+    font-family: var(--font-head);
+    font-size: clamp(2.6rem, 5vw, 3.6rem);
+    font-weight: 700; /* Fredoka's boldest weight */
+    line-height: 1.1; /* tight spacing between the headline's lines */
+    margin: 14px 0 22px; /* space above and below */
+}
+
+/* The paragraph under the headline */
+.lead {
+    font-size: 19px;
+    color: var(--muted);
+    max-width: 520px;
+    margin: 0;
+}
+
+/* Row holding the two buttons. flex-wrap lets them drop to a new line on narrow screens */
+.btn-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin: 28px 0;
+}
+
+/* The stats strip: a rounded white-ish box with three columns */
+.stats {
+    display: grid;
+    grid-template-columns: repeat(3, auto); /* three columns, each as wide as its content */
+    justify-content: space-between; /* spreads them across the box */
+    gap: 16px;
+    margin: 0;
+    padding: 18px 22px;
+    max-width: 540px;
+    background: rgba(255, 255, 255, .7); /* white at 70% opacity, so the background shows through */
+    border: 1px solid #e0e7f8;
+    border-radius: 22px;
+}
+
+    .stats dt {
+        font-family: var(--font-head);
+        font-weight: 600;
+        font-size: 24px;
+        line-height: 1.2;
+    }
+
+    .stats dd {
+        margin: 0;
+        font-size: 14px;
+        color: var(--muted);
+    }
+/* dd has a default left margin; we remove it */
+
+/* --- Right side: picture and floating card --- */
+
+/* The positioning container. "relative" lets the progress card be placed against it */
+.hero-art {
+    position: relative;
+}
+
+/* The illustration frame: a rounded square with a soft blue shadow.
+   Also used for the second illustration in a later lesson */
+.art-card {
+    width: 100%;
+    aspect-ratio: 1; /* keeps it perfectly square */
+    object-fit: cover; /* fills the square without stretching the image */
+    border-radius: 28px;
+    background: #faf7ee; /* cream color shown while the image loads */
+    border: 1px solid #d9e1fb;
+    box-shadow: 0 20px 50px rgba(0, 56, 168, .18);
+}
+
+/* The "Today's Progress" card. "absolute" takes it out of the normal flow so it can
+   overlap the picture: it sits 16px to the left of the picture's edge and 32px below its bottom */
+.progress-card {
+    position: absolute;
+    left: -16px;
+    bottom: -32px;
+    width: 256px;
+    padding: 18px 18px 16px;
+    background: #fff;
+    border-radius: 22px;
+    box-shadow: 0 16px 40px rgba(11, 27, 63, .14);
+}
+
+/* Top row: "Today's Progress" on the left, the "7 days" badge on the right */
+.progress-top {
+    display: flex;
+    justify-content: space-between; /* one at each end */
+    align-items: center;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--muted);
+}
+
+/* "12 / 20 cards" */
+.progress-count {
+    display: block;
+    font-family: var(--font-head);
+    font-weight: 600;
+    font-size: 24px;
+    margin: 6px 0 10px;
+}
+
+/* The progress bar: a pale track, and a blue fill whose width is set in the HTML */
+.bar {
+    height: 12px;
+    background: #e3eafb;
+    border-radius: 99px;
+    overflow: hidden;
+}
+
+.bar-fill {
+    height: 100%;
+    background: var(--blue);
+    border-radius: 99px;
+}
+
+/* --- Slow floating animation (the up-and-down motion) ---
+   The picture and the card use different durations so they drift in and out of sync */
+.hero-art .art-card {
+    animation: float-art 6s ease-in-out infinite alternate;
+}
+
+.progress-card {
+    animation: float-card 5s ease-in-out infinite alternate;
+}
+
+/* @keyframes describes the motion: start at 0, end 8px (or 10px) higher.
+   "alternate" plays it forward, then backward, so it loops up and down */
+@keyframes float-art {
+    from {
+        transform: translateY(0);
+    }
+
+    to {
+        transform: translateY(-8px);
+    }
+}
+
+@keyframes float-card {
+    from {
+        transform: translateY(0);
+    }
+
+    to {
+        transform: translateY(-10px);
+    }
+}
+
+/* Respect people who turned off animations in their system settings */
+@media (prefers-reduced-motion: reduce) {
+    .hero-art .art-card, .progress-card {
+        animation: none;
+    }
+}
+
+
+/* ===== 7. HERO ON SMALLER SCREENS ===== */
+
+/* Tablets (window narrower than 960px): stack the columns, picture below the text */
+@media (max-width: 960px) {
+    .hero {
+        padding: 56px 0 84px;
+    }
+
+    .hero-grid {
+        grid-template-columns: 1fr;
+    }
+    /* a single column */
+    .hero-art {
+        max-width: 520px;
+        width: 100%;
+        margin: 0 auto 32px;
+    }
+    /* centered, with room for the card */
+}
+
+/* Phones (window narrower than 600px): tighter spacing, stacked stats, full-width buttons */
+@media (max-width: 600px) {
+    .hero {
+        padding: 40px 0 72px;
+    }
+
+    .stats {
+        grid-template-columns: 1fr;
+    }
+    /* stats stack in one column */
+    .btn-lg {
+        width: 100%;
+    }
+    /* buttons fill the row */
+    .progress-card {
+        left: 8px;
+        width: 230px;
+    }
+    /* keeps the card inside the screen */
 }

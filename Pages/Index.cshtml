@@ -1,10 +1,78 @@
-﻿@page
-@model IndexModel
+﻿@* The Home Page. @page makes this file a page that has its own web address ("/").
+   NOTE: there is no @model line in Lesson 1 because we do not use C# data yet.
+   We will add "@model IndexModel" back in Lesson 3. *@
+@page
+
 @{
-    ViewData["Title"] = "Home page";
+    // This C# block sets the title used by the browser tab in _Layout.cshtml
+    ViewData["Title"] = "Home";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+@* ===== HERO SECTION (the big opening area of the page) ===== *@
+<section class="hero">
+
+    @* "container" centers the content. "hero-grid" splits it into 2 columns (set in CSS) *@
+    <div class="container hero-grid">
+
+        @* ----- LEFT COLUMN: the text ----- *@
+        <div class="hero-copy">
+
+            @* The yellow badge at the top. "pill" = rounded capsule shape, "pill-yellow" = its color *@
+            <span class="pill pill-yellow">
+                <partial name="_Icon" model='"sparkles"' /> Para sa mga estudyanteng Pilipino
+            </span>
+
+            @* Small spaced-out blue tagline above the headline *@
+            <p class="eyebrow">Rebyu Ngayon, Pasado Bukas.</p>
+
+            @* The main headline. The span with class "accent" turns just "Revolutionize" blue *@
+            <h1><span class="accent">Revolutionize</span> the way you review.</h1>
+
+            @* The paragraph under the headline. "lead" makes it larger and gray *@
+            <p class="lead">
+                Rebyulusyon helps you build your own reviewers, organize them under subjects you create,
+                and master them with flashcards — one focused session at a time.
+            </p>
+
+            @* The two buttons side by side.
+               btn = shape, btn-lg = large, btn-primary = solid blue, btn-outline = white with a border *@
+            <div class="btn-row">
+                <a class="btn btn-primary btn-lg" href="/Register">
+                    <partial name="_Icon" model='"zap"' /> Get Started Free
+                </a>
+                <a class="btn btn-outline btn-lg" href="/Reviewers">Explore Reviewers</a>
+            </div>
+
+            @* The stats strip. <dt> is the big word, <dd> is the small text under it *@
+            <dl class="stats">
+                <div><dt class="text-blue">Free</dt><dd>for students</dd></div>
+                <div><dt class="text-red">5 min</dt><dd>to your first reviewer</dd></div>
+                <div><dt class="text-ink">Mobile</dt><dd>ready anywhere</dd></div>
+            </dl>
+        </div>
+
+        @* ----- RIGHT COLUMN: the picture and the floating card ----- *@
+        <div class="hero-art">
+
+            @* The illustration. ~/ means the wwwroot folder.
+               alt is a text description for screen readers and for when the image fails to load *@
+            <img class="art-card" src="~/images/flashcard.svg" alt="A stack of flashcards" />
+
+            @* The "Today's Progress" card that floats over the bottom-left of the picture.
+               TEMPORARY MOCK DATA: these numbers are typed by hand for now.
+               Later they will come from the database. *@
+            <div class="progress-card">
+                <div class="progress-top">
+                    <span>Today’s Progress</span>
+                    <span class="pill pill-yellow pill-sm"><partial name="_Icon" model='"flame"' /> 7 days</span>
+                </div>
+                <strong class="progress-count">12 / 20 cards</strong>
+
+                @* The progress bar: a gray track with a blue fill.
+                   width: 60% is 12 out of 20 (12 ÷ 20 = 0.6) *@
+                <div class="bar"><div class="bar-fill" style="width: 60%"></div></div>
+            </div>
+        </div>
+
+    </div>
+</section>

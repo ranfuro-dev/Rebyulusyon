@@ -1,0 +1,16 @@
+﻿<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" role="img" aria-labelledby="t">
+  <title id="t">Stack of flashcards</title>
+  <rect width="400" height="400" fill="#faf7ee"/>
+  <circle cx="200" cy="200" r="150" fill="#f5ebd8"/>
+
+  <!-- back cards, tilted -->
+  <rect x="85" y="125" width="230" height="160" rx="20" fill="#f2766b" transform="rotate(-12 200 205)"/>
+  <rect x="85" y="125" width="230" height="160" rx="20" fill="#d9a441" transform="rotate(8 200 205)"/>
+
+  <!-- front card -->
+  <rect x="85" y="125" width="230" height="160" rx="20" fill="#ffffff" stroke="#d9e1fb" stroke-width="3"/>
+  <text x="200" y="213" text-anchor="middle" font-family="Plus Jakarta Sans, Inter, Arial, sans-serif" font-size="72" font-weight="800" fill="#1d4ed8">?</text>
+  <rect x="130" y="238" width="140" height="10" rx="5" fill="#e6ecfb"/>
+  <rect x="155" y="258" width="90" height="10" rx="5" fill="#e6ecfb"/>
+  <circle cx="113" cy="152" r="8" fill="#f2766b"/>
+</svg>

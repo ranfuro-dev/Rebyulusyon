@@ -1,0 +1,27 @@
+﻿<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" role="img" aria-labelledby="t">
+  <title id="t">Open book with a bookmark</title>
+  <rect width="400" height="400" fill="#faf7ee"/>
+  <circle cx="200" cy="200" r="150" fill="#f5ebd8"/>
+  <ellipse cx="200" cy="322" rx="140" ry="12" fill="#0f2447" opacity=".12"/>
+
+  <!-- cover -->
+  <path d="M62 130 C110 117 160 117 200 140 C240 117 290 117 338 130 L338 298 C288 283 240 285 200 312 C160 285 112 283 62 298 Z" fill="#0f2447"/>
+
+  <!-- pages -->
+  <path d="M200 135 C160 112 115 112 75 125 L75 285 C115 272 160 272 200 296 Z" fill="#ffffff"/>
+  <path d="M200 135 C240 112 285 112 325 125 L325 285 C285 272 240 272 200 296 Z" fill="#fffdf6"/>
+
+  <!-- text lines -->
+  <g fill="none" stroke="#dbe3fb" stroke-width="6" stroke-linecap="round">
+    <path d="M98 160 Q135 150 178 170"/>
+    <path d="M98 190 Q135 180 178 200"/>
+    <path d="M98 220 Q135 210 178 230"/>
+    <path d="M302 160 Q265 150 222 170"/>
+    <path d="M302 190 Q265 180 222 200"/>
+  </g>
+
+  <!-- bookmark and accents -->
+  <path d="M255 118 V208 L270 193 L285 208 V124 Z" fill="#f2766b"/>
+  <circle cx="320" cy="95" r="10" fill="#d9a441"/>
+  <circle cx="82" cy="82" r="6" fill="#f2766b"/>
+</svg>

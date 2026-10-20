@@ -1,0 +1,89 @@
+﻿@* ============================================================
+   _Icon.cshtml
+   A reusable icon component (a "partial view").
+   Usage: <partial name="_Icon" model='"zap"' />
+   The text passed in as the model picks which icon is drawn.
+   ============================================================ *@
+
+@* This view receives one piece of data: a string (the icon name).
+   Inside this file, that string is called "Model" *@
+@model string
+
+@* SVG = a drawing made of code. It stays sharp at any size.
+   viewBox="0 0 24 24" is the drawing's internal 24x24 grid.
+   stroke="currentColor" draws lines in the surrounding text color,
+   so the icon turns white inside a blue button automatically.
+   fill="none" means shapes are outlines only, not filled in *@
+<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    @switch (Model)
+    {
+        // "switch" compares the icon name to each case and draws only the match.
+
+        case "flashcard":
+            // Two stacked cards: a back card peeking out, a front card with text lines
+            <path d="M8 4h11a2 2 0 0 1 2 2v10" />
+            <rect x="3" y="8" width="15" height="12" rx="2.5" />
+            <path d="M7 13h7" />
+            <path d="M7 16.5h4" />
+            break;
+
+        case "zap":
+            // Lightning bolt (used on the Get Started buttons)
+            <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
+            break;
+
+        case "book":
+            // Open book
+            <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z" />
+            <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z" />
+            break;
+
+        case "folder":
+            // Folder with a plus sign
+            <path d="M4 20h16a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.93a2 2 0 0 1-1.66-.9l-.82-1.2A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13c0 1.1.9 2 2 2Z" />
+            <path d="M12 10v6" />
+            <path d="M9 13h6" />
+            break;
+
+        case "layers":
+            // Stacked layers
+            <path d="m12.83 2.18a2 2 0 0 0-1.66 0L2.6 6.08a1 1 0 0 0 0 1.83l8.58 3.91a2 2 0 0 0 1.66 0l8.58-3.9a1 1 0 0 0 0-1.83Z" />
+            <path d="m22 17.65-9.17 4.16a2 2 0 0 1-1.66 0L2 17.65" />
+            <path d="m22 12.65-9.17 4.16a2 2 0 0 1-1.66 0L2 12.65" />
+            break;
+
+        case "chart":
+            // Line chart
+            <path d="M3 3v18h18" />
+            <path d="m19 9-5 5-4-4-3 3" />
+            break;
+
+        case "flame":
+            // Flame (study streak)
+            <path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z" />
+            break;
+
+        case "target":
+            // Target (daily goal)
+            <circle cx="12" cy="12" r="10" />
+            <circle cx="12" cy="12" r="6" />
+            <circle cx="12" cy="12" r="2" />
+            break;
+
+        case "sparkles":
+            // Sparkle (badges)
+            <path d="m12 3-1.9 5.8a2 2 0 0 1-1.3 1.3L3 12l5.8 1.9a2 2 0 0 1 1.3 1.3L12 21l1.9-5.8a2 2 0 0 1 1.3-1.3L21 12l-5.8-1.9a2 2 0 0 1-1.3-1.3Z" />
+            break;
+
+        case "check":
+            // Check mark
+            <path d="M20 6 9 17l-5-5" />
+            break;
+
+        case "sun":
+            // Sun (the old logo icon; kept in case you want it back)
+            <circle cx="12" cy="12" r="4" />
+            <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41" />
+            break;
+    }
+</svg>

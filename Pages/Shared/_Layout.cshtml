@@ -1,52 +1,86 @@
-﻿<!DOCTYPE html>
+﻿@* ============================================================
+   _Layout.cshtml
+   The shared frame around EVERY page: header, fonts, CSS.
+   Each page's own content is inserted where @RenderBody() is.
+   ============================================================ *@
+<!DOCTYPE html>
+@* Tells the browser this is a modern HTML5 document *@
 <html lang="en">
+@* lang helps screen readers and translators know the language *@
 <head>
+    @* Use UTF-8 so special characters like ñ and ’ display correctly *@
     <meta charset="utf-8" />
+
+    @* Makes the page use the phone's real screen width (needed for responsive design) *@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    @* The text on the browser tab. ViewData["Title"] is set by each page (Index sets "Home") *@
     <title>@ViewData["Title"] - Rebyulusyon</title>
-    <script type="importmap"></script>
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+
+    @* Speeds up loading Google Fonts by connecting to their servers early *@
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+
+    @* Loads two open-source fonts from Google Fonts:
+       Fredoka (rounded, playful) for headings, Nunito (soft, readable) for body text.
+       wght@400;500;600;700 means we load those four boldness levels.
+       display=swap shows text right away in a backup font while these load *@
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+    @* Attaches your own CSS file. ~/ means the wwwroot folder.
+       asp-append-version adds a version code so the browser reloads the file after you edit it *@
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/Rebyulusyon.styles.css" asp-append-version="true" />
 </head>
 <body>
-    <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container">
-                <a class="navbar-brand" asp-area="" asp-page="/Index">Rebyulusyon</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-page="/Index">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-page="/Privacy">Privacy</a>
-                        </li>
-                    </ul>
-                </div>
+
+    @* ---------- TOP BAR (stays at the top while scrolling) ---------- *@
+    <header class="site-header">
+
+        @* "container" keeps the content centered with a maximum width.
+           "header-inner" lines up the 3 children in a row (flexbox) *@
+        <div class="container header-inner">
+
+            @* LEFT: the logo. It is a link back to the Home Page ("/") *@
+            <a class="brand" href="/">
+                @* The blue square with the flashcard icon. <partial> inserts _Icon.cshtml;
+                   model='"flashcard"' tells it WHICH icon to draw *@
+                <span class="brand-mark"><partial name="_Icon" model='"flashcard"' /></span>
+
+                @* The name and tagline, stacked on top of each other by CSS *@
+                <span class="brand-text">
+                    @* "lusyon" is wrapped in a span so it can be colored blue *@
+                    <span class="brand-name">Rebyu<span class="accent">lusyon</span></span>
+                    <span class="brand-tag">Rebyu. Tandaan. Pumasa.</span>
+                </span>
+            </a>
+
+            @* MIDDLE: the menu links. <nav> is the HTML tag for navigation.
+               The "active" class makes the current page's link a blue pill.
+               (Written by hand for now; we will make it automatic later) *@
+            <nav class="main-nav" aria-label="Main">
+                <a class="nav-link active" href="/">Home</a>
+                <a class="nav-link" href="/Reviewers">Reviewers</a>
+                <a class="nav-link" href="/About">About</a>
+            </nav>
+
+            @* RIGHT: log in link and the Get Started button *@
+            <div class="header-actions">
+                <a class="link-login" href="/Login">Log In</a>
+
+                @* A link styled as a button: btn = shape, btn-primary = blue, btn-sm = small *@
+                <a class="btn btn-primary btn-sm" href="/Register">
+                    <partial name="_Icon" model='"zap"' /> Get Started @* "zap" = lightning icon *@
+                </a>
             </div>
-        </nav>
-    </header>
-    <div class="container">
-        <main role="main" class="pb-3">
-            @RenderBody()
-        </main>
-    </div>
 
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2026 - Rebyulusyon - <a asp-area="" asp-page="/Privacy">Privacy</a>
         </div>
-    </footer>
+    </header>
 
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
+    @* ---------- PAGE CONTENT ---------- *@
+    <main>
+        @* The content of whichever page is open (Index, Reviewers, About...) appears here *@
+        @RenderBody()
+    </main>
 
-    @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
