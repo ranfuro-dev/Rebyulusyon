@@ -22,7 +22,7 @@
         <div class="hero-copy">
 
             @* The yellow badge at the top. "pill" = rounded capsule shape, "pill-yellow" = its color *@
-            <span class="pill pill-yellow">
+            <span class="pill pill-red">
                 <partial name="_Icon" model='"sparkles"' /> Para sa mga estudyanteng Pilipino
             </span>
 
@@ -118,5 +118,98 @@
                 </article>
             }
         </div>
+    </div>
+</section>
+
+
+@* ===== REVIEW ROUTINE SECTION ("From scattered notes to a review routine") ===== *@
+<section class="routine">
+
+    @* "routine-grid" splits the content into 2 columns: picture left, text right *@
+    <div class="container routine-grid">
+
+        @* LEFT: the illustration. "art-card" is the same rounded frame used in the hero *@
+        <img class="art-card" src="~/images/book.svg" alt="An open book with a bookmark" />
+
+        @* RIGHT: heading, numbered steps, and a button *@
+        <div class="routine-copy">
+
+            @* The heading. <br /> forces a line break. The span turns "review routine" red *@
+            <h2>From scattered notes<br />to a <span class="text-red">review routine</span></h2>
+
+            @* <ol> is an "ordered list" of steps. "steps" is the class the CSS styles *@
+            <ol class="steps">
+
+                @* Repeats once for each Step in the C# list (Model.Steps) *@
+                @foreach (var s in Model.Steps)
+                {
+                    <li>
+                        @* The red numbered circle. @s.Number prints 1, 2, or 3 *@
+                        <span class="step-num">@s.Number</span>
+
+                        @* The title and description, stacked on top of each other *@
+                        <div class="step-text">
+                            <strong>@s.Title</strong>
+                            <span>@s.Description</span>
+                        </div>
+                    </li>
+                }
+            </ol>
+
+            @* The blue button that leads to the Register page (not built yet) *@
+            <a class="btn btn-primary" href="/Register">Start your first reviewer</a>
+        </div>
+
+    </div>
+</section>
+
+
+@* ===== CLOSING SECTION: AI Study Tools card + blue banner ===== *@
+<section class="closing">
+    <div class="container">
+
+        @* ----- THE AI STUDY TOOLS CARD (white box with 2 columns) ----- *@
+        <div class="ai-card">
+
+            @* LEFT: badge, heading, and paragraph *@
+            <div>
+                @* The "Coming Soon" badge. pill-yellow = yellow color, pill-sm = small size *@
+                <span class="pill pill-yellow pill-sm">
+                    <partial name="_Icon" model='"sparkles"' /> Coming Soon
+                </span>
+                <h2>AI Study Tools</h2>
+                <p>
+                    We are working on study tools that draft flashcards from your own notes and help explain
+                    the answers you keep missing. Not available yet — but it is where Rebyulusyon is heading.
+                </p>
+            </div>
+
+            @* RIGHT: the yellow checklist box. <ul> is an "unordered list" (bullets, removed by CSS) *@
+            <ul class="ai-list">
+
+                @* Repeats once for each text in the C# array (Model.AiTools).
+                   "item" is the current text *@
+                @foreach (var item in Model.AiTools)
+                {
+                    <li><partial name="_Icon" model='"check"' /> @item</li>
+                }
+            </ul>
+        </div>
+
+        @* ----- THE BLUE BANNER (call to action) ----- *@
+        <div class="cta">
+            <h2>Handa ka na bang mag-umpisa?</h2>
+            <p>Gawin mong routine ang pag-review. Build your first reviewer today and keep the streak alive.</p>
+
+            @* The two buttons. btn-white = white with blue text, btn-ghost = see-through with a white border.
+               "center" centers the row (set in CSS) *@
+            <div class="btn-row center">
+                <a class="btn btn-white btn-lg" href="/Register">
+                    <partial name="_Icon" model='"zap"' /> Get Started Free
+                </a>
+                <a class="btn btn-ghost btn-lg" href="/Reviewers">Explore Reviewers</a>
+            </div>
+        </div>
+
     </div>
 </section>

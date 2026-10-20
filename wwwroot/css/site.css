@@ -274,6 +274,15 @@ a {
     font-size: 12px;
 }
 
+/* Color version: pale red with a flag-red border and red text.
+   Used only on the hero badge, so the "7 days" badge stays yellow.
+   The sparkle icon turns red too, because icons use the text color */
+.pill-red {
+    background: var(--red-soft);
+    color: var(--red);
+    border: 1px solid #f5b8bf;
+}
+
 /* The small spaced-out tagline above the headline */
 .eyebrow {
     font-size: 13px;
@@ -547,8 +556,8 @@ a {
 /* The whole section: spacing and a faint dotted background.
    radial-gradient draws a tiny dot; background-size repeats it every 24px */
 .features {
-    padding: 40px 0 100px;
-    background-color: var(--bg);
+    padding: 56px 0 40px;
+    background-color: #FFF8E7;
     background-image: radial-gradient(#d5def5 1px, transparent 1px);
     background-size: 24px 24px;
 }
@@ -654,8 +663,9 @@ a {
 /* Tablets (narrower than 960px): 2 cards per row */
 @media (max-width: 960px) {
     .features {
-        padding: 72px 0;
+        padding: 40px 0 32px;
     }
+    /* smaller top and bottom, so the sections sit closer */
 
     .feature-grid {
         grid-template-columns: repeat(2, 1fr);
@@ -666,5 +676,287 @@ a {
 @media (max-width: 600px) {
     .feature-grid {
         grid-template-columns: 1fr;
+    }
+}
+
+
+/* ===== 9. REVIEW ROUTINE SECTION ===== */
+
+/* The whole section: spacing and a soft red-tinted background.
+   The gradient goes from pale red at the top to a lighter tint at the bottom */
+.routine {
+    padding: 40px 0 80px;
+    background: linear-gradient(180deg, var(--red-soft), #fff5f6);
+}
+
+/* Two equal columns: picture on the left, text on the right */
+.routine-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 56px; /* space between the columns */
+    align-items: center; /* centers both columns vertically */
+}
+
+/* Reuse the hero's rounded picture frame, but with a red-tinted glow and border.
+   max-width stops the picture from growing too large inside its column */
+.routine .art-card {
+    max-width: 520px;
+    border-color: #f3cfd3;
+    box-shadow: 0 20px 50px rgba(206, 17, 38, .15);
+}
+
+/* The heading "From scattered notes to a review routine" */
+.routine h2 {
+    font-family: var(--font-head);
+    font-size: clamp(1.9rem, 3.6vw, 2.5rem);
+    font-weight: 700;
+    line-height: 1.15;
+    margin: 0 0 28px;
+}
+
+/* The list of steps. list-style: none removes the default 1, 2, 3 (we draw our own circles).
+   display: grid with a gap spaces the steps evenly */
+.steps {
+    list-style: none;
+    margin: 0 0 30px;
+    padding: 0;
+    display: grid;
+    gap: 18px;
+}
+
+    /* One step: the circle and the text side by side, centered vertically */
+    .steps li {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+    }
+
+/* The red numbered circle. flex: none stops it from being squished */
+.step-num {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%; /* 50% turns a square into a circle */
+    background: var(--red);
+    color: #fff;
+    font-family: var(--font-head);
+    font-weight: 600;
+    display: grid; /* centers the number inside the circle */
+    place-items: center;
+    flex: none;
+}
+
+/* The title and description stacked on top of each other */
+.step-text {
+    display: flex;
+    flex-direction: column;
+}
+
+    .step-text strong {
+        font-size: 17px;
+    }
+
+    .step-text span {
+        font-size: 15px;
+        color: var(--muted);
+    }
+
+/* Tablets and phones (narrower than 960px): stack the columns, picture on top */
+@media (max-width: 960px) {
+    .routine {
+        padding: 32px 0 56px;
+    }
+
+    .routine-grid {
+        grid-template-columns: 1fr;
+        gap: 36px;
+    }
+    /* a single column */
+    .routine .art-card {
+        margin: 0 auto;
+    }
+    /* centers the picture */
+}
+
+/* ===== 10. CLOSING SECTION (AI card + blue banner) ===== */
+
+/* The whole section: tight space above so it sits close to the routine section */
+.closing {
+    padding: 48px 0 88px;
+}
+
+/* --- Small button colors used only on the blue banner --- */
+
+/* Color: white button with blue text */
+.btn-white {
+    background: #fff;
+    color: var(--blue);
+}
+
+    .btn-white:hover {
+        background: var(--blue-soft);
+    }
+
+/* Color: see-through button with a white border, for the secondary action on blue */
+.btn-ghost {
+    background: transparent;
+    color: #fff;
+    border-color: rgba(255, 255, 255, .6);
+}
+
+    .btn-ghost:hover {
+        border-color: #fff;
+    }
+
+/* A button row that is centered instead of left-aligned, with no extra outer space */
+.btn-row.center {
+    justify-content: center;
+    margin: 0;
+}
+
+/* --- The AI Study Tools card --- */
+
+/* White rounded box with two columns: text on the left, checklist on the right */
+.ai-card {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 32px;
+    align-items: center; /* centers both columns vertically */
+    padding: 44px;
+    background: #fff;
+    border: 2px solid #cfd9f3;
+    border-radius: 22px;
+}
+
+    /* The "AI Study Tools" heading */
+    .ai-card h2 {
+        font-family: var(--font-head);
+        font-size: 32px;
+        font-weight: 700;
+        line-height: 1.15;
+        margin: 14px 0;
+    }
+
+    /* The paragraph under the heading */
+    .ai-card p {
+        margin: 0;
+        font-size: 16px;
+        color: var(--muted);
+    }
+
+/* The yellow checklist box: 2 columns of items inside a soft yellow gradient.
+   list-style: none removes the default bullet points */
+.ai-list {
+    list-style: none;
+    margin: 0;
+    padding: 24px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px 20px; /* 16px between rows, 20px between columns */
+    border-radius: 22px;
+    background: linear-gradient(135deg, var(--yellow-soft), #fffaf0);
+    font-size: 15px;
+    font-weight: 600;
+}
+
+    /* One checklist item: check icon and text side by side, aligned to the top */
+    .ai-list li {
+        display: flex;
+        align-items: flex-start;
+        gap: 10px;
+    }
+
+    /* The check icon: darker yellow so it shows on the pale background */
+    .ai-list .icon {
+        font-size: 18px;
+        color: #c99a00;
+        margin-top: 3px;
+    }
+
+/* --- The blue banner --- */
+
+/* Blue rounded box. "relative" lets the decorative circles be placed against it;
+   overflow: hidden cuts off the parts of the circles that stick out */
+.cta {
+    position: relative;
+    overflow: hidden;
+    margin-top: 56px; /* space between the AI card and the banner */
+    padding: 56px 24px;
+    text-align: center;
+    color: #fff;
+    border-radius: 22px;
+    background: linear-gradient(135deg, var(--blue), #0a2f8f);
+    box-shadow: 0 20px 40px rgba(0, 56, 168, .25);
+}
+
+    /* Two translucent white circles in the corners, drawn without any extra HTML */
+    .cta::before,
+    .cta::after {
+        content: "";
+        position: absolute;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, .1);
+    }
+
+    .cta::before {
+        width: 240px;
+        height: 240px;
+        top: -120px;
+        left: -120px;
+    }
+    /* top-left corner */
+    .cta::after {
+        width: 320px;
+        height: 320px;
+        bottom: -180px;
+        right: -60px;
+    }
+    /* bottom-right corner */
+
+    /* Puts the real content in front of the decorative circles */
+    .cta > * {
+        position: relative;
+        z-index: 1;
+    }
+
+    /* The banner heading */
+    .cta h2 {
+        font-family: var(--font-head);
+        font-size: clamp(1.7rem, 3.6vw, 2.3rem);
+        font-weight: 700;
+        line-height: 1.15;
+        margin: 0 0 14px;
+    }
+
+    /* The banner paragraph, centered, in a soft light blue */
+    .cta p {
+        max-width: 560px;
+        margin: 0 auto 26px;
+        color: #dbe5ff;
+    }
+
+/* Tablets (narrower than 960px): the AI card becomes one column */
+@media (max-width: 960px) {
+    .closing {
+        padding: 32px 0 64px;
+    }
+
+    .ai-card {
+        grid-template-columns: 1fr;
+        padding: 32px;
+    }
+}
+
+/* Phones (narrower than 600px): checklist in one column, tighter spacing */
+@media (max-width: 600px) {
+    .ai-card {
+        padding: 24px;
+    }
+
+    .ai-list {
+        grid-template-columns: 1fr;
+    }
+
+    .cta {
+        padding: 40px 20px;
     }
 }

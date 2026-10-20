@@ -28,6 +28,32 @@ public class IndexModel : PageModel
         new("target", "yellow", "Set a Daily Goal",          "Decide how many cards a day is realistic, then keep that promise to yourself."),
     };
 
+
+    // A "record" for one step: a number, a short title, and a description.
+    public record Step(int Number, string Title, string Description);
+
+    // The three steps shown in the "review routine" section.
+    // TEMPORARY MOCK CONTENT: typed by hand here, not from a database.
+    public List<Step> Steps { get; } = new()
+    {
+        // Each line creates one Step: (number, title, description)
+        new(1, "Create a subject", "Name it the way your syllabus does."),
+        new(2, "Add a reviewer",   "Type your flashcards or paste from your notes."),
+        new(3, "Study and repeat", "Mark what you remember, revisit what needs practice."),
+    };
+
+
+    // The four checklist items shown in the "AI Study Tools" card.
+    // TEMPORARY MOCK CONTENT: typed by hand here. These features are not built yet.
+    // "string[]" is an array: a fixed list of text values.
+    public string[] AiTools { get; } =
+    {
+        "Generate flashcards from your notes",
+        "Upload PDF or lecture handouts",
+        "AI-explained answers",
+        "Personalized review recommendations",
+    };
+
     // OnGet runs when someone opens the Home Page.
     // It is empty for now. Later it will load data from the database.
     public void OnGet()
