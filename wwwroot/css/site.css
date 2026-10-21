@@ -1017,3 +1017,153 @@ a {
         transition: none;
     }
 }
+
+/* ===== 12. FOOTER (shown on every page, because it is in _Layout.cshtml) ===== */
+
+/* Makes the page at least as tall as the window, with the main content stretching.
+   On short pages (like a login page) this keeps the footer at the bottom of the window
+   instead of floating up in the middle. */
+body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+main {
+    flex: 1;
+}
+
+/* The footer box: soft pale-blue gradient background and space around the content */
+.site-footer {
+    padding-top: 56px;
+    background: linear-gradient(180deg, #f4f6ff, #e6ecff);
+}
+
+/* Top row: brand on the left (takes the free space), link columns on the right */
+.footer-top {
+    display: grid;
+    grid-template-columns: 1fr auto; /* "auto" = the links column is only as wide as its content */
+    gap: 48px;
+    padding-bottom: 40px;
+}
+
+/* --- Left side: logo, tagline, dots --- */
+
+/* The logo row: icon square and name side by side */
+.footer-logo {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+}
+
+/* The name "Rebyulusyon" in dark navy (no blue part, to match your screenshot) */
+.footer-logo-name {
+    font-family: var(--font-head);
+    font-weight: 600;
+    font-size: 24px;
+    color: var(--ink);
+}
+
+/* The tagline paragraph. max-width keeps the lines short, like in your screenshot */
+.footer-tagline {
+    margin: 18px 0 20px;
+    max-width: 360px;
+    color: var(--muted);
+    font-size: 16px;
+}
+
+/* Row holding the three dots */
+.footer-dots {
+    display: flex;
+    gap: 12px;
+}
+
+    /* Each dot is a small circle. 50% radius makes a square into a circle */
+    .footer-dots span {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+    }
+
+.dot-blue {
+    background: var(--blue);
+}
+
+.dot-red {
+    background: var(--red);
+}
+
+.dot-yellow {
+    background: var(--yellow);
+}
+
+/* --- Right side: the three link columns --- */
+
+/* The three columns side by side with generous space between them */
+.footer-links {
+    display: grid;
+    grid-template-columns: repeat(3, auto);
+    gap: 40px 56px;
+}
+
+    /* Each column stacks its heading and links vertically.
+   The links are <a> tags, which are inline by default, so we use a column flex layout
+   to put one link on each line with even spacing */
+    .footer-links > div {
+        display: flex;
+        flex-direction: column;
+        gap: 14px;
+    }
+
+    /* The column heading ("Platform", "Company", "Account") */
+    .footer-links h3 {
+        margin: 0 0 4px;
+        font-family: var(--font-head);
+        font-size: 17px;
+        font-weight: 600;
+        color: var(--ink);
+    }
+
+    /* The links: gray, turning flag blue on hover */
+    .footer-links a {
+        color: var(--muted);
+        font-size: 16px;
+        transition: color .15s ease;
+    }
+
+        .footer-links a:hover {
+            color: var(--blue);
+        }
+
+/* --- Bottom row --- */
+
+/* The copyright row: a thin divider line above it */
+.footer-bottom {
+    padding: 20px 0;
+    border-top: 1px solid #d5def5;
+}
+
+    .footer-bottom p {
+        margin: 0;
+        font-size: 14px;
+        color: var(--muted);
+    }
+
+/* Tablets (narrower than 960px): brand on top, links below */
+@media (max-width: 960px) {
+    .footer-top {
+        grid-template-columns: 1fr;
+        gap: 36px;
+    }
+}
+
+/* Phones (narrower than 600px): links in 2 columns instead of 3 */
+@media (max-width: 600px) {
+    .site-footer {
+        padding-top: 40px;
+    }
+
+    .footer-links {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
