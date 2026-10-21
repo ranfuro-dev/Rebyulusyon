@@ -17,6 +17,11 @@
     @* The text on the browser tab. ViewData["Title"] is set by each page (Index sets "Home") *@
     <title>@ViewData["Title"] - Rebyulusyon</title>
 
+    @* Marks the page as "JavaScript is running" as early as possible.
+       The scroll-reveal CSS only hides elements when this class exists,
+       so if JavaScript is off or broken, all content stays visible *@
+    <script>document.documentElement.classList.add("js");</script>
+
     @* Speeds up loading Google Fonts by connecting to their servers early *@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -81,6 +86,7 @@
         @* The content of whichever page is open (Index, Reviewers, About...) appears here *@
         @RenderBody()
     </main>
-
+    @* Loads your JavaScript file (scroll reveal now, mobile menu in a later lesson) *@
+    <script src="~/js/site.js" asp-append-version="true"></script>
 </body>
 </html>

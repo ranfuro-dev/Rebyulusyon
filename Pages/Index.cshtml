@@ -19,7 +19,7 @@
     <div class="container hero-grid">
 
         @* ----- LEFT COLUMN: the text ----- *@
-        <div class="hero-copy">
+        <div class="hero-copy" data-reveal>
 
             @* The yellow badge at the top. "pill" = rounded capsule shape, "pill-yellow" = its color *@
             <span class="pill pill-red">
@@ -56,7 +56,7 @@
         </div>
 
         @* ----- RIGHT COLUMN: the picture and the floating card ----- *@
-        <div class="hero-art">
+        <div class="hero-art" data-reveal data-delay="1">
 
             @* The illustration. ~/ means the wwwroot folder.
                alt is a text description for screen readers and for when the image fails to load *@
@@ -86,7 +86,7 @@
     <div class="container">
 
         @* The centered heading area above the cards *@
-        <div class="section-head">
+        <div class="section-head" data-reveal>
             @* Small blue label with a thin line on each side (the lines are drawn by CSS) *@
             <p class="eyebrow eyebrow-lines">Everything in one place</p>
             <h2>Built around how students actually review</h2>
@@ -104,7 +104,7 @@
             @foreach (var f in Model.Features)
             {
                 @* <article> is the HTML tag for a self-contained piece of content, like a card *@
-                <article class="feature-card">
+                <article class="feature-card" data-reveal>
 
                     @* The round icon badge. "tone-@f.Tone" builds a class name like "tone-blue",
                        which the CSS uses to pick the badge color.
@@ -129,10 +129,10 @@
     <div class="container routine-grid">
 
         @* LEFT: the illustration. "art-card" is the same rounded frame used in the hero *@
-        <img class="art-card" src="~/images/book.svg" alt="An open book with a bookmark" />
+        <img class="art-card" src="~/images/book.svg" alt="An open book with a bookmark" data-reveal />
 
         @* RIGHT: heading, numbered steps, and a button *@
-        <div class="routine-copy">
+        <div class="routine-copy" data-reveal data-delay="1">
 
             @* The heading. <br /> forces a line break. The span turns "review routine" red *@
             <h2>From scattered notes<br />to a <span class="text-red">review routine</span></h2>
@@ -169,7 +169,7 @@
     <div class="container">
 
         @* ----- THE AI STUDY TOOLS CARD (white box with 2 columns) ----- *@
-        <div class="ai-card">
+        <div class="ai-card" data-reveal>
 
             @* LEFT: badge, heading, and paragraph *@
             <div>
@@ -197,7 +197,7 @@
         </div>
 
         @* ----- THE BLUE BANNER (call to action) ----- *@
-        <div class="cta">
+        <div class="cta" data-reveal>
             <h2>Handa ka na bang mag-umpisa?</h2>
             <p>Gawin mong routine ang pag-review. Build your first reviewer today and keep the streak alive.</p>
 

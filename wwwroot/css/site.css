@@ -261,7 +261,16 @@ a {
     font-weight: 700;
 }
 
-/* Color version: pale yellow with a darker yellow border and dark brown text */
+/* Color version: pale red with a flag-red border and red text.
+   Used only on the hero badge, so the "7 days" badge stays yellow.
+   The sparkle icon turns red too, because icons use the text color */
+.pill-red {
+    background: var(--red-soft);
+    color: var(--red);
+    border: 1px solid #f5b8bf;
+}
+
+/* Color version: Todays progress pale yellow with a darker yellow border and dark brown text */
 .pill-yellow {
     background: var(--yellow-soft);
     color: #5a4500;
@@ -274,14 +283,6 @@ a {
     font-size: 12px;
 }
 
-/* Color version: pale red with a flag-red border and red text.
-   Used only on the hero badge, so the "7 days" badge stays yellow.
-   The sparkle icon turns red too, because icons use the text color */
-.pill-red {
-    background: var(--red-soft);
-    color: var(--red);
-    border: 1px solid #f5b8bf;
-}
 
 /* The small spaced-out tagline above the headline */
 .eyebrow {
@@ -958,5 +959,61 @@ a {
 
     .cta {
         padding: 40px 20px;
+    }
+}
+
+/* ===== 11. SCROLL REVEAL (fade in and move up, once) =====
+   Elements with the data-reveal attribute start hidden and slightly lower.
+   JavaScript (site.js) adds the class "is-visible" the first time they scroll into view.
+   Everything here is under ".js", so it only applies when JavaScript is running. */
+
+/* Starting state: invisible, 24px lower than its final place.
+   The transition makes the change to the final state smooth (0.7 seconds).
+   will-change tells the browser to prepare for the animation */
+.js [data-reveal] {
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity .7s ease, transform .7s ease;
+    will-change: opacity, transform;
+}
+
+    /* Final state, added once by JavaScript and never removed.
+   "transform: none" (not translateY(0)) leaves no leftover transform behind,
+   so it cannot interfere with layout, stacking, or the floating animations inside */
+    .js [data-reveal].is-visible {
+        opacity: 1;
+        transform: none;
+        will-change: auto;
+    }
+
+    /* Optional stagger: elements with data-delay start a little later than their neighbors */
+    .js [data-reveal][data-delay="1"] {
+        transition-delay: .12s;
+    }
+
+    .js [data-reveal][data-delay="2"] {
+        transition-delay: .24s;
+    }
+
+/* On desktop, the three cards in each row follow each other slightly:
+   the middle card 0.1s later, the right card 0.2s later.
+   nth-child(3n+2) = 2nd, 5th card; nth-child(3n) = 3rd, 6th card */
+@media (min-width: 961px) {
+    .js .feature-card[data-reveal]:nth-child(3n+2) {
+        transition-delay: .1s;
+    }
+
+    .js .feature-card[data-reveal]:nth-child(3n) {
+        transition-delay: .2s;
+    }
+}
+
+/* Accessibility: if the visitor asked their system to reduce motion,
+   show everything immediately with no movement or fading */
+@media (prefers-reduced-motion: reduce) {
+    .js [data-reveal] {
+        opacity: 1;
+        transform: none;
+        transition: none;
     }
 }
