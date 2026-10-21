@@ -1167,3 +1167,205 @@ main {
         grid-template-columns: repeat(2, 1fr);
     }
 }
+
+/* ===== 13. ABOUT PAGE =====
+   The About page reuses the homepage styles (.container, .section-head, .feature-card,
+   .icon-chip, .tone-*). Only the pieces below are specific to it. */
+
+/* --- Page title --- */
+
+/* Centered "About" heading with space above and a little below */
+.about-hero {
+    padding: 64px 0 16px;
+    text-align: center;
+}
+
+    .about-hero h1 {
+        font-family: var(--font-head);
+        font-size: clamp(2.4rem, 5vw, 3.4rem);
+        font-weight: 700;
+        line-height: 1.1;
+        margin: 0;
+    }
+
+/* Three short bars in the flag colors under the heading */
+.flag-bar {
+    display: flex;
+    justify-content: center;
+    gap: 6px;
+    margin-top: 18px;
+}
+
+    .flag-bar span {
+        width: 36px;
+        height: 5px;
+        border-radius: 99px;
+    }
+
+.bar-blue {
+    background: var(--blue);
+}
+
+.bar-red {
+    background: var(--red);
+}
+
+.bar-yellow {
+    background: var(--yellow);
+}
+
+/* --- Sections --- */
+
+/* Vertical space around each About section */
+.about-section {
+    padding: 32px 0;
+}
+
+.about-section-last {
+    padding-bottom: 88px;
+}
+/* a bit more room before the footer */
+
+/* The section headings use the homepage .section-head style; here we tighten the space under them */
+.about-section .section-head {
+    margin-bottom: 32px;
+}
+
+/* --- The two wide cards ("Rebyu + Rebolusyon" and "Our Mission") --- */
+
+/* White rounded card: icon on the left, text on the right.
+   max-width keeps the lines a comfortable reading length; margin: 0 auto centers it */
+.about-panel {
+    display: flex;
+    align-items: center;
+    gap: 28px;
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 36px;
+    background: #fff;
+    border: 1px solid #d5def5;
+    border-radius: 22px;
+}
+
+/* The soft red version used for "Our Mission" */
+.about-panel-accent {
+    background: linear-gradient(135deg, #fff, var(--red-soft));
+    border-color: #f3cfd3;
+}
+
+/* The heading and paragraph inside the wide cards */
+.about-panel h2 {
+    font-family: var(--font-head);
+    font-size: 28px;
+    font-weight: 700;
+    line-height: 1.2;
+    margin: 0 0 10px;
+}
+
+.about-panel p {
+    margin: 0;
+    font-size: 17px;
+    color: var(--muted);
+}
+
+/* A larger version of the round icon badge (the homepage one is 48px).
+   flex: none stops it from being squished next to the text */
+.icon-chip-lg {
+    width: 68px;
+    height: 68px;
+    font-size: 32px;
+    flex: none;
+}
+
+/* --- Card grids (the cards themselves use the homepage .feature-card style) --- */
+
+/* "Who it's for": 3 columns. max-width matches the container's content width */
+.about-grid-3 {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+}
+
+/* "What we believe": 2 columns, so four cards form a neat 2 x 2 block */
+.about-grid-2 {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 24px;
+}
+
+/* --- "Why Rebyulusyon?" tiles --- */
+
+/* 4 columns on desktop */
+.stat-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 24px;
+}
+
+/* One tile: white card with the big value centered above its label */
+.stat-card {
+    display: flex;
+    flex-direction: column; /* stack the value on top of the label */
+    align-items: center;
+    gap: 8px;
+    padding: 32px 16px;
+    text-align: center;
+    background: #fff;
+    border: 1px solid #d5def5;
+    border-radius: 22px;
+}
+
+/* The big value ("100%") in the flag blue */
+.stat-value {
+    font-family: var(--font-head);
+    font-size: 44px;
+    font-weight: 700;
+    line-height: 1;
+    color: var(--blue);
+}
+
+/* Emoji tiles (♾, flag, phone): use the system emoji font so they draw correctly */
+.stat-emoji {
+    font-family: "Segoe UI Emoji", "Apple Color Emoji", "Noto Color Emoji", sans-serif;
+    font-size: 40px;
+}
+
+/* The label under the value */
+.stat-label {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--ink);
+}
+
+/* --- Responsive --- */
+
+/* Tablets (narrower than 960px): stats become 2 x 2 */
+@media (max-width: 960px) {
+    .stat-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+/* Small tablets and phones (narrower than 760px): everything becomes one column,
+   and the wide cards stack the icon above the text */
+@media (max-width: 760px) {
+    .about-hero {
+        padding-top: 44px;
+    }
+
+    .about-grid-3,
+    .about-grid-2 {
+        grid-template-columns: 1fr;
+    }
+
+    .about-panel {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 18px;
+        padding: 26px;
+    }
+
+        .about-panel h2 {
+            font-size: 24px;
+        }
+}

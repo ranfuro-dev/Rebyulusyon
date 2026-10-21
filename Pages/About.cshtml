@@ -1,0 +1,143 @@
+﻿@* The About page. @page gives it the web address "/About".
+   There is no @model line: this page's text is typed directly below,
+   so it needs no data from C#. *@
+@page
+
+@{
+    // This sets the browser tab title used by _Layout.cshtml
+    ViewData["Title"] = "About";
+
+    // The three "Who it's for" cards. Each item has an icon name (from _Icon.cshtml),
+    // a color (blue, red, or yellow), a title, and a description.
+    var audiences = new[]
+    {
+        new { Icon = "cap",   Tone = "blue",   Title = "Students",      Text = "College and senior high students prepping for exams, board reviews, or daily quizzes." },
+        new { Icon = "users", Tone = "red",    Title = "Study Groups",  Text = "Friends who share reviewers, quiz each other, and keep each other accountable." },
+        new { Icon = "bulb",  Tone = "yellow", Title = "Self-learners", Text = "Anyone who wants structured spaced repetition without complicated software." },
+    };
+
+    // The four "What we believe" cards.
+    var beliefs = new[]
+    {
+        new { Icon = "calendar", Tone = "blue",   Title = "Consistency beats cramming", Text = "Small daily sessions build stronger memory than all-night study marathons." },
+        new { Icon = "help",     Tone = "red",    Title = "Active recall works",        Text = "Testing yourself is more effective than passive reading or highlighting." },
+        new { Icon = "pencil",   Tone = "yellow", Title = "Make it your own",           Text = "Creating your own flashcards helps you process and understand material deeply." },
+        new { Icon = "trending", Tone = "blue",   Title = "Learning should feel good",  Text = "Progress tracking and streaks turn studying into an encouraging habit." },
+    };
+
+    // The four "Why Rebyulusyon?" tiles. IsEmoji = true uses the emoji font and a bigger size.
+    var reasons = new[]
+    {
+        new { Value = "100%", IsEmoji = false, Label = "Free to use" },
+        new { Value = "♾",   IsEmoji = true,  Label = "Unlimited reviewers" },
+        new { Value = "🇵🇭",  IsEmoji = true,  Label = "Made for Filipinos" },
+        new { Value = "📱",   IsEmoji = true,  Label = "Works on any device" },
+    };
+}
+
+@* ===== PAGE TITLE ===== *@
+<section class="about-hero">
+    <div class="container" data-reveal>
+        <h1>About</h1>
+
+        @* Three short bars in the flag colors (blue, red, yellow): decoration only.
+           aria-hidden hides them from screen readers *@
+        <div class="flag-bar" aria-hidden="true">
+            <span class="bar-blue"></span><span class="bar-red"></span><span class="bar-yellow"></span>
+        </div>
+    </div>
+</section>
+
+@* ===== REBYU + REBOLUSYON ===== *@
+<section class="about-section">
+    <div class="container">
+        @* "about-panel" is a white card with the icon on the left and the text on the right *@
+        <div class="about-panel" data-reveal>
+            <span class="icon-chip icon-chip-lg tone-blue"><partial name="_Icon" model='"book"' /></span>
+            <div>
+                <h2>Rebyu + Rebolusyon</h2>
+                <p>Rebyulusyon exists to revolutionize the way Filipino students review. The name joins rebyu and rebolusyon — because better study habits really do change outcomes.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+@* ===== OUR MISSION ===== *@
+<section class="about-section">
+    <div class="container">
+        @* "about-panel-accent" adds a soft red background so this card stands out *@
+        <div class="about-panel about-panel-accent" data-reveal>
+            <span class="icon-chip icon-chip-lg tone-red"><partial name="_Icon" model='"target"' /></span>
+            <div>
+                <h2>Our Mission</h2>
+                <p>To empower every Filipino student with effective, accessible study tools that make learning stick. We believe that with the right approach, anyone can master any subject.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+@* ===== WHO IT'S FOR ===== *@
+<section class="about-section">
+    <div class="container">
+        @* "section-head" is the centered heading style from the homepage *@
+        <div class="section-head" data-reveal>
+            <h2>Who it's for</h2>
+        </div>
+
+        @* "about-grid-3" lays the cards out in 3 columns (set in CSS).
+           The loop builds one card for each item in the "audiences" list above.
+           The card styles (feature-card, icon-chip, tone-*) are the same as the homepage *@
+        <div class="about-grid-3">
+            @foreach (var a in audiences)
+            {
+                <article class="feature-card" data-reveal>
+                    <span class="icon-chip tone-@a.Tone"><partial name="_Icon" model="a.Icon" /></span>
+                    <h3>@a.Title</h3>
+                    <p>@a.Text</p>
+                </article>
+            }
+        </div>
+    </div>
+</section>
+
+@* ===== WHAT WE BELIEVE ===== *@
+<section class="about-section">
+    <div class="container">
+        <div class="section-head" data-reveal>
+            <h2>What we believe</h2>
+        </div>
+
+        @* "about-grid-2" lays the four cards out in 2 columns *@
+        <div class="about-grid-2">
+            @foreach (var b in beliefs)
+            {
+                <article class="feature-card" data-reveal>
+                    <span class="icon-chip tone-@b.Tone"><partial name="_Icon" model="b.Icon" /></span>
+                    <h3>@b.Title</h3>
+                    <p>@b.Text</p>
+                </article>
+            }
+        </div>
+    </div>
+</section>
+
+@* ===== WHY REBYULUSYON? ===== *@
+<section class="about-section about-section-last">
+    <div class="container">
+        <div class="section-head" data-reveal>
+            <h2>Why Rebyulusyon?</h2>
+        </div>
+
+        @* "stat-grid" lays the four tiles out in 4 columns on desktop *@
+        <div class="stat-grid">
+            @foreach (var r in reasons)
+            {
+                <div class="stat-card" data-reveal>
+                    @* The big value (100%, ♾, flag, phone). Emoji get an extra class for the emoji font *@
+                    <span class="stat-value@(r.IsEmoji ? " stat-emoji" : "")">@r.Value</span>
+                    <span class="stat-label">@r.Label</span>
+                </div>
+            }
+        </div>
+    </div>
+</section>

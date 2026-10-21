@@ -1,4 +1,11 @@
-﻿@* ============================================================
+﻿@{
+    // Finds which page is open (for example "/Index" or "/About").
+    // The next line is a small function that returns "nav-link active" for the open page
+    // and plain "nav-link" for the others, so the open page's link is highlighted.
+    var currentPage = ViewContext.RouteData.Values["page"]?.ToString() ?? "";
+    string NavClass(string page) => currentPage == page ? "nav-link active" : "nav-link";
+}
+@* ============================================================
    _Layout.cshtml
    The shared frame around EVERY page: header, fonts, CSS.
    Each page's own content is inserted where @RenderBody() is.
@@ -63,9 +70,9 @@
                The "active" class makes the current page's link a blue pill.
                (Written by hand for now; we will make it automatic later) *@
             <nav class="main-nav" aria-label="Main">
-                <a class="nav-link active" href="/">Home</a>
-                <a class="nav-link" href="/Explore Reviewers">Explore Reviewers</a>
-                <a class="nav-link" href="/About">About</a>
+                <a class="@NavClass("/Index")" href="/">Home</a>
+                <a class="@NavClass("/Reviewers/Index")" href="/Explore Reviewers">Explore Reviewers</a>
+                <a class="@NavClass("/About")" href="/About">About</a>
             </nav>
 
             @* RIGHT: log in link and the Get Started button *@
