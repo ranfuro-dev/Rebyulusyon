@@ -1,0 +1,184 @@
+﻿@* ============================================================
+   This file is the EXPLORE REVIEWERS PAGE (the page you see at "/Reviewers").
+   It opens from the top menu, the "Explore Reviewers" buttons on the Home page, and the footer.
+   It has these parts, from top to bottom:
+   1) The title "Explore Reviewers"
+   2) The search bar and the category chips
+   3) The line "Showing X of Y public reviewers"
+   4) The reviewer cards (or "No reviewers found")
+   The cards come from sample data in Reviewers.cshtml.cs. They do NOT come from a database yet.
+   The top bar and the footer are NOT here. They come from _Layout.cshtml.
+   ============================================================ *@
+@page
+
+@* This is for connecting this page to its C# file (Reviewers.cshtml.cs).
+   That file holds the sample reviewers and decides which ones to show.
+   CHANGED: The name is now ReviewersModel (it was IndexModel). *@
+@model ReviewersModel
+
+@{
+    // This is for the name on the browser tab. It shows "Explore Reviewers - Rebyulusyon".
+    ViewData["Title"] = "Explore Reviewers";
+
+    // This is true when the visitor is using the search bar or has chosen a category chip.
+    // We use it to show the "Clear filters" link.
+    var filtersOn = Model.Category is not null || Model.Q is not null;
+}
+
+@* This loads reviewers.css (the styles of this page) into the "Styles" spot in the head of _Layout.cshtml. *@
+@section Styles {
+    <link rel="stylesheet" href="~/css/reviewers.css" asp-append-version="true" />
+}
+
+@* ===== PART 1: THE TITLE ===== *@
+@* This uses the same title style as the About and Contact pages ("about-hero") *@
+<section class="about-hero">
+    <div class="container" data-reveal>
+        <h1>Explore Reviewers</h1>
+        <p class="page-sub">Browse public reviewers made by Filipino students.</p>
+
+        @* The three short colored lines under the title (blue, red, yellow, like the Philippine flag).
+           They are only for decoration, so "aria-hidden" tells screen readers to skip them *@
+        <div class="flag-bar" aria-hidden="true">
+            <span class="bar-blue"></span><span class="bar-red"></span><span class="bar-yellow"></span>
+        </div>
+    </div>
+</section>
+
+<section class="reviewers-section">
+    <div class="container">
+
+        @* ===== PART 2: THE SEARCH BAR AND THE CATEGORY CHIPS ===== *@
+        <div class="reviewers-toolbar" data-reveal>
+
+            @* This is the search form. method="get" means the search words go into the web address
+               (for example /Reviewers?q=python). The C# file reads them and does the search.
+               The search is done in C# and not in JavaScript, so private reviewers are never sent to the browser.
+               role="search" tells screen readers that this is a search area. *@
+            <form method="get" role="search" class="search-form">
+
+                @* This is the label of the search box. It is hidden on the screen (we show a magnifying glass),
+                   but screen readers read it. *@
+                <label for="q" class="sr-only">Search reviewers</label>
+
+                <div class="search-box">
+                    @* This is for the magnifying glass picture inside the search bar *@
+                    <span class="search-icon"><partial name="_Icon" model='"search"' /></span>
+
+                    @* This is the typing area. "name=q" is the word used in the web address.
+                       value= keeps what was typed after the page reloads.
+                       maxlength="60" is the longest search. The two @@ signs show as ONE @ sign (Razor needs two). *@
+                    <input id="q" name="q" type="search" class="search-input"
+                           placeholder="Search by title, topic, or @@username"
+                           value="@Model.Q" maxlength="60" autocomplete="off" />
+                </div>
+
+                @* If a category chip is chosen, this hidden box keeps it when the visitor searches.
+                   It is not shown on the page. *@
+                @if (Model.Category is not null)
+                {
+                    <input type="hidden" name="category" value="@Model.Category" />
+                }
+
+                @* This is the blue Search button *@
+                <button type="submit" class="btn btn-primary">Search</button>
+            </form>
+
+            @* These are the category chips. Each chip is a link to this same page with a different category.
+               The chip that is chosen now gets the word "is-active" (a solid blue pill).
+               aria-current tells screen readers which chip is chosen. *@
+            <nav class="chips" aria-label="Filter by category">
+
+                @* This is the "All Reviewers" chip. It is chosen when there is no category. *@
+                @{
+                    var allActive = Model.Category is null;
+                }
+                <a class="chip @(allActive ? "is-active" : "")" href="@Model.PageLink(null)" aria-current="@(allActive ? "true" : null)">All Reviewers</a>
+
+                @* This makes one chip for each category name in the list in Reviewers.cshtml.cs.
+                   "name" means the category it is working on now. *@
+                @foreach (var name in Model.CategoryNames)
+                {
+                    var active = Model.Category == name;
+                    <a class="chip @(active ? "is-active" : "")" href="@Model.PageLink(name)" aria-current="@(active ? "true" : null)">@name</a>
+                }
+            </nav>
+        </div>
+
+        @* ===== PART 3: THE LINE "SHOWING X OF Y PUBLIC REVIEWERS" =====
+           Y counts only PUBLIC reviewers, so this line never shows how many private ones exist. *@
+        <p class="results-info">
+            Showing <strong>@Model.Results.Count</strong> of <strong>@Model.TotalPublic</strong>
+            public @(Model.TotalPublic == 1 ? "reviewer" : "reviewers")
+            @if (Model.Category is not null)
+            {
+                <span>in <strong>@Model.Category</strong></span>
+            }
+            @if (Model.Q is not null)
+            {
+                <span>matching “<strong>@Model.Q</strong>”</span>
+            }
+            @if (filtersOn)
+            {
+                <a class="clear-link" href="/Reviewers">Clear filters</a>
+            }
+        </p>
+
+        @* ===== PART 4: THE REVIEWER CARDS ===== *@
+        @if (Model.Results.Count > 0)
+        {
+            @* This is the box that holds all the cards (3 columns on a computer screen).
+               "data-reveal" makes it fade in when you see it. *@
+            <div class="reviewer-grid" data-reveal>
+
+                @* "foreach" means "do this again for every item in the list".
+                   Here it makes one card for each reviewer in Model.Results.
+                   "r" means the reviewer it is working on now. *@
+                @foreach (var r in Model.Results)
+                {
+                    @* This is for one reviewer card. "article" is the web page tag for a small block like a card *@
+                    <article class="reviewer-card">
+
+                        @* This is for the small colored tag with the category name.
+                           "tone-blue", "tone-red", or "tone-yellow" is chosen by the ToneOf method in the C# file *@
+                        <span class="reviewer-tag tone-@(Model.ToneOf(r.Category))">@r.Category</span>
+
+                        @* These two lines show the title and the short description *@
+                        <h3>@r.Title</h3>
+                        <p class="reviewer-desc">@r.Description</p>
+
+                        @* This is the bottom part of the card: the facts and the button *@
+                        <div class="reviewer-foot">
+                            <ul class="reviewer-meta">
+                                @* This is for the number of flashcards *@
+                                <li><partial name="_Icon" model='"layers"' /> <span>@r.CardCount flashcards</span></li>
+
+                                @* This is for the creator. @("@" + r.Creator) puts a @ sign before the username.
+                                   Razor makes the username safe, so special letters cannot break the page. *@
+                                <li><partial name="_Icon" model='"user"' /> <span>Created by <strong>@("@" + r.Creator)</strong></span></li>
+                            </ul>
+
+                            @* This is the "Open Reviewer" button.
+                               CHANGED: It now goes to /ReviewerDetails/ and the reviewer number (for example /ReviewerDetails/5).
+                               The ReviewerDetails page is NOT built yet, so this link shows "not found" for now. *@
+                            <a class="btn btn-primary btn-sm" href="/ReviewerDetails/@(r.Id)">
+                                Open Reviewer <partial name="_Icon" model='"arrow"' />
+                            </a>
+                        </div>
+                    </article>
+                }
+            </div>
+        }
+        else
+        {
+            @* This is shown when no reviewer matches the search or the category. *@
+            <div class="empty-state" data-reveal>
+                <span class="icon-chip icon-chip-lg tone-blue"><partial name="_Icon" model='"search"' /></span>
+                <h2>No reviewers found</h2>
+                <p>Try different words, or choose another category.</p>
+                <a class="btn btn-outline" href="/Reviewers">Show all reviewers</a>
+            </div>
+        }
+
+    </div>
+</section>

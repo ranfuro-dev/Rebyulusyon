@@ -1,0 +1,241 @@
+﻿/* ==========================================================
+   This file is reviewer-details.css.
+   It is the style file for the Reviewer Details page only.
+   It is loaded AFTER reviewers.css, because this page also uses some styles from there
+   (the colored category tag, the list of facts, and the hidden-for-screen-readers text).
+   It uses the colors and fonts from site.css (like var(--blue)).
+   ========================================================== */
+
+
+/* ===== THE TOP PART (back link, tag, title, creator) ===== */
+
+/* This is for the top part of the page. */
+.details-hero {
+    padding: 40px 0 8px;
+}
+
+/* This is for the "Back to Explore Reviewers" link. It sits above the tag. */
+.back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 22px;
+    font-weight: 700;
+    color: var(--muted);
+    transition: color .15s ease;
+}
+
+    /* This is for when you point at the link: it turns blue. */
+    .back-link:hover {
+        color: var(--blue);
+    }
+
+    /* This is for when you reach the link with the Tab key: a blue ring so you can see where you are. */
+    .back-link:focus-visible {
+        outline: 3px solid var(--blue);
+        outline-offset: 3px;
+        border-radius: 6px;
+    }
+
+/* This is for the small arrow in the back link.
+   The arrow picture points to the RIGHT, so we turn it around to point LEFT. */
+.back-arrow {
+    display: inline-flex;
+    font-size: 18px;
+    transform: rotate(180deg);
+}
+
+/* This is for the colored category tag. We show it as a block so the title goes on its own line. */
+.details-hero .reviewer-tag {
+    display: table;
+}
+
+/* This is for the big title (the name of the reviewer). */
+.details-hero h1 {
+    max-width: 820px;
+    margin: 14px 0 12px;
+    font-family: var(--font-head);
+    font-size: clamp(2rem, 4.5vw, 3rem);
+    font-weight: 700;
+    line-height: 1.15;
+}
+
+/* This is for the line "Created by @username": a small person picture and the words. */
+.details-by {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 0;
+    font-size: 16px;
+    color: var(--muted);
+}
+
+    /* This is for the small person picture: blue. */
+    .details-by .icon {
+        font-size: 18px;
+        color: var(--blue);
+    }
+
+    /* This is for the username: darker and bold. */
+    .details-by strong {
+        color: var(--ink);
+    }
+
+
+/* ===== THE TWO CARDS ===== */
+
+/* This is for the part under the top part. It holds the two cards. */
+.details-section {
+    padding: 24px 0 88px;
+}
+
+/* This is for the two columns: the "About" card (a little wider) and the "Preview" card.
+   "start" makes each card only as tall as its words. */
+.details-grid {
+    display: grid;
+    grid-template-columns: 1.1fr 1fr;
+    gap: 24px;
+    align-items: start;
+}
+
+/* This is for one card: a white box with round corners and a light border. */
+.details-card {
+    padding: 32px;
+    background: #fff;
+    border: 1px solid #d5def5;
+    border-radius: 22px;
+}
+
+    /* This is for the title of a card ("About this reviewer" and "Preview"). */
+    .details-card h2 {
+        margin: 0 0 12px;
+        font-family: var(--font-head);
+        font-size: 24px;
+        font-weight: 700;
+        line-height: 1.2;
+    }
+
+    /* This is for the list of facts (the number of flashcards and the creator).
+       It uses the style from reviewers.css, and here we make the words a little bigger and add space below. */
+    .details-card .reviewer-meta {
+        margin-bottom: 26px;
+        font-size: 16px;
+    }
+
+/* This is for the full description in the "About" card. */
+.details-text {
+    margin: 0 0 22px;
+    font-size: 17px;
+    color: var(--muted);
+}
+
+/* This is for the short line under the title of the "Preview" card. */
+.details-sub {
+    margin: 0 0 20px;
+    color: var(--muted);
+}
+
+/* This is for the row that holds the "Start Studying" button. */
+.details-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+
+/* ===== THE PREVIEW LIST ===== */
+
+/* This is for the list of the first questions.
+   "list-style: none" removes the normal numbers, because we draw our own round numbers. */
+.preview-list {
+    display: grid;
+    gap: 14px;
+    margin: 0 0 18px;
+    padding: 0;
+    list-style: none;
+}
+
+    /* This is for one question: the round number and the question, side by side, in a light box. */
+    .preview-list li {
+        display: flex;
+        align-items: flex-start;
+        gap: 14px;
+        padding: 16px;
+        background: var(--bg);
+        border: 1px solid var(--line);
+        border-radius: 16px;
+    }
+
+/* This is for the round number (1, 2, or 3). "flex: none" stops it from being squeezed. */
+.preview-num {
+    display: grid;
+    place-items: center;
+    width: 32px;
+    height: 32px;
+    flex: none;
+    font-family: var(--font-head);
+    font-weight: 600;
+    color: var(--blue);
+    background: var(--blue-soft);
+    border-radius: 50%;
+}
+
+/* This is for the question and the gray bar under it, one under the other. */
+.preview-body {
+    display: grid;
+    flex: 1;
+    gap: 10px;
+    min-width: 0; /* lets a long question go to the next line on a phone */
+}
+
+    /* This is for the question words. */
+    .preview-body strong {
+        font-size: 16px;
+        line-height: 1.4;
+    }
+
+/* This is for the gray bar that stands for the HIDDEN answer.
+   The real answer is not on this page at all. */
+.answer-bar {
+    display: block;
+    width: 60%;
+    height: 10px;
+    background: #dfe5f3;
+    border-radius: 99px;
+}
+
+/* This is for the line under the list ("And 21 more flashcards inside."). */
+.preview-more {
+    margin: 0;
+    font-size: 15px;
+    color: var(--muted);
+}
+
+
+/* ===== SMALLER SCREENS ===== */
+
+/* This is for tablets and phones (narrower than 860 pixels): one column, with the "About" card on top. */
+@media (max-width: 860px) {
+    .details-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* This is for phones (narrower than 600 pixels): less space inside the cards and a full-width button. */
+@media (max-width: 600px) {
+    .details-hero {
+        padding-top: 28px;
+    }
+
+    .details-section {
+        padding-bottom: 64px;
+    }
+
+    .details-card {
+        padding: 24px;
+    }
+
+    .details-actions .btn {
+        width: 100%;
+    }
+}

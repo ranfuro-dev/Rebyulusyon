@@ -1,119 +1,147 @@
 ﻿@{
-    // Finds which page is open (for example "/Index" or "/About").
-    // The next line is a small function that returns "nav-link active" for the open page
-    // and plain "nav-link" for the others, so the open page's link is highlighted.
+    // This is for finding out which page the visitor is on right now (for example "/Index" or "/About").
+    // We use it to color the matching link in the top menu blue.
+    // This line saves the name of the page that is open. If it cannot find one, it uses empty text.
     var currentPage = ViewContext.RouteData.Values["page"]?.ToString() ?? "";
+
+    // This is a small helper for the top menu links.
+    // If the link belongs to the page that is open, it gives back "nav-link active" (a blue pill).
+    // If not, it gives back only "nav-link" (plain gray text).
     string NavClass(string page) => currentPage == page ? "nav-link active" : "nav-link";
 }
 @* ============================================================
-   _Layout.cshtml
-   The shared frame around EVERY page: header, fonts, CSS.
-   Each page's own content is inserted where @RenderBody() is.
+   This file is _Layout.cshtml.
+   It is the frame that goes around EVERY page of the website.
+   The top bar, the footer, the fonts, and the CSS and JavaScript files are set here once,
+   so you do not have to copy them into each page.
+   The content of each page (Home, About, Get Started...) goes where RenderBody() is below.
    ============================================================ *@
 <!DOCTYPE html>
-@* Tells the browser this is a modern HTML5 document *@
+@* This tells the browser that this is a modern web page *@
 <html lang="en">
-@* lang helps screen readers and translators know the language *@
+@* This says the page is in English. It helps screen readers and translation tools *@
 <head>
-    @* Use UTF-8 so special characters like ñ and ’ display correctly *@
+    @* This lets special letters like ñ and ’ show correctly *@
     <meta charset="utf-8" />
 
-    @* Makes the page use the phone's real screen width (needed for responsive design) *@
+    @* This makes the page fit the real width of a phone screen. Without it, the page looks tiny on phones *@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    @* The text on the browser tab. ViewData["Title"] is set by each page (Index sets "Home") *@
+    @* This is for the text on the browser tab, for example "Home - Rebyulusyon".
+       Each page sets its own title name, and it is placed here *@
     <title>@ViewData["Title"] - Rebyulusyon</title>
 
-        @* Marks the page as "JavaScript is running" as early as possible.
-       The scroll-reveal CSS only hides elements when this class exists,
-       so if JavaScript is off or broken, all content stays visible *@
+    @* This tells the page that JavaScript is working, by adding the word "js" to the page.
+       The scroll animation in site.css only hides things when this word is there,
+       so if JavaScript fails, nothing stays hidden *@
     <script>document.documentElement.classList.add("js");</script>
 
-    @* Speeds up loading Google Fonts by connecting to their servers early *@
+    @* These two lines connect to Google's font servers early, so the fonts load faster *@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous" />
 
-    @* Loads two open-source fonts from Google Fonts:
-       Fredoka (rounded, playful) for headings, Nunito (soft, readable) for body text.
-       wght@400;500;600;700 means we load those four boldness levels.
-       display=swap shows text right away in a backup font while these load *@
+    @* This is for the website fonts:
+       Fredoka (round letters) is used for headings and the logo,
+       and Nunito (soft letters) is used for normal text.
+       The numbers 400, 500, 600, and 700 are the letter thickness we load.
+       display=swap shows the text right away in a backup font while the fonts load *@
     <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@400;500;600;700&display=swap" rel="stylesheet" />
 
-    @* Attaches your own CSS file. ~/ means the wwwroot folder.
-       asp-append-version adds a version code so the browser reloads the file after you edit it *@
+    @* This connects your own style file (wwwroot/css/site.css). It has all the colors, spacing, and layout.
+       The ~ sign means the wwwroot folder.
+       asp-append-version makes the browser load the newest copy after you change the file *@
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+
+    @* NEW: This is a spot where a page can add its OWN style file.
+       The Get Started page uses it to load auth.css.
+       Pages that do not need it simply leave this spot empty *@
+    @await RenderSectionAsync("Styles", required: false)
 </head>
 <body>
 
-    @* ---------- TOP BAR (stays at the top while scrolling) ---------- *@
+    @* ---------- THE TOP BAR (stays at the top when you scroll down) ---------- *@
     <header class="site-header">
 
-        @* "container" keeps the content centered with a maximum width.
-           "header-inner" lines up the 3 children in a row (flexbox) *@
+        @* "container" keeps the content in the middle and not too wide.
+           "header-inner" puts the logo, the menu, and the buttons in one row *@
         <div class="container header-inner">
 
-            @* LEFT: the logo. It is a link back to the Home Page ("/") *@
+            @* LEFT SIDE: the Rebyulusyon logo. Clicking it goes to the Home page ("/") *@
             <a class="brand" href="/">
-                @* The blue square with the flashcard icon. <partial> inserts _Icon.cshtml;
-                   model='"flashcard"' tells it WHICH icon to draw *@
+                @* This is for the blue square with the flashcard picture.
+                   "partial" brings in the picture from _Icon.cshtml,
+                   and "flashcard" tells it which picture to draw *@
                 <span class="brand-mark"><partial name="_Icon" model='"flashcard"' /></span>
 
-                @* The name and tagline, stacked on top of each other by CSS *@
+                @* The name and the small tagline. The CSS puts the tagline under the name *@
                 <span class="brand-text">
-                    @* "lusyon" is wrapped in a span so it can be colored blue *@
+                    @* The word "lusyon" is in its own span so it can be colored blue *@
                     <span class="brand-name">Rebyu<span class="accent">lusyon</span></span>
                     <span class="brand-tag">Rebyu. Tandaan. Pumasa.</span>
                 </span>
             </a>
 
-            @* MIDDLE: the menu links. <nav> is the HTML tag for navigation.
-               The "active" class makes the current page's link a blue pill.
-               (Written by hand for now; we will make it automatic later) *@
+            @* MIDDLE: the menu links (Home, Explore Reviewers, About).
+               "nav" is the web page tag for a menu.
+               NavClass(...) colors the link of the page you are on as a blue pill.
+               This happens by itself, so you do not need to change it for each page *@
             <nav class="main-nav" aria-label="Main">
+                @* This is for the Home link in the top menu *@
                 <a class="@NavClass("/Index")" href="/">Home</a>
-                <a class="@NavClass("/Reviewers/Index")" href="/Explore Reviewers">Explore Reviewers</a>
+                @* This is for the "Explore Reviewers" link in the top menu.
+                   FIXED: the address is now "/Reviewers". The Reviewers page is not built yet *@
+                <a class="@NavClass("/Reviewers/Index")" href="/Reviewers">Explore Reviewers</a>
+                @* This is for the About link in the top menu *@
                 <a class="@NavClass("/About")" href="/About">About</a>
             </nav>
 
-            @* RIGHT: log in link and the Get Started button *@
+            @* RIGHT SIDE: the Log In link and the Get Started button *@
             <div class="header-actions">
+                @* This is for the Log In link. It opens the Login page *@
                 <a class="link-login" href="/Login">Log In</a>
 
-                @* A link styled as a button: btn = shape, btn-primary = blue, btn-sm = small *@
+                @* This is for the blue Get Started button. It opens the Get Started (Register) page.
+                   btn = the button shape, btn-primary = the blue color, btn-sm = the small size.
+                   "zap" is the lightning picture inside the button *@
                 <a class="btn btn-primary btn-sm" href="/Register">
-                    <partial name="_Icon" model='"zap"' /> Get Started @* "zap" = lightning icon *@
+                    <partial name="_Icon" model='"zap"' /> Get Started
                 </a>
             </div>
 
         </div>
     </header>
 
-    @* ---------- PAGE CONTENT ---------- *@
+    @* ---------- THE MAIN PART OF THE PAGE ---------- *@
     <main>
-        @* The content of whichever page is open (Index,Explore Reviewers, About...) appears here *@
+        @* This is where the content of the open page appears
+           (Home, About, Get Started, and so on).
+           Everything else in this file stays the same on every page *@
         @RenderBody()
     </main>
 
-    @* ---------- FOOTER (appears on every page, because it lives in the layout) ---------- *@
+    @* ---------- THE FOOTER (shows on every page because it is in this file) ---------- *@
     <footer class="site-footer">
         <div class="container">
 
-            @* TOP ROW: brand on the left, three link columns on the right *@
+            @* TOP ROW: the logo and short text on the left, three link lists on the right *@
             <div class="footer-top">
 
-                @* LEFT: logo, tagline, and three colored dots *@
+                @* LEFT: the logo, the short text, and three colored dots *@
                 <div class="footer-brand">
+                    @* The footer logo. Clicking it goes to the Home page *@
                     <a class="footer-logo" href="/">
-                        @* Reuses the blue icon square from the header (.brand-mark) *@
+                        @* This uses the same blue square from the top bar (the "brand-mark" style) *@
                         <span class="brand-mark"><partial name="_Icon" model='"flashcard"' /></span>
                         <span class="footer-logo-name">Rebyulusyon</span>
                     </a>
+                    @* The short text under the footer logo *@
                     <p class="footer-tagline">
                         Rebyu. Tandaan. Pumasa. A study platform built for Filipino students who review with intent.
                     </p>
 
-                    @* Three small dots in the flag colors (blue, red, yellow), colored by CSS.
-                       aria-hidden hides them from screen readers because they are decoration *@
+                    @* These are three small dots in the colors of the Philippine flag (blue, red, yellow).
+                       The colors are set in site.css. They are only for decoration,
+                       so "aria-hidden" tells screen readers to skip them *@
                     <div class="footer-dots" aria-hidden="true">
                         <span class="dot-blue"></span>
                         <span class="dot-red"></span>
@@ -121,20 +149,23 @@
                     </div>
                 </div>
 
-                @* RIGHT: three columns of links. <nav> tells screen readers these are navigation links.
-                   The pages these point to are not built yet, so they show "not found" for now *@
+                @* RIGHT: three lists of links (Platform, Company, Account).
+                   Some of these pages are not built yet, so they show "not found" for now *@
                 <nav class="footer-links" aria-label="Footer">
+                    @* The "Platform" list *@
                     <div>
                         <h3>Platform</h3>
                         <a href="/Reviewers">Explore Reviewers</a>
                         <a href="/Dashboard">Dashboard</a>
                         <a href="/Progress">Progress</a>
                     </div>
+                    @* The "Company" list *@
                     <div>
                         <h3>Company</h3>
                         <a href="/About">About</a>
                         <a href="/Contact">Contact</a>
                     </div>
+                    @* The "Account" list *@
                     <div>
                         <h3>Account</h3>
                         <a href="/Login">Log In</a>
@@ -143,8 +174,8 @@
                 </nav>
             </div>
 
-            @* BOTTOM ROW: the copyright line under a thin divider.
-               @DateTime.Now.Year prints the current year automatically *@
+            @* BOTTOM ROW: the copyright line under a thin line.
+               DateTime.Now.Year shows the current year by itself, so you never have to update it *@
             <div class="footer-bottom">
                 <p>© @DateTime.Now.Year Rebyulusyon. Gawa ng mga Pilipino, para sa mga estudyante.</p>
             </div>
@@ -152,7 +183,13 @@
         </div>
     </footer>
 
-    @* Loads your JavaScript file (scroll reveal now, mobile menu in a later lesson) *@
+    @* This loads the JavaScript file (wwwroot/js/site.js).
+       Right now it makes the scroll animation work (things fade in as you scroll down) *@
     <script src="~/js/site.js" asp-append-version="true"></script>
+
+    @* NEW: This is a spot where a page can add its OWN JavaScript file.
+       The Get Started page uses it to load auth.js.
+       It comes after site.js, so site.js always loads first *@
+    @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

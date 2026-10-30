@@ -1,14 +1,32 @@
-﻿@* The About page. @page gives it the web address "/About".
-   There is no @model line: this page's text is typed directly below,
-   so it needs no data from C#. *@
+﻿@* ============================================================
+   This file is the ABOUT PAGE (the page you see at "/About").
+   "@page" below gives it its own web address.
+   It has these parts, from top to bottom:
+   1) Page title ("About")
+   2) Rebyu + Rebolusyon (what the name means)
+   3) Our Mission
+   4) Who it's for (3 cards)
+   5) What we believe (4 cards)
+   6) Why Rebyulusyon? (4 small boxes)
+   The top bar and the footer are NOT here. They come from _Layout.cshtml.
+   ============================================================ *@
 @page
 
+@* There is no "@model" line on this page.
+   That is fine, because all the text is typed in this file
+   and nothing is needed from the C# file. *@
+
 @{
-    // This sets the browser tab title used by _Layout.cshtml
+    // This is for the name on the browser tab. It shows "About - Rebyulusyon".
+    // _Layout.cshtml reads this title and puts it on the tab.
     ViewData["Title"] = "About";
 
-    // The three "Who it's for" cards. Each item has an icon name (from _Icon.cshtml),
-    // a color (blue, red, or yellow), a title, and a description.
+    // This is the list for the three cards under "Who it's for".
+    // Each card has 4 things:
+    // Icon = the name of the small picture (the pictures are in _Icon.cshtml)
+    // Tone = the color of the round circle (blue, red, or yellow)
+    // Title = the big words on the card
+    // Text = the small words under the title
     var audiences = new[]
     {
         new { Icon = "cap",   Tone = "blue",   Title = "Students",      Text = "College and senior high students prepping for exams, board reviews, or daily quizzes." },
@@ -16,7 +34,8 @@
         new { Icon = "bulb",  Tone = "yellow", Title = "Self-learners", Text = "Anyone who wants structured spaced repetition without complicated software." },
     };
 
-    // The four "What we believe" cards.
+    // This is the list for the four cards under "What we believe".
+    // It uses the same 4 things as the list above (Icon, Tone, Title, Text).
     var beliefs = new[]
     {
         new { Icon = "calendar", Tone = "blue",   Title = "Consistency beats cramming", Text = "Small daily sessions build stronger memory than all-night study marathons." },
@@ -25,7 +44,10 @@
         new { Icon = "trending", Tone = "blue",   Title = "Learning should feel good",  Text = "Progress tracking and streaks turn studying into an encouraging habit." },
     };
 
-    // The four "Why Rebyulusyon?" tiles. IsEmoji = true uses the emoji font and a bigger size.
+    // This is the list for the four small boxes under "Why Rebyulusyon?".
+    // Value = the big thing in the box (100%, a symbol, a flag, or a phone)
+    // IsEmoji = true means the Value is a small picture symbol, so it gets a bigger size and a symbol font
+    // Label = the words under the big thing
     var reasons = new[]
     {
         new { Value = "100%", IsEmoji = false, Label = "Free to use" },
@@ -35,24 +57,28 @@
     };
 }
 
-@* ===== PAGE TITLE ===== *@
+@* ===== PART 1: PAGE TITLE (the big word "About" at the top of the page) ===== *@
 <section class="about-hero">
+    @* "data-reveal" makes this part fade in the first time you see it *@
     <div class="container" data-reveal>
         <h1>About</h1>
 
-        @* Three short bars in the flag colors (blue, red, yellow): decoration only.
-           aria-hidden hides them from screen readers *@
+        @* This is for the three short colored lines under the word "About".
+           They are blue, red, and yellow, like the Philippine flag.
+           They are only for decoration, so "aria-hidden" tells screen readers to skip them *@
         <div class="flag-bar" aria-hidden="true">
             <span class="bar-blue"></span><span class="bar-red"></span><span class="bar-yellow"></span>
         </div>
     </div>
 </section>
 
-@* ===== REBYU + REBOLUSYON ===== *@
+@* ===== PART 2: REBYU + REBOLUSYON (what the name means) ===== *@
 <section class="about-section">
     <div class="container">
-        @* "about-panel" is a white card with the icon on the left and the text on the right *@
+        @* This is for the white card with the book picture on the left and the words on the right *@
         <div class="about-panel" data-reveal>
+            @* This is for the big blue circle with the book picture inside.
+               "icon-chip-lg" makes the circle bigger than the ones on the Home page *@
             <span class="icon-chip icon-chip-lg tone-blue"><partial name="_Icon" model='"book"' /></span>
             <div>
                 <h2>Rebyu + Rebolusyon</h2>
@@ -62,11 +88,12 @@
     </div>
 </section>
 
-@* ===== OUR MISSION ===== *@
+@* ===== PART 3: OUR MISSION ===== *@
 <section class="about-section">
     <div class="container">
-        @* "about-panel-accent" adds a soft red background so this card stands out *@
+        @* This is for the mission card. "about-panel-accent" gives it a soft red background so it stands out *@
         <div class="about-panel about-panel-accent" data-reveal>
+            @* This is for the big red circle with the target picture inside *@
             <span class="icon-chip icon-chip-lg tone-red"><partial name="_Icon" model='"target"' /></span>
             <div>
                 <h2>Our Mission</h2>
@@ -76,22 +103,27 @@
     </div>
 </section>
 
-@* ===== WHO IT'S FOR ===== *@
+@* ===== PART 4: WHO IT'S FOR (three cards) ===== *@
 <section class="about-section">
     <div class="container">
-        @* "section-head" is the centered heading style from the homepage *@
+        @* This is for the centered title of this part. "section-head" is the same title style used on the Home page *@
         <div class="section-head" data-reveal>
             <h2>Who it's for</h2>
         </div>
 
-        @* "about-grid-3" lays the cards out in 3 columns (set in CSS).
-           The loop builds one card for each item in the "audiences" list above.
-           The card styles (feature-card, icon-chip, tone-*) are the same as the homepage *@
+        @* This is the box that holds the three cards, side by side ("about-grid-3" sets 3 columns in the CSS).
+           The loop below makes one card for each item in the "audiences" list at the top of this file.
+           The cards look the same as the feature cards on the Home page *@
         <div class="about-grid-3">
             @foreach (var a in audiences)
             {
+                @* This is for one card. "a" means the card it is working on now *@
                 <article class="feature-card" data-reveal>
+                    @* This is for the small colored circle with the picture.
+                       "tone-@a.Tone" makes a name like "tone-blue" so the CSS can pick the color.
+                       model="a.Icon" tells _Icon.cshtml which picture to draw *@
                     <span class="icon-chip tone-@a.Tone"><partial name="_Icon" model="a.Icon" /></span>
+                    @* These two lines show the card title and the card text *@
                     <h3>@a.Title</h3>
                     <p>@a.Text</p>
                 </article>
@@ -100,17 +132,20 @@
     </div>
 </section>
 
-@* ===== WHAT WE BELIEVE ===== *@
+@* ===== PART 5: WHAT WE BELIEVE (four cards) ===== *@
 <section class="about-section">
     <div class="container">
+        @* This is for the centered title of this part *@
         <div class="section-head" data-reveal>
             <h2>What we believe</h2>
         </div>
 
-        @* "about-grid-2" lays the four cards out in 2 columns *@
+        @* This is the box that holds the four cards in 2 columns ("about-grid-2"), so they make a 2 by 2 block.
+           The loop makes one card for each item in the "beliefs" list at the top of this file *@
         <div class="about-grid-2">
             @foreach (var b in beliefs)
             {
+                @* This is for one card. "b" means the card it is working on now *@
                 <article class="feature-card" data-reveal>
                     <span class="icon-chip tone-@b.Tone"><partial name="_Icon" model="b.Icon" /></span>
                     <h3>@b.Title</h3>
@@ -121,20 +156,26 @@
     </div>
 </section>
 
-@* ===== WHY REBYULUSYON? ===== *@
+@* ===== PART 6: WHY REBYULUSYON? (four small boxes) ===== *@
+@* "about-section-last" gives a little more space at the bottom, before the footer *@
 <section class="about-section about-section-last">
     <div class="container">
+        @* This is for the centered title of this part *@
         <div class="section-head" data-reveal>
             <h2>Why Rebyulusyon?</h2>
         </div>
 
-        @* "stat-grid" lays the four tiles out in 4 columns on desktop *@
+        @* This is the box that holds the four small boxes. On a computer they sit in 4 columns ("stat-grid") *@
         <div class="stat-grid">
             @foreach (var r in reasons)
             {
+                @* This is for one small box. "r" means the box it is working on now *@
                 <div class="stat-card" data-reveal>
-                    @* The big value (100%, ♾, flag, phone). Emoji get an extra class for the emoji font *@
+                    @* This is for the big thing in the box (100%, the symbol, the flag, or the phone).
+                       If IsEmoji is true, the extra word "stat-emoji" is added to the class,
+                       so the CSS can use the symbol font and the right size *@
                     <span class="stat-value@(r.IsEmoji ? " stat-emoji" : "")">@r.Value</span>
+                    @* This is for the words under the big thing *@
                     <span class="stat-label">@r.Label</span>
                 </div>
             }

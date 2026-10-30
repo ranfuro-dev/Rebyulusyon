@@ -1,45 +1,54 @@
 /* ==========================================================
-   site.css
-   All the styling for the website: colors, fonts, spacing, layout.
-   Color theme: based on the Philippine flag (blue, red, yellow).
-   Fonts: Fredoka (headings) and Nunito (body), both open-source.
+   This file is site.css.
+   It controls how the whole website LOOKS: colors, fonts, spacing, and layout.
+   It has 13 parts, from top to bottom:
+   1) Variables (the colors and fonts)     8) Features section (the six cards)
+   2) Base rules (for the whole site)      9) Review routine section (the pink part)
+   3) Top bar (header)                    10) AI Study Tools card and blue banner
+   4) Buttons                             11) Scroll animation (fade in)
+   5) Small parts (badges, text colors)   12) Footer
+   6) Hero (the big top part of Home)     13) About page
+   7) Hero on smaller screens
+   The colors come from the Philippine flag (blue, red, yellow).
+   The fonts are Fredoka (headings) and Nunito (normal text).
    ========================================================== */
 
 
 /* ===== 1. VARIABLES =====
-   Named values we define once and reuse. Write var(--blue) to use one.
-   To change a color or font across the whole site, change it here only. */
+   A variable is a name that holds a color or a font.
+   You write the value once here, then use it everywhere with var(--name).
+   Example: if you change --blue here, every blue part of the website changes. */
 :root {
-    /* --- Philippine flag colors --- */
-    --blue: #0038a8; /* flag blue: buttons, active link, logo box */
-    --blue-dark: #002a80; /* darker blue shown when hovering a blue button */
-    --blue-soft: #e6edfb; /* very pale blue for backgrounds and icon circles */
-    --red: #ce1126; /* flag red: accents and highlights */
-    --red-soft: #fdebed; /* very pale red for backgrounds */
-    --yellow: #fcd116; /* flag sun yellow: badges and highlights */
-    --yellow-soft: #fff5c2; /* very pale yellow for backgrounds and badges */
-    /* --- Neutral colors --- */
-    --ink: #0b1b3f; /* very dark navy for main text (softer than pure black) */
-    --muted: #4b5a78; /* gray-blue for less important text */
-    --bg: #f0f4ff; /* very light blue page background */
-    --line: #dfe5f3; /* light gray-blue for thin divider lines */
+    /* --- Colors from the Philippine flag --- */
+    --blue: #0038a8; /* the main blue: buttons, the open menu link, the logo square */
+    --blue-dark: #002a80; /* a darker blue shown when you point at a blue button */
+    --blue-soft: #e6edfb; /* a very light blue for small circles and backgrounds */
+    --red: #ce1126; /* the main red: highlights and the step number circles */
+    --red-soft: #fdebed; /* a very light red for backgrounds */
+    --yellow: #fcd116; /* the sun yellow: badges and the small color bars */
+    --yellow-soft: #fff5c2; /* a very light yellow for badges and backgrounds */
+    /* --- Colors for text and backgrounds --- */
+    --ink: #0b1b3f; /* a very dark blue used for normal text (softer than black) */
+    --muted: #4b5a78; /* a gray-blue used for less important text */
+    --bg: #f0f4ff; /* the very light blue color behind the whole page */
+    --line: #dfe5f3; /* a light gray-blue used for thin lines */
     /* --- Fonts ---
-       The browser uses the first font it has, then falls back to the next */
-    --font-body: "Nunito", system-ui, -apple-system, "Segoe UI", sans-serif; /* body text: soft and rounded */
-    --font-head: "Fredoka", "Nunito", system-ui, sans-serif; /* headings and logo: playful and rounded */
+       The browser uses the first font it can find, and if not, the next one */
+    --font-body: "Nunito", system-ui, -apple-system, "Segoe UI", sans-serif; /* the font for normal text */
+    --font-head: "Fredoka", "Nunito", system-ui, sans-serif; /* the font for headings and the logo */
 }
 
 
-/* ===== 2. BASE RULES (apply to the whole site) ===== */
+/* ===== 2. BASE RULES (these apply to the whole website) ===== */
 
-/* Makes an element's width INCLUDE its padding and border.
-   Without this, adding padding would make boxes wider than you set. */
+/* This makes every box measure its width INCLUDING its padding and border.
+   Without it, adding padding would make boxes bigger than you set them. */
 *, *::before, *::after {
     box-sizing: border-box;
 }
 
-/* Style for the whole page: remove the default outer margin,
-   set the font, text color, background, and the spacing between lines of text */
+/* This is for the whole page: it removes the small outer space the browser adds,
+   and sets the font, the text color, the background color, and the space between lines of text. */
 body {
     margin: 0;
     font-family: var(--font-body);
@@ -48,15 +57,16 @@ body {
     line-height: 1.6;
 }
 
-/* Links: remove the default blue underline and use the surrounding text color */
+/* This is for all links: it removes the blue underline and uses the same color as the text around it. */
 a {
     color: inherit;
     text-decoration: none;
 }
 
-/* The centered column used by every section.
-   max-width stops it from getting too wide on big screens;
-   margin: 0 auto centers it; padding keeps text off the screen edges */
+/* This is for the centered column used by every section of every page.
+   max-width stops it from becoming too wide on big screens.
+   "margin: 0 auto" puts it in the middle.
+   padding keeps the text away from the edges of the screen. */
 .container {
     width: 100%;
     max-width: 1136px;
@@ -64,108 +74,110 @@ a {
     padding: 0 24px;
 }
 
-/* Icons are exactly as big as the text next to them (1em = one font size).
-   flex: none stops them from being squished */
+/* This is for the small pictures (icons) from _Icon.cshtml.
+   1em means the same size as the text next to them.
+   "flex: none" stops them from being squeezed smaller. */
 .icon {
     width: 1em;
     height: 1em;
     flex: none;
 }
 
-/* A helper class that turns text blue (used on "lusyon" in the logo) */
+/* This is for words that should be blue, like "lusyon" in the logo and "Revolutionize" on the Home page. */
 .accent {
     color: var(--blue);
 }
 
 
-/* ===== 3. HEADER (the top bar) ===== */
+/* ===== 3. TOP BAR (HEADER) ===== */
 
-/* The full-width white bar */
+/* This is for the white bar at the top of every page. */
 .site-header {
-    position: sticky; /* scrolls normally, then sticks to the top of the screen */
-    top: 0; /* the position where it sticks */
-    z-index: 50; /* puts the bar in front of content scrolling under it */
+    position: sticky; /* it stays at the top of the screen when you scroll down */
+    top: 0; /* the place where it sticks: the very top */
+    z-index: 50; /* puts the bar in front of the page content that scrolls under it */
     background: #fff;
-    border-bottom: 1px solid var(--line); /* thin line under the bar */
+    border-bottom: 1px solid var(--line); /* a thin line under the bar */
 }
 
-    /* OPTIONAL: thin tricolor stripe across the top of the header.
-   ::before creates an extra element before the header's content, with no extra HTML.
-   Delete this whole rule if you do not want the stripe. */
+    /* OPTIONAL: This is for the thin blue, yellow, and red stripe at the very top of the page.
+       It is drawn by CSS, so it needs no HTML.
+       Delete this whole rule if you do not want the stripe. */
     .site-header::before {
-        content: ""; /* required: a ::before element does not appear without content */
-        position: absolute; /* placed relative to the header (sticky counts as positioned) */
-        top: 0; /* sits at the very top edge */
+        content: ""; /* needed, or the stripe will not show */
+        position: absolute; /* places the stripe by exact position inside the bar */
+        top: 0; /* at the very top edge */
         left: 0;
-        right: 0; /* stretches across the full width */
-        height: 4px; /* thickness of the stripe */
-        /* A gradient with hard color stops: blue for the first third,
-       yellow for the middle third, red for the last third */
+        right: 0; /* from the left edge to the right edge */
+        height: 4px; /* how thick the stripe is */
+        /* The stripe is 3 colors, each one third of the width: blue, then yellow, then red */
         background: linear-gradient(90deg, var(--blue) 0 33.33%, var(--yellow) 33.33% 66.66%, var(--red) 66.66% 100%);
     }
 
-/* The row that holds logo, menu, and buttons */
+/* This is for the row inside the top bar. It holds the logo, the menu, and the buttons. */
 .header-inner {
-    display: flex; /* places the children side by side */
-    align-items: center; /* centers them vertically */
-    justify-content: space-between; /* pushes first to the left, last to the right */
-    gap: 16px; /* minimum space between children */
-    min-height: 62px; /* bar height (it can grow if needed) */
+    display: flex; /* puts the 3 parts side by side */
+    align-items: center; /* centers them up and down */
+    justify-content: space-between; /* first part on the left, last part on the right, middle part in between */
+    gap: 16px; /* the smallest space between the parts */
+    min-height: 62px; /* how tall the bar is (it can get taller if needed) */
 }
 
-/* --- Logo --- */
+/* --- The Rebyulusyon logo (top left) --- */
 
-/* The whole logo: icon box and text side by side */
+/* This is for the whole logo: the blue square and the words, side by side. */
 .brand {
     display: flex;
     align-items: center;
     gap: 10px;
 }
 
-/* The blue rounded square holding the icon */
+/* This is for the blue square with the flashcard picture in the logo.
+   The footer logo uses it too. */
 .brand-mark {
     width: 38px;
     height: 38px;
-    border-radius: 10px; /* rounds the corners */
+    border-radius: 10px; /* makes the corners round */
     background: var(--blue);
-    color: #fff; /* icon color (icons use currentColor, so they turn white) */
-    display: grid; /* grid + place-items is a short way to center the icon */
+    color: #fff; /* white, so the picture inside shows as white */
+    display: grid; /* with "place-items", this puts the picture in the exact middle */
     place-items: center;
-    font-size: 22px; /* icon size, because .icon is 1em */
+    font-size: 22px; /* how big the picture is (the icon is 1em) */
 }
 
-/* Holds the name and tagline. flex-direction: column STACKS them vertically */
+/* This is for the box holding the name and the small tagline.
+   "column" puts the tagline UNDER the name. */
 .brand-text {
     display: flex;
     flex-direction: column;
     line-height: 1.15;
 }
 
-/* "Rebyulusyon" */
+/* This is for the name "Rebyulusyon" in the logo. */
 .brand-name {
     font-family: var(--font-head);
     font-weight: 600;
     font-size: 20px;
 }
 
-/* "REBYU. TANDAAN. PUMASA." small spaced-out capital letters */
+/* This is for the small tagline under the logo name: "REBYU. TANDAAN. PUMASA." */
 .brand-tag {
     font-size: 10px;
-    letter-spacing: .2em; /* space between letters */
-    text-transform: uppercase; /* shows text in capitals */
+    letter-spacing: .2em; /* adds space between the letters */
+    text-transform: uppercase; /* shows the words in CAPITAL letters */
     color: var(--muted);
     font-weight: 700;
 }
 
-/* --- Menu links --- */
+/* --- The menu links (Home, Explore Reviewers, About) --- */
 
-/* The row of links */
+/* This is for the row of menu links in the middle of the top bar. */
 .main-nav {
     display: flex;
     gap: 6px;
 }
 
-/* Each link. border-radius: 999px makes a pill shape */
+/* This is for each menu link. "999px" makes the ends fully round, like a pill. */
 .nav-link {
     padding: 9px 16px;
     border-radius: 999px;
@@ -174,28 +186,28 @@ a {
     color: var(--muted);
 }
 
-    /* When the mouse is over a link, make the text darker */
+    /* This is for when you point at a menu link with the mouse: the text gets darker. */
     .nav-link:hover {
         color: var(--ink);
     }
 
-    /* The current page's link: blue pill with white text.
-   No space between .nav-link and .active = "an element with BOTH classes" */
+    /* This is for the menu link of the page you are on: a blue pill with white text.
+       There is no space between ".nav-link" and ".active". That means "something that has BOTH classes". */
     .nav-link.active {
         background: var(--blue);
         color: #fff;
     }
 
-/* --- Right side of the bar --- */
+/* --- The right side of the top bar --- */
 
-/* Row holding "Log In" and the Get Started button */
+/* This is for the row that holds the "Log In" link and the "Get Started" button. */
 .header-actions {
     display: flex;
     align-items: center;
     gap: 22px;
 }
 
-/* The "Log In" text link */
+/* This is for the "Log In" link in the top bar. */
 .link-login {
     font-size: 15px;
     font-weight: 700;
@@ -203,115 +215,115 @@ a {
 
 
 /* ===== 4. BUTTONS =====
-   Build a button by combining classes: btn + a color + a size,
-   for example class="btn btn-primary btn-sm" */
+   A button is made by joining classes: "btn" (the shape) + a color + a size.
+   Example: class="btn btn-primary btn-sm" is a small blue button. */
 
-/* Shared shape for all buttons */
+/* This is for the shape that ALL buttons share. */
 .btn {
-    display: inline-flex; /* flex, but only as wide as its content */
+    display: inline-flex; /* the picture and the words sit side by side, and the button is only as wide as it needs */
     align-items: center;
     justify-content: center;
-    gap: 8px; /* space between the icon and the text */
-    padding: 14px 24px; /* space inside the button (top/bottom, left/right) */
-    border-radius: 999px; /* fully rounded ends */
+    gap: 8px; /* the space between the picture and the words */
+    padding: 14px 24px; /* the space inside the button (top and bottom, then left and right) */
+    border-radius: 999px; /* fully round ends */
     font-weight: 700;
     font-size: 16px;
-    border: 2px solid transparent; /* invisible border; other buttons can show a color here */
-    cursor: pointer; /* hand cursor on hover */
-    transition: transform .15s ease, background .15s ease; /* makes hover changes smooth */
+    border: 2px solid transparent; /* an invisible border, so other buttons can show a color here */
+    cursor: pointer; /* shows a hand when you point at it */
+    transition: transform .15s ease, background .15s ease; /* makes the change smooth when you point at it */
 }
 
-    /* On hover, lift the button up 1px */
+    /* This is for when you point at any button: it moves up a tiny bit (1 pixel). */
     .btn:hover {
         transform: translateY(-1px);
     }
 
-/* Size: small button (used in the header) */
+/* This is for the SMALL size of a button (used by "Get Started" in the top bar). */
 .btn-sm {
     padding: 10px 18px;
     font-size: 15px;
 }
 
-/* Color: solid flag-blue button with a soft blue glow.
-   box-shadow values are: sideways offset, downward offset, blur, color.
-   rgba(0, 56, 168, .3) is the flag blue at 30% opacity */
+/* This is for the BLUE button color (like Get Started in the top bar and "Get Started Free" on the Home page).
+   box-shadow adds the soft blue glow under the button: sideways, down, blur, color. */
 .btn-primary {
     background: var(--blue);
     color: #fff;
     box-shadow: 0 8px 20px rgba(0, 56, 168, .3);
 }
 
-    /* On hover, the blue becomes darker */
+    /* This is for when you point at a blue button: the blue gets darker. */
     .btn-primary:hover {
         background: var(--blue-dark);
     }
 
 
-/* ===== 5. SMALL REUSABLE PARTS =====
-   Small pieces used in the hero now, and again in later sections */
+/* ===== 5. SMALL PARTS USED IN MANY PLACES (badges, labels, text colors) ===== */
 
-/* Rounded capsule used for badges ("Para sa mga estudyanteng Pilipino", "7 days") */
+/* This is for the round capsule shape of a badge,
+   like "Para sa mga estudyanteng Pilipino", "7 days", and "Coming Soon". */
 .pill {
-    display: inline-flex; /* icon and text side by side, only as wide as the content */
-    align-items: center; /* centers them vertically */
-    gap: 8px; /* space between icon and text */
-    padding: 7px 14px; /* space inside the capsule */
-    border-radius: 999px; /* fully rounded ends */
+    display: inline-flex; /* the picture and the words sit side by side */
+    align-items: center;
+    gap: 8px; /* the space between the picture and the words */
+    padding: 7px 14px; /* the space inside the capsule */
+    border-radius: 999px; /* fully round ends */
     font-size: 14px;
     font-weight: 700;
 }
 
-/* Color version: pale red with a flag-red border and red text.
-   Used only on the hero badge, so the "7 days" badge stays yellow.
-   The sparkle icon turns red too, because icons use the text color */
+/* This is for the RED badge color. It is used for "Para sa mga estudyanteng Pilipino" on the Home page.
+   The sparkle picture turns red too, because pictures use the text color. */
 .pill-red {
     background: var(--red-soft);
     color: var(--red);
     border: 1px solid #f5b8bf;
 }
 
-/* Color version: Todays progress pale yellow with a darker yellow border and dark brown text */
+/* This is for the YELLOW badge color. It is used for "7 days" on the progress card
+   and for "Coming Soon" on the AI Study Tools card. */
 .pill-yellow {
     background: var(--yellow-soft);
     color: #5a4500;
     border: 1px solid #f3dc7a;
 }
 
-/* Smaller size, used for the "7 days" badge on the progress card */
+/* This is for the SMALLER size of a badge ("7 days" and "Coming Soon"). */
 .pill-sm {
     padding: 4px 10px;
     font-size: 12px;
 }
 
 
-/* The small spaced-out tagline above the headline */
+/* This is for the small blue words above a heading, like "Rebyu Ngayon, Pasado Bukas." on the Home page. */
 .eyebrow {
     font-size: 13px;
     font-weight: 800;
-    letter-spacing: .22em; /* wide space between letters */
-    text-transform: uppercase; /* shows text in capitals */
+    letter-spacing: .22em; /* adds a lot of space between the letters */
+    text-transform: uppercase; /* shows the words in CAPITAL letters */
     color: var(--blue);
 }
 
-/* Size: large button (used in the hero) */
+/* This is for the LARGE size of a button (used in the hero and on the blue banner). */
 .btn-lg {
     padding: 14px 26px;
     font-size: 17px;
 }
 
-/* Color: white button with a soft blue border, for the secondary action */
+/* This is for the WHITE button with a light blue border, like "Explore Reviewers" in the hero. */
 .btn-outline {
     background: #fff;
     color: var(--ink);
     border-color: #cfd9f3;
 }
 
-    /* On hover, the border becomes the flag blue */
+    /* This is for when you point at the white button: its border becomes blue. */
     .btn-outline:hover {
         border-color: var(--blue);
     }
 
-/* Helper classes that only change text color (used on the stats) */
+/* These are for words that only need a different color.
+   They are used on the "Free", "5 min", and "Mobile" words, and on "review routine". */
 .text-blue {
     color: var(--blue);
 }
@@ -325,43 +337,45 @@ a {
 }
 
 
-/* ===== 6. HERO SECTION ===== */
+/* ===== 6. HERO (the big opening part at the top of the Home page) ===== */
 
-/* The whole hero area: spacing, and a soft background made of layered gradients */
+/* This is for the whole hero area: the space around it and its soft background.
+   overflow: hidden cuts off the colored glows where they go past the edge. */
 .hero {
     position: relative;
-    overflow: hidden; /* hides anything (like the glows) that sticks out past the edges */
-    padding: 80px 0 48px; /* space above and below the content */
-    /* Three backgrounds stacked: a blue glow top-left, a yellow glow bottom-right,
-       and a plain pale blue gradient underneath. The first one listed is on top */
+    overflow: hidden;
+    padding: 80px 0 48px; /* the space above (80px), at the sides (0), and below (48px) */
+    /* The background has 3 layers: a blue glow at the top left, a yellow glow at the bottom right,
+       and a light blue color underneath. The first one in the list is on top. */
     background: radial-gradient(420px 300px at 8% 8%, rgba(0, 56, 168, .14), transparent 70%), radial-gradient(520px 380px at 95% 95%, rgba(252, 209, 22, .28), transparent 70%), linear-gradient(180deg, #eaf0ff, #f4f6ff);
 }
 
-/* Two columns: the text gets slightly more room than the picture.
-   "fr" means "fraction of the free space": 1.05fr vs 1fr */
+/* This is for the two columns of the hero: text on the left, picture on the right.
+   "fr" means a share of the space. The text gets a little more space than the picture. */
 .hero-grid {
     display: grid;
     grid-template-columns: 1.05fr 1fr;
-    gap: 48px; /* space between the columns */
-    align-items: center; /* centers both columns vertically */
+    gap: 48px; /* the space between the two columns */
+    align-items: center; /* centers both columns up and down */
 }
 
-/* Space under the badge */
+/* This is for the space under the red badge at the top of the hero text. */
 .hero-copy .pill {
     margin-bottom: 22px;
 }
 
-/* The big headline. clamp(min, preferred, max) lets the size grow with the
-   window width (5vw = 5% of the window) but never below 2.6rem or above 3.6rem */
+/* This is for the big headline "Revolutionize the way you review."
+   clamp(smallest, grows with the screen, biggest) makes the text bigger on big screens
+   and smaller on small screens, but never smaller than 2.6rem or bigger than 3.6rem. */
 .hero h1 {
     font-family: var(--font-head);
     font-size: clamp(2.6rem, 5vw, 3.6rem);
-    font-weight: 700; /* Fredoka's boldest weight */
-    line-height: 1.1; /* tight spacing between the headline's lines */
-    margin: 14px 0 22px; /* space above and below */
+    font-weight: 700; /* the boldest weight of the Fredoka font */
+    line-height: 1.1; /* a small space between the lines of the headline */
+    margin: 14px 0 22px; /* the space above and below the headline */
 }
 
-/* The paragraph under the headline */
+/* This is for the paragraph under the headline. */
 .lead {
     font-size: 19px;
     color: var(--muted);
@@ -369,7 +383,8 @@ a {
     margin: 0;
 }
 
-/* Row holding the two buttons. flex-wrap lets them drop to a new line on narrow screens */
+/* This is for the row that holds two buttons ("Get Started Free" and "Explore Reviewers").
+   "flex-wrap" lets a button move to the next line when the screen is narrow. */
 .btn-row {
     display: flex;
     flex-wrap: wrap;
@@ -377,20 +392,22 @@ a {
     margin: 28px 0;
 }
 
-/* The stats strip: a rounded white-ish box with three columns */
+/* This is for the box with the three short facts (Free, 5 min, Mobile) in the hero.
+   It has three columns, and a see-through white background. */
 .stats {
     display: grid;
     grid-template-columns: repeat(3, auto); /* three columns, each as wide as its content */
-    justify-content: space-between; /* spreads them across the box */
+    justify-content: space-between; /* spreads the columns across the box */
     gap: 16px;
     margin: 0;
     padding: 18px 22px;
     max-width: 540px;
-    background: rgba(255, 255, 255, .7); /* white at 70% opacity, so the background shows through */
+    background: rgba(255, 255, 255, .7); /* white, but 30% see-through so the background shows a little */
     border: 1px solid #e0e7f8;
     border-radius: 22px;
 }
 
+    /* This is for the big word in each fact (Free, 5 min, Mobile). */
     .stats dt {
         font-family: var(--font-head);
         font-weight: 600;
@@ -398,34 +415,36 @@ a {
         line-height: 1.2;
     }
 
+    /* This is for the small text under each big word. The browser adds a space on its left, so we remove it. */
     .stats dd {
         margin: 0;
         font-size: 14px;
         color: var(--muted);
     }
-/* dd has a default left margin; we remove it */
 
-/* --- Right side: picture and floating card --- */
+/* --- The right side of the hero: the picture and the floating card --- */
 
-/* The positioning container. "relative" lets the progress card be placed against it */
+/* This is for the box holding the picture and the card.
+   "relative" lets the progress card be placed on top of the picture. */
 .hero-art {
     position: relative;
 }
 
-/* The illustration frame: a rounded square with a soft blue shadow.
-   Also used for the second illustration in a later lesson */
+/* This is for the rounded frame around the pictures (the flashcards in the hero and the book in the pink part).
+   It also makes the picture a perfect square. */
 .art-card {
     width: 100%;
-    aspect-ratio: 1; /* keeps it perfectly square */
-    object-fit: cover; /* fills the square without stretching the image */
+    aspect-ratio: 1; /* keeps the picture a perfect square */
+    object-fit: cover; /* fills the square without stretching the picture */
     border-radius: 28px;
-    background: #faf7ee; /* cream color shown while the image loads */
+    background: #faf7ee; /* the cream color you see while the picture loads */
     border: 1px solid #d9e1fb;
     box-shadow: 0 20px 50px rgba(0, 56, 168, .18);
 }
 
-/* The "Today's Progress" card. "absolute" takes it out of the normal flow so it can
-   overlap the picture: it sits 16px to the left of the picture's edge and 32px below its bottom */
+/* This is for the small "Today's Progress" card that sits on the bottom left of the hero picture.
+   "absolute" takes it out of the normal place so it can sit on top of the picture:
+   16px to the left of the picture, and 32px below the bottom of it. */
 .progress-card {
     position: absolute;
     left: -16px;
@@ -437,17 +456,17 @@ a {
     box-shadow: 0 16px 40px rgba(11, 27, 63, .14);
 }
 
-/* Top row: "Today's Progress" on the left, the "7 days" badge on the right */
+/* This is for the top row of the progress card: "Today's Progress" on the left and the "7 days" badge on the right. */
 .progress-top {
     display: flex;
-    justify-content: space-between; /* one at each end */
+    justify-content: space-between; /* one word at each end */
     align-items: center;
     font-size: 13px;
     font-weight: 700;
     color: var(--muted);
 }
 
-/* "12 / 20 cards" */
+/* This is for the words "12 / 20 cards" on the progress card. */
 .progress-count {
     display: block;
     font-family: var(--font-head);
@@ -456,7 +475,7 @@ a {
     margin: 6px 0 10px;
 }
 
-/* The progress bar: a pale track, and a blue fill whose width is set in the HTML */
+/* This is for the empty part of the progress bar (the light track). */
 .bar {
     height: 12px;
     background: #e3eafb;
@@ -464,14 +483,16 @@ a {
     overflow: hidden;
 }
 
+/* This is for the blue part of the progress bar. Its width (like 60%) is set in Index.cshtml. */
 .bar-fill {
     height: 100%;
     background: var(--blue);
     border-radius: 99px;
 }
 
-/* --- Slow floating animation (the up-and-down motion) ---
-   The picture and the card use different durations so they drift in and out of sync */
+/* --- The slow up and down movement in the hero ---
+   The picture and the card use different times (6 seconds and 5 seconds),
+   so they do not move together, and it looks more natural. */
 .hero-art .art-card {
     animation: float-art 6s ease-in-out infinite alternate;
 }
@@ -480,8 +501,8 @@ a {
     animation: float-card 5s ease-in-out infinite alternate;
 }
 
-/* @keyframes describes the motion: start at 0, end 8px (or 10px) higher.
-   "alternate" plays it forward, then backward, so it loops up and down */
+/* These describe the movement: start at the normal place, then go up 8 pixels (the picture) or 10 pixels (the card).
+   "alternate" makes it go back down after going up, again and again. */
 @keyframes float-art {
     from {
         transform: translateY(0);
@@ -502,7 +523,8 @@ a {
     }
 }
 
-/* Respect people who turned off animations in their system settings */
+/* This is for people who turned off animations in their computer settings.
+   For them, the hero picture and the card do not move. */
 @media (prefers-reduced-motion: reduce) {
     .hero-art .art-card, .progress-card {
         animation: none;
@@ -512,50 +534,56 @@ a {
 
 /* ===== 7. HERO ON SMALLER SCREENS ===== */
 
-/* Tablets (window narrower than 960px): stack the columns, picture below the text */
+/* This is for tablets (screens narrower than 960 pixels).
+   The two hero columns become one column, with the picture under the text. */
 @media (max-width: 960px) {
     .hero {
         padding: 56px 0 84px;
     }
 
+    /* One single column. */
     .hero-grid {
         grid-template-columns: 1fr;
     }
-    /* a single column */
+
+    /* The picture is centered and has extra space below, so the progress card has room. */
     .hero-art {
         max-width: 520px;
         width: 100%;
         margin: 0 auto 32px;
     }
-    /* centered, with room for the card */
 }
 
-/* Phones (window narrower than 600px): tighter spacing, stacked stats, full-width buttons */
+/* This is for phones (screens narrower than 600 pixels): less space, the three facts in one column,
+   and buttons as wide as the screen. */
 @media (max-width: 600px) {
     .hero {
         padding: 40px 0 72px;
     }
 
+    /* The three facts are stacked in one column. */
     .stats {
         grid-template-columns: 1fr;
     }
-    /* stats stack in one column */
+
+    /* The large buttons are as wide as the screen. */
     .btn-lg {
         width: 100%;
     }
-    /* buttons fill the row */
+
+    /* The progress card moves a little to the right and gets smaller, so it stays inside the screen. */
     .progress-card {
         left: 8px;
         width: 230px;
     }
-    /* keeps the card inside the screen */
 }
 
 
-/* ===== 8. FEATURES SECTION ===== */
+/* ===== 8. FEATURES SECTION (the six cards under "Everything in one place") ===== */
 
-/* The whole section: spacing and a faint dotted background.
-   radial-gradient draws a tiny dot; background-size repeats it every 24px */
+/* This is for the whole features section: the space around it and its background.
+   The background is cream (your color, #FFF8E7) with a pattern of tiny dots.
+   The dot pattern is repeated every 24 pixels. */
 .features {
     padding: 56px 0 40px;
     background-color: #FFF8E7;
@@ -563,14 +591,15 @@ a {
     background-size: 24px 24px;
 }
 
-/* The centered heading block above the cards */
+/* This is for the centered title area above a group of cards.
+   It is used on the Home page and on the About page. */
 .section-head {
     text-align: center;
     max-width: 680px;
     margin: 0 auto 56px;
 }
 
-    /* The big heading "Built around how students actually review" */
+    /* This is for the big title, like "Built around how students actually review". */
     .section-head h2 {
         font-family: var(--font-head);
         font-size: clamp(1.9rem, 4vw, 2.6rem);
@@ -579,15 +608,14 @@ a {
         margin: 12px 0 14px;
     }
 
-/* The paragraph under the heading */
+/* This is for the small paragraph under the title. */
 .section-sub {
     color: var(--muted);
     font-size: 17px;
     margin: 0;
 }
 
-/* The small blue label, centered, with a thin line on each side.
-   ::before and ::after draw the two lines without any extra HTML */
+/* This is for the small blue label "Everything in one place" that has a thin line on each side. */
 .eyebrow-lines {
     display: inline-flex;
     align-items: center;
@@ -596,6 +624,7 @@ a {
     font-size: 12px;
 }
 
+    /* These two draw the thin lines on the left and right of the label, with no extra HTML. */
     .eyebrow-lines::before,
     .eyebrow-lines::after {
         content: "";
@@ -604,14 +633,15 @@ a {
         background: #9fb4ea;
     }
 
-/* The cards grid: 3 equal columns on desktop */
+/* This is for the box that holds the six cards. It has 3 equal columns on a computer screen. */
 .feature-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 24px;
 }
 
-/* One card: white box with a rounded border */
+/* This is for one card: a white box with round corners and a light border.
+   The About page uses it too. */
 .feature-card {
     background: #fff;
     border: 1px solid #d5def5;
@@ -619,7 +649,7 @@ a {
     padding: 26px;
 }
 
-    /* The card title (an h3 heading) */
+    /* This is for the title of a card. */
     .feature-card h3 {
         font-family: var(--font-head);
         font-size: 20px;
@@ -628,14 +658,14 @@ a {
         margin: 18px 0 10px;
     }
 
-    /* The card description */
+    /* This is for the small text of a card. */
     .feature-card p {
         margin: 0;
         font-size: 15.5px;
         color: var(--muted);
     }
 
-/* The round badge that holds the icon */
+/* This is for the round circle that holds the small picture on a card. */
 .icon-chip {
     width: 48px;
     height: 48px;
@@ -645,7 +675,8 @@ a {
     font-size: 22px;
 }
 
-/* Badge color versions. The name matches the "tone" text in the C# list */
+/* These are the three circle colors. The names match the color words in the list in Index.cshtml.cs
+   (and in About.cshtml): "blue", "red", and "yellow". */
 .tone-blue {
     background: var(--blue-soft);
     color: var(--blue);
@@ -661,19 +692,19 @@ a {
     color: #5a4500;
 }
 
-/* Tablets (narrower than 960px): 2 cards per row */
+/* This is for tablets (narrower than 960 pixels): 2 cards in each row. */
 @media (max-width: 960px) {
+    /* Less space above and below, so the sections sit closer together. */
     .features {
         padding: 40px 0 32px;
     }
-    /* smaller top and bottom, so the sections sit closer */
 
     .feature-grid {
         grid-template-columns: repeat(2, 1fr);
     }
 }
 
-/* Phones (narrower than 600px): 1 card per row */
+/* This is for phones (narrower than 600 pixels): 1 card in each row. */
 @media (max-width: 600px) {
     .feature-grid {
         grid-template-columns: 1fr;
@@ -681,32 +712,33 @@ a {
 }
 
 
-/* ===== 9. REVIEW ROUTINE SECTION ===== */
+/* ===== 9. REVIEW ROUTINE SECTION (the pink part with the three steps) ===== */
 
-/* The whole section: spacing and a soft red-tinted background.
-   The gradient goes from pale red at the top to a lighter tint at the bottom */
+/* This is for the whole pink section: the space around it and a soft red color
+   that goes from a little darker at the top to lighter at the bottom. */
 .routine {
     padding: 40px 0 80px;
     background: linear-gradient(180deg, var(--red-soft), #fff5f6);
 }
 
-/* Two equal columns: picture on the left, text on the right */
+/* This is for the two equal columns: the picture on the left and the words on the right. */
 .routine-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 56px; /* space between the columns */
-    align-items: center; /* centers both columns vertically */
+    gap: 56px; /* the space between the two columns */
+    align-items: center; /* centers both columns up and down */
 }
 
-/* Reuse the hero's rounded picture frame, but with a red-tinted glow and border.
-   max-width stops the picture from growing too large inside its column */
+/* This is for the book picture in the pink section.
+   It reuses the frame of the hero picture, but with a red border and a red glow.
+   max-width stops the picture from becoming too big. */
 .routine .art-card {
     max-width: 520px;
     border-color: #f3cfd3;
     box-shadow: 0 20px 50px rgba(206, 17, 38, .15);
 }
 
-/* The heading "From scattered notes to a review routine" */
+/* This is for the title "From scattered notes to a review routine". */
 .routine h2 {
     font-family: var(--font-head);
     font-size: clamp(1.9rem, 3.6vw, 2.5rem);
@@ -715,8 +747,9 @@ a {
     margin: 0 0 28px;
 }
 
-/* The list of steps. list-style: none removes the default 1, 2, 3 (we draw our own circles).
-   display: grid with a gap spaces the steps evenly */
+/* This is for the list of three steps.
+   "list-style: none" removes the normal 1, 2, 3 numbers, because we draw our own red circles.
+   "display: grid" with "gap" puts the same space between the steps. */
 .steps {
     list-style: none;
     margin: 0 0 30px;
@@ -725,90 +758,97 @@ a {
     gap: 18px;
 }
 
-    /* One step: the circle and the text side by side, centered vertically */
+    /* This is for one step: the red circle and the words, side by side and centered up and down. */
     .steps li {
         display: flex;
         align-items: center;
         gap: 16px;
     }
 
-/* The red numbered circle. flex: none stops it from being squished */
+/* This is for the red circle with the step number (1, 2, or 3).
+   "50%" makes the box a circle. "flex: none" stops it from being squeezed. */
 .step-num {
     width: 40px;
     height: 40px;
-    border-radius: 50%; /* 50% turns a square into a circle */
+    border-radius: 50%;
     background: var(--red);
     color: #fff;
     font-family: var(--font-head);
     font-weight: 600;
-    display: grid; /* centers the number inside the circle */
+    display: grid; /* with "place-items", this puts the number in the exact middle */
     place-items: center;
     flex: none;
 }
 
-/* The title and description stacked on top of each other */
+/* This is for the words of a step. The title is on top and the small text is under it. */
 .step-text {
     display: flex;
     flex-direction: column;
 }
 
+    /* This is for the step title, like "Create a subject". */
     .step-text strong {
         font-size: 17px;
     }
 
+    /* This is for the small text under the step title. */
     .step-text span {
         font-size: 15px;
         color: var(--muted);
     }
 
-/* Tablets and phones (narrower than 960px): stack the columns, picture on top */
+/* This is for tablets and phones (narrower than 960 pixels): one column, with the picture on top. */
 @media (max-width: 960px) {
     .routine {
         padding: 32px 0 56px;
     }
 
+    /* One single column. */
     .routine-grid {
         grid-template-columns: 1fr;
         gap: 36px;
     }
-    /* a single column */
+
+    /* The picture is centered. */
     .routine .art-card {
         margin: 0 auto;
     }
-    /* centers the picture */
 }
 
-/* ===== 10. CLOSING SECTION (AI card + blue banner) ===== */
+/* ===== 10. AI STUDY TOOLS CARD AND THE BLUE BANNER (the last part of the Home page) ===== */
 
-/* The whole section: tight space above so it sits close to the routine section */
+/* This is for the whole last section: not much space above, so it sits close to the pink section. */
 .closing {
     padding: 48px 0 88px;
 }
 
-/* --- Small button colors used only on the blue banner --- */
+/* --- Button colors used on the blue banner --- */
 
-/* Color: white button with blue text */
+/* This is for the WHITE button with blue words ("Get Started Free" on the blue banner). */
 .btn-white {
     background: #fff;
     color: var(--blue);
 }
 
+    /* This is for when you point at the white button: it becomes light blue. */
     .btn-white:hover {
         background: var(--blue-soft);
     }
 
-/* Color: see-through button with a white border, for the secondary action on blue */
+/* This is for the SEE-THROUGH button with a white border ("Explore Reviewers" on the blue banner). */
 .btn-ghost {
     background: transparent;
     color: #fff;
     border-color: rgba(255, 255, 255, .6);
 }
 
+    /* This is for when you point at the see-through button: its border becomes solid white. */
     .btn-ghost:hover {
         border-color: #fff;
     }
 
-/* A button row that is centered instead of left-aligned, with no extra outer space */
+/* This is for a row of buttons that is in the middle instead of on the left, with no space around it.
+   It is used for the two buttons on the blue banner. */
 .btn-row.center {
     justify-content: center;
     margin: 0;
@@ -816,19 +856,19 @@ a {
 
 /* --- The AI Study Tools card --- */
 
-/* White rounded box with two columns: text on the left, checklist on the right */
+/* This is for the white AI Study Tools box. It has two columns: words on the left, checklist on the right. */
 .ai-card {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 32px;
-    align-items: center; /* centers both columns vertically */
+    align-items: center; /* centers both columns up and down */
     padding: 44px;
     background: #fff;
     border: 2px solid #cfd9f3;
     border-radius: 22px;
 }
 
-    /* The "AI Study Tools" heading */
+    /* This is for the title "AI Study Tools". */
     .ai-card h2 {
         font-family: var(--font-head);
         font-size: 32px;
@@ -837,50 +877,51 @@ a {
         margin: 14px 0;
     }
 
-    /* The paragraph under the heading */
+    /* This is for the paragraph under the title. */
     .ai-card p {
         margin: 0;
         font-size: 16px;
         color: var(--muted);
     }
 
-/* The yellow checklist box: 2 columns of items inside a soft yellow gradient.
-   list-style: none removes the default bullet points */
+/* This is for the yellow box with the four checked items.
+   It has 2 columns, and "list-style: none" removes the normal small dots. */
 .ai-list {
     list-style: none;
     margin: 0;
     padding: 24px;
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 16px 20px; /* 16px between rows, 20px between columns */
+    gap: 16px 20px; /* 16px between rows and 20px between columns */
     border-radius: 22px;
     background: linear-gradient(135deg, var(--yellow-soft), #fffaf0);
     font-size: 15px;
     font-weight: 600;
 }
 
-    /* One checklist item: check icon and text side by side, aligned to the top */
+    /* This is for one checked item: the check mark and the words, side by side, at the top. */
     .ai-list li {
         display: flex;
         align-items: flex-start;
         gap: 10px;
     }
 
-    /* The check icon: darker yellow so it shows on the pale background */
+    /* This is for the check mark picture. It is a darker yellow, so it can be seen on the light yellow box. */
     .ai-list .icon {
         font-size: 18px;
         color: #c99a00;
         margin-top: 3px;
     }
 
-/* --- The blue banner --- */
+/* --- The blue banner ("Handa ka na bang mag-umpisa?") --- */
 
-/* Blue rounded box. "relative" lets the decorative circles be placed against it;
-   overflow: hidden cuts off the parts of the circles that stick out */
+/* This is for the blue banner box.
+   "relative" lets the two decorative circles be placed inside it.
+   "overflow: hidden" cuts off the parts of the circles that go outside the box. */
 .cta {
     position: relative;
     overflow: hidden;
-    margin-top: 56px; /* space between the AI card and the banner */
+    margin-top: 56px; /* the space between the AI Study Tools card and the banner */
     padding: 56px 24px;
     text-align: center;
     color: #fff;
@@ -889,7 +930,7 @@ a {
     box-shadow: 0 20px 40px rgba(0, 56, 168, .25);
 }
 
-    /* Two translucent white circles in the corners, drawn without any extra HTML */
+    /* These two draw the two see-through white circles in the corners of the banner, with no extra HTML. */
     .cta::before,
     .cta::after {
         content: "";
@@ -898,28 +939,29 @@ a {
         background: rgba(255, 255, 255, .1);
     }
 
+    /* The circle at the top left corner. */
     .cta::before {
         width: 240px;
         height: 240px;
         top: -120px;
         left: -120px;
     }
-    /* top-left corner */
+
+    /* The circle at the bottom right corner. */
     .cta::after {
         width: 320px;
         height: 320px;
         bottom: -180px;
         right: -60px;
     }
-    /* bottom-right corner */
 
-    /* Puts the real content in front of the decorative circles */
+    /* This puts the real words and buttons IN FRONT of the decorative circles. */
     .cta > * {
         position: relative;
         z-index: 1;
     }
 
-    /* The banner heading */
+    /* This is for the banner title. */
     .cta h2 {
         font-family: var(--font-head);
         font-size: clamp(1.7rem, 3.6vw, 2.3rem);
@@ -928,14 +970,14 @@ a {
         margin: 0 0 14px;
     }
 
-    /* The banner paragraph, centered, in a soft light blue */
+    /* This is for the banner paragraph: in the middle, in a soft light blue. */
     .cta p {
         max-width: 560px;
         margin: 0 auto 26px;
         color: #dbe5ff;
     }
 
-/* Tablets (narrower than 960px): the AI card becomes one column */
+/* This is for tablets (narrower than 960 pixels): the AI Study Tools card becomes one column. */
 @media (max-width: 960px) {
     .closing {
         padding: 32px 0 64px;
@@ -947,7 +989,7 @@ a {
     }
 }
 
-/* Phones (narrower than 600px): checklist in one column, tighter spacing */
+/* This is for phones (narrower than 600 pixels): the checklist is in one column, and there is less space. */
 @media (max-width: 600px) {
     .ai-card {
         padding: 24px;
@@ -962,14 +1004,15 @@ a {
     }
 }
 
-/* ===== 11. SCROLL REVEAL (fade in and move up, once) =====
-   Elements with the data-reveal attribute start hidden and slightly lower.
-   JavaScript (site.js) adds the class "is-visible" the first time they scroll into view.
-   Everything here is under ".js", so it only applies when JavaScript is running. */
+/* ===== 11. SCROLL ANIMATION (fade in and move up, one time only) =====
+   Parts with the word "data-reveal" in the HTML start hidden and a little lower.
+   JavaScript (site.js) adds the class "is-visible" the FIRST time you scroll to them.
+   Everything here starts with ".js", so it only works when JavaScript is running.
+   If JavaScript fails, nothing stays hidden. */
 
-/* Starting state: invisible, 24px lower than its final place.
-   The transition makes the change to the final state smooth (0.7 seconds).
-   will-change tells the browser to prepare for the animation */
+/* This is for the START of the animation: the part is invisible and 24 pixels lower.
+   "transition" makes the change smooth (0.7 seconds).
+   "will-change" tells the browser to get ready for the animation. */
 .js [data-reveal] {
     opacity: 0;
     transform: translateY(24px);
@@ -977,16 +1020,17 @@ a {
     will-change: opacity, transform;
 }
 
-    /* Final state, added once by JavaScript and never removed.
-   "transform: none" (not translateY(0)) leaves no leftover transform behind,
-   so it cannot interfere with layout, stacking, or the floating animations inside */
+    /* This is for the END of the animation: the part is fully visible and in its normal place.
+       JavaScript adds "is-visible" one time and never takes it away, so it stays visible forever.
+       We use "transform: none" so nothing is left over that could disturb the layout. */
     .js [data-reveal].is-visible {
         opacity: 1;
         transform: none;
         will-change: auto;
     }
 
-    /* Optional stagger: elements with data-delay start a little later than their neighbors */
+    /* These make some parts start a little later than their neighbors (for example, the picture after the text).
+       They are used with data-delay="1" or data-delay="2" in the HTML. */
     .js [data-reveal][data-delay="1"] {
         transition-delay: .12s;
     }
@@ -995,9 +1039,9 @@ a {
         transition-delay: .24s;
     }
 
-/* On desktop, the three cards in each row follow each other slightly:
-   the middle card 0.1s later, the right card 0.2s later.
-   nth-child(3n+2) = 2nd, 5th card; nth-child(3n) = 3rd, 6th card */
+/* This is for computer screens: the cards in a row appear one after another.
+   The middle card starts 0.1 seconds later, and the right card 0.2 seconds later.
+   "3n+2" means the 2nd, 5th card... and "3n" means the 3rd, 6th card... */
 @media (min-width: 961px) {
     .js .feature-card[data-reveal]:nth-child(3n+2) {
         transition-delay: .1s;
@@ -1008,8 +1052,8 @@ a {
     }
 }
 
-/* Accessibility: if the visitor asked their system to reduce motion,
-   show everything immediately with no movement or fading */
+/* This is for people who turned off animations in their computer settings.
+   For them, everything shows right away, with no fading or moving. */
 @media (prefers-reduced-motion: reduce) {
     .js [data-reveal] {
         opacity: 1;
@@ -1018,45 +1062,47 @@ a {
     }
 }
 
-/* ===== 12. FOOTER (shown on every page, because it is in _Layout.cshtml) ===== */
+/* ===== 12. FOOTER (shows on every page, because it is in _Layout.cshtml) ===== */
 
-/* Makes the page at least as tall as the window, with the main content stretching.
-   On short pages (like a login page) this keeps the footer at the bottom of the window
-   instead of floating up in the middle. */
+/* This is for the whole page shape. It makes the page at least as tall as the browser window,
+   and the main part stretches to fill the space.
+   So on a short page (like a login page), the footer stays at the bottom of the window. */
 body {
     display: flex;
     flex-direction: column;
     min-height: 100vh;
 }
 
+/* This is for the main part of the page. It stretches to fill the free space. */
 main {
     flex: 1;
 }
 
-/* The footer box: soft pale-blue gradient background and space around the content */
+/* This is for the whole footer: a soft light blue background and space above the content. */
 .site-footer {
     padding-top: 56px;
     background: linear-gradient(180deg, #f4f6ff, #e6ecff);
 }
 
-/* Top row: brand on the left (takes the free space), link columns on the right */
+/* This is for the top row of the footer: the logo part on the left and the link lists on the right.
+   "auto" means the links part is only as wide as it needs to be. */
 .footer-top {
     display: grid;
-    grid-template-columns: 1fr auto; /* "auto" = the links column is only as wide as its content */
+    grid-template-columns: 1fr auto;
     gap: 48px;
     padding-bottom: 40px;
 }
 
-/* --- Left side: logo, tagline, dots --- */
+/* --- The left side of the footer: logo, short text, dots --- */
 
-/* The logo row: icon square and name side by side */
+/* This is for the footer logo: the blue square and the name, side by side. */
 .footer-logo {
     display: inline-flex;
     align-items: center;
     gap: 12px;
 }
 
-/* The name "Rebyulusyon" in dark navy (no blue part, to match your screenshot) */
+/* This is for the name "Rebyulusyon" in the footer, in dark blue. */
 .footer-logo-name {
     font-family: var(--font-head);
     font-weight: 600;
@@ -1064,7 +1110,7 @@ main {
     color: var(--ink);
 }
 
-/* The tagline paragraph. max-width keeps the lines short, like in your screenshot */
+/* This is for the short text under the footer logo. "max-width" keeps the lines short. */
 .footer-tagline {
     margin: 18px 0 20px;
     max-width: 360px;
@@ -1072,19 +1118,20 @@ main {
     font-size: 16px;
 }
 
-/* Row holding the three dots */
+/* This is for the row of three small dots. */
 .footer-dots {
     display: flex;
     gap: 12px;
 }
 
-    /* Each dot is a small circle. 50% radius makes a square into a circle */
+    /* This is for each dot: a small circle (a square with 50% round corners). */
     .footer-dots span {
         width: 10px;
         height: 10px;
         border-radius: 50%;
     }
 
+/* The colors of the three dots: blue, red, and yellow, like the Philippine flag. */
 .dot-blue {
     background: var(--blue);
 }
@@ -1097,25 +1144,24 @@ main {
     background: var(--yellow);
 }
 
-/* --- Right side: the three link columns --- */
+/* --- The right side of the footer: the three lists of links --- */
 
-/* The three columns side by side with generous space between them */
+/* This is for the three lists (Platform, Company, Account), side by side with a big space between them. */
 .footer-links {
     display: grid;
     grid-template-columns: repeat(3, auto);
     gap: 40px 56px;
 }
 
-    /* Each column stacks its heading and links vertically.
-   The links are <a> tags, which are inline by default, so we use a column flex layout
-   to put one link on each line with even spacing */
+    /* This is for one list. Links are normally in one line, so we use a column layout
+       to put each link on its own line with the same space between them. */
     .footer-links > div {
         display: flex;
         flex-direction: column;
         gap: 14px;
     }
 
-    /* The column heading ("Platform", "Company", "Account") */
+    /* This is for the title of each list ("Platform", "Company", "Account"). */
     .footer-links h3 {
         margin: 0 0 4px;
         font-family: var(--font-head);
@@ -1124,7 +1170,7 @@ main {
         color: var(--ink);
     }
 
-    /* The links: gray, turning flag blue on hover */
+    /* This is for the links in the footer: gray, and they turn blue when you point at them. */
     .footer-links a {
         color: var(--muted);
         font-size: 16px;
@@ -1135,21 +1181,22 @@ main {
             color: var(--blue);
         }
 
-/* --- Bottom row --- */
+/* --- The bottom row of the footer --- */
 
-/* The copyright row: a thin divider line above it */
+/* This is for the last row of the footer (the copyright line), with a thin line above it. */
 .footer-bottom {
     padding: 20px 0;
     border-top: 1px solid #d5def5;
 }
 
+    /* This is for the copyright words. */
     .footer-bottom p {
         margin: 0;
         font-size: 14px;
         color: var(--muted);
     }
 
-/* Tablets (narrower than 960px): brand on top, links below */
+/* This is for tablets (narrower than 960 pixels): the logo part is on top and the links are below it. */
 @media (max-width: 960px) {
     .footer-top {
         grid-template-columns: 1fr;
@@ -1157,7 +1204,7 @@ main {
     }
 }
 
-/* Phones (narrower than 600px): links in 2 columns instead of 3 */
+/* This is for phones (narrower than 600 pixels): the links are in 2 columns, not 3. */
 @media (max-width: 600px) {
     .site-footer {
         padding-top: 40px;
@@ -1169,17 +1216,18 @@ main {
 }
 
 /* ===== 13. ABOUT PAGE =====
-   The About page reuses the homepage styles (.container, .section-head, .feature-card,
-   .icon-chip, .tone-*). Only the pieces below are specific to it. */
+   The About page uses many styles from the Home page (.container, .section-head, .feature-card,
+   .icon-chip, .tone-*). Only the styles below are made just for the About page. */
 
-/* --- Page title --- */
+/* --- The page title --- */
 
-/* Centered "About" heading with space above and a little below */
+/* This is for the part with the big word "About" at the top of the About page. */
 .about-hero {
     padding: 64px 0 16px;
     text-align: center;
 }
 
+    /* This is for the big word "About". */
     .about-hero h1 {
         font-family: var(--font-head);
         font-size: clamp(2.4rem, 5vw, 3.4rem);
@@ -1188,7 +1236,7 @@ main {
         margin: 0;
     }
 
-/* Three short bars in the flag colors under the heading */
+/* This is for the row of three short colored lines under the word "About". */
 .flag-bar {
     display: flex;
     justify-content: center;
@@ -1196,12 +1244,14 @@ main {
     margin-top: 18px;
 }
 
+    /* This is for each short line. */
     .flag-bar span {
         width: 36px;
         height: 5px;
         border-radius: 99px;
     }
 
+/* The colors of the three short lines: blue, red, and yellow. */
 .bar-blue {
     background: var(--blue);
 }
@@ -1214,27 +1264,28 @@ main {
     background: var(--yellow);
 }
 
-/* --- Sections --- */
+/* --- The parts of the About page --- */
 
-/* Vertical space around each About section */
+/* This is for the space above and below each part of the About page. */
 .about-section {
     padding: 32px 0;
 }
 
+/* This is for the last part of the About page. It has more space below, before the footer. */
 .about-section-last {
     padding-bottom: 88px;
 }
-/* a bit more room before the footer */
 
-/* The section headings use the homepage .section-head style; here we tighten the space under them */
+/* This is for the titles on the About page. They use the Home page title style,
+   but with less space under them. */
 .about-section .section-head {
     margin-bottom: 32px;
 }
 
 /* --- The two wide cards ("Rebyu + Rebolusyon" and "Our Mission") --- */
 
-/* White rounded card: icon on the left, text on the right.
-   max-width keeps the lines a comfortable reading length; margin: 0 auto centers it */
+/* This is for a wide white card: the picture on the left and the words on the right.
+   "max-width" keeps the lines short enough to read, and "margin: 0 auto" puts the card in the middle. */
 .about-panel {
     display: flex;
     align-items: center;
@@ -1247,13 +1298,13 @@ main {
     border-radius: 22px;
 }
 
-/* The soft red version used for "Our Mission" */
+/* This is for the "Our Mission" card: it has a soft red background so it stands out. */
 .about-panel-accent {
     background: linear-gradient(135deg, #fff, var(--red-soft));
     border-color: #f3cfd3;
 }
 
-/* The heading and paragraph inside the wide cards */
+/* This is for the title inside a wide card. */
 .about-panel h2 {
     font-family: var(--font-head);
     font-size: 28px;
@@ -1262,14 +1313,15 @@ main {
     margin: 0 0 10px;
 }
 
+/* This is for the paragraph inside a wide card. */
 .about-panel p {
     margin: 0;
     font-size: 17px;
     color: var(--muted);
 }
 
-/* A larger version of the round icon badge (the homepage one is 48px).
-   flex: none stops it from being squished next to the text */
+/* This is for a BIGGER round circle (68 pixels) with a picture inside.
+   The Home page circles are 48 pixels. "flex: none" stops it from being squeezed. */
 .icon-chip-lg {
     width: 68px;
     height: 68px;
@@ -1277,35 +1329,35 @@ main {
     flex: none;
 }
 
-/* --- Card grids (the cards themselves use the homepage .feature-card style) --- */
+/* --- The groups of cards (each card uses the Home page .feature-card style) --- */
 
-/* "Who it's for": 3 columns. max-width matches the container's content width */
+/* This is for the "Who it's for" cards: 3 columns. */
 .about-grid-3 {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 24px;
 }
 
-/* "What we believe": 2 columns, so four cards form a neat 2 x 2 block */
+/* This is for the "What we believe" cards: 2 columns, so the four cards make a 2 by 2 block. */
 .about-grid-2 {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: 24px;
 }
 
-/* --- "Why Rebyulusyon?" tiles --- */
+/* --- The "Why Rebyulusyon?" boxes --- */
 
-/* 4 columns on desktop */
+/* This is for the four small boxes: 4 columns on a computer screen. */
 .stat-grid {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     gap: 24px;
 }
 
-/* One tile: white card with the big value centered above its label */
+/* This is for one small box: a white card with the big thing on top and the words under it. */
 .stat-card {
     display: flex;
-    flex-direction: column; /* stack the value on top of the label */
+    flex-direction: column; /* the big thing is on top and the label is under it */
     align-items: center;
     gap: 8px;
     padding: 32px 16px;
@@ -1315,7 +1367,7 @@ main {
     border-radius: 22px;
 }
 
-/* The big value ("100%") in the flag blue */
+/* This is for the big thing in the box (like "100%"), in blue. */
 .stat-value {
     font-family: var(--font-head);
     font-size: 44px;
@@ -1324,30 +1376,31 @@ main {
     color: var(--blue);
 }
 
-/* Emoji tiles (♾, flag, phone): use the system emoji font so they draw correctly */
+/* This is for the picture symbols (the infinity sign, the flag, the phone).
+   It uses the computer's symbol font so they show correctly. */
 .stat-emoji {
     font-family: "Segoe UI Emoji", "Apple Color Emoji", "Noto Color Emoji", sans-serif;
     font-size: 40px;
 }
 
-/* The label under the value */
+/* This is for the words under the big thing, like "Free to use". */
 .stat-label {
     font-size: 16px;
     font-weight: 700;
     color: var(--ink);
 }
 
-/* --- Responsive --- */
+/* --- The About page on smaller screens --- */
 
-/* Tablets (narrower than 960px): stats become 2 x 2 */
+/* This is for tablets (narrower than 960 pixels): the four small boxes become 2 by 2. */
 @media (max-width: 960px) {
     .stat-grid {
         grid-template-columns: repeat(2, 1fr);
     }
 }
 
-/* Small tablets and phones (narrower than 760px): everything becomes one column,
-   and the wide cards stack the icon above the text */
+/* This is for small tablets and phones (narrower than 760 pixels):
+   all cards are in one column, and in the wide cards the picture is on top of the words. */
 @media (max-width: 760px) {
     .about-hero {
         padding-top: 44px;

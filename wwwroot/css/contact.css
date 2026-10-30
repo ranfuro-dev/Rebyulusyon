@@ -1,0 +1,91 @@
+﻿/* ==========================================================
+   This file is contact.css.
+   It is the style file for the Contact page only.
+   It is loaded AFTER auth.css, because the form boxes use the styles from auth.css
+   (.form-field, .form-input, .field-error...). Here we only add what is new.
+   The title "Contact" and the three color bars use the About page styles from site.css.
+   ========================================================== */
+
+
+/* This is for the part of the page under the title. It has the two columns. */
+.contact-section {
+    padding: 24px 0 88px;
+}
+
+/* This is for the two columns: the small info cards on the left (narrower) and the form on the right (wider). */
+.contact-grid {
+    display: grid;
+    grid-template-columns: 1fr 1.4fr;
+    gap: 32px;
+    align-items: start; /* each column starts at the top, so a short column does not stretch */
+}
+
+/* This is for the left column. It puts the info cards one under the other. */
+.contact-info {
+    display: grid;
+    gap: 20px;
+}
+
+/* This is for the words inside an info card: the link in the card is blue and bold. */
+.contact-item a {
+    color: var(--blue);
+    font-weight: 700;
+    word-break: break-word; /* a long email address can go to the next line instead of leaving the card */
+}
+
+    /* When you point at the link, a line appears under it. */
+    .contact-item a:hover {
+        text-decoration: underline;
+    }
+
+/* This is for the white form card on the right.
+   The Get Started and Log In pages use a narrow card in the middle (460 pixels).
+   Here we want the card to fill its column, so we remove the width limit and the side space. */
+.contact-card {
+    max-width: none;
+    margin: 0;
+}
+
+/* This is for the title of the form ("Send us a message"). */
+.contact-form-title {
+    margin: 0 0 6px;
+    font-family: var(--font-head);
+    font-size: 26px;
+    font-weight: 700;
+    line-height: 1.2;
+}
+
+/* This is for the short line under the form title. */
+.contact-form-sub {
+    margin: 0 0 22px;
+    color: var(--muted);
+}
+
+/* This is for the drop-down list (the Subject box).
+   "appearance: none" removes the browser's own arrow, and we draw our own small arrow on the right.
+   The arrow is a tiny picture written inside the code, so we do not need a picture file. */
+select.form-input {
+    -webkit-appearance: none;
+    appearance: none;
+    padding-right: 44px; /* leaves room for the arrow */
+    cursor: pointer;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%234b5a78' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 16px center;
+    background-size: 16px;
+}
+
+/* This is for the message box (a big box for many lines of text).
+   It starts tall enough for a few lines, and the person can only make it taller or shorter (not wider). */
+textarea.form-input {
+    min-height: 140px;
+    resize: vertical;
+    line-height: 1.5;
+}
+
+/* This is for tablets and phones (narrower than 860 pixels): one column, with the info cards on top of the form. */
+@media (max-width: 860px) {
+    .contact-grid {
+        grid-template-columns: 1fr;
+    }
+}

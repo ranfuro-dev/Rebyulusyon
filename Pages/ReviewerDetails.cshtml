@@ -1,0 +1,140 @@
+﻿@* ============================================================
+   This file is the REVIEWER DETAILS PAGE (for example "/ReviewerDetails/5").
+   It opens when someone clicks "Open Reviewer" on a card on the Explore Reviewers page.
+   It has these parts, from top to bottom:
+   1) The top part: the back link, the category tag, the title, and the creator
+   2) Two cards: "About this reviewer" (left) and "Preview" (right)
+   The reviewer comes from sample data. It does NOT come from a database yet.
+   The top bar and the footer are NOT here. They come from _Layout.cshtml.
+   ============================================================ *@
+
+@* "@page" gives this file its own web address.
+   "{id:int}" means the address must end with a whole number, for example /ReviewerDetails/5.
+   That number is the "id" that the C# file uses to find the reviewer.
+   An address like /ReviewerDetails/abc does not open this page. *@
+@page "{id:int}"
+
+@* This is for connecting this page to its C# file (ReviewerDetails.cshtml.cs). *@
+@model ReviewerDetailsModel
+
+@{
+    // This is for the name on the browser tab. It shows the reviewer's title, for example
+    // "Algebra Basics: Factoring Practice - Rebyulusyon".
+    ViewData["Title"] = Model.Reviewer.Title;
+
+    // This is how many flashcards are NOT shown in the preview.
+    // Example: a reviewer with 24 flashcards and 3 in the preview has 21 more.
+    var more = Model.Reviewer.CardCount - Model.Preview.Count;
+}
+
+@* This loads two style files into the "Styles" spot in the head of _Layout.cshtml:
+   reviewers.css (the colored tag and the list of facts) and reviewer-details.css (the layout of this page). *@
+@section Styles {
+    <link rel="stylesheet" href="~/css/reviewers.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/reviewer-details.css" asp-append-version="true" />
+}
+
+@* ===== PART 1: THE TOP PART ===== *@
+<section class="details-hero">
+    @* "data-reveal" makes this part fade in when the page opens *@
+    <div class="container" data-reveal>
+
+        @* This is for the "Back to Explore Reviewers" link.
+           The arrow picture points right, and the CSS turns it around to point left *@
+        <a class="back-link" href="/Reviewers">
+            <span class="back-arrow"><partial name="_Icon" model='"arrow"' /></span>
+            Back to Explore Reviewers
+        </a>
+
+        @* This is for the small colored tag with the category name.
+           The color (blue, red, or yellow) is chosen by the ToneOf method in the C# file *@
+        <span class="reviewer-tag tone-@(Model.ToneOf(Model.Reviewer.Category))">@Model.Reviewer.Category</span>
+
+        @* This is for the big title. Razor makes the text safe, so special letters cannot break the page *@
+        <h1>@Model.Reviewer.Title</h1>
+
+        @* This is for the creator. @("@" + ...) puts a @ sign before the username *@
+        <p class="details-by">
+            <partial name="_Icon" model='"user"' />
+            <span>Created by <strong>@("@" + Model.Reviewer.Creator)</strong></span>
+        </p>
+    </div>
+</section>
+
+@* ===== PART 2: THE TWO CARDS ===== *@
+<section class="details-section">
+    <div class="container details-grid">
+
+        @* ----- LEFT CARD: ABOUT THIS REVIEWER ----- *@
+        <article class="details-card" data-reveal>
+            <h2>About this reviewer</h2>
+
+            @* This is for the full description *@
+            <p class="details-text">@Model.Reviewer.Description</p>
+
+            @* This is for the list of facts. It uses the same style as the cards on the Explore Reviewers page *@
+            <ul class="reviewer-meta">
+                <li><partial name="_Icon" model='"layers"' /> <span>@Model.Reviewer.CardCount flashcards</span></li>
+                <li><partial name="_Icon" model='"user"' /> <span>Created by <strong>@("@" + Model.Reviewer.Creator)</strong></span></li>
+            </ul>
+
+            @* This is for the big blue "Start Studying" button.
+               The Flashcard Study page is NOT built yet, so this link shows "not found" for now.
+               It goes to /FlashcardStudy/ and the reviewer number *@
+            <div class="details-actions">
+                <a class="btn btn-primary btn-lg" href="/FlashcardStudy/@(Model.Reviewer.Id)">
+                    <partial name="_Icon" model='"flashcard"' /> Start Studying
+                </a>
+            </div>
+        </article>
+
+        @* ----- RIGHT CARD: PREVIEW ----- *@
+        <aside class="details-card" data-reveal data-delay="1">
+            <h2>Preview</h2>
+
+            @if (Model.Preview.Count > 0)
+            {
+                <p class="details-sub">Here are the first questions. The answers stay hidden until you study.</p>
+
+                @* "ol" is a numbered list. Each item is one question *@
+                <ol class="preview-list">
+
+                    @* "foreach" means "do this again for every item in the list".
+                       "card" means the flashcard it is working on now.
+                       We only show the QUESTION. The answer is NOT written on this page,
+                       so nobody can read it by viewing the page source *@
+                    @{
+                        var number = 0;
+                    }
+                    @foreach (var card in Model.Preview)
+                    {
+                        number++;
+                        <li>
+                            @* This is for the round number *@
+                            <span class="preview-num">@number</span>
+                            <div class="preview-body">
+                                <strong>@card.Question</strong>
+                                @* This gray bar stands for the hidden answer. It is only for the look.
+                                   The words "Answer hidden" are only for screen readers *@
+                                <span class="answer-bar" aria-hidden="true"></span>
+                                <span class="sr-only">Answer hidden</span>
+                            </div>
+                        </li>
+                    }
+                </ol>
+
+                @* This shows how many more flashcards are inside, but only if there are more *@
+                @if (more > 0)
+                {
+                    <p class="preview-more">And @more more @(more == 1 ? "flashcard" : "flashcards") inside.</p>
+                }
+            }
+            else
+            {
+                @* This is shown if a reviewer has no preview *@
+                <p class="details-sub">No preview is available for this reviewer yet.</p>
+            }
+        </aside>
+
+    </div>
+</section>

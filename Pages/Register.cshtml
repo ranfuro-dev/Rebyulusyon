@@ -1,0 +1,124 @@
+﻿@* ============================================================
+   This file is the GET STARTED (REGISTER) PAGE (the page you see at "/Register").
+   It opens when someone clicks "Get Started" in the top bar, on the Home page, or in the footer.
+   For now it is a DESIGN PREVIEW: the form does not create a real account.
+   The top bar and the footer are NOT here. They come from _Layout.cshtml.
+   ============================================================ *@
+@page
+
+@* This is for connecting this page to its C# file (Register.cshtml.cs). *@
+@model RegisterModel
+
+@{
+    // This is for the name on the browser tab. It shows "Get Started - Rebyulusyon".
+    ViewData["Title"] = "Get Started";
+}
+
+@* This loads auth.css (the styles of this page) into the "Styles" spot in the head of _Layout.cshtml. *@
+@section Styles {
+    <link rel="stylesheet" href="~/css/auth.css" asp-append-version="true" />
+}
+
+@* This is for the whole page: the soft colored background and the space around the card. *@
+<section class="auth-page">
+    <div class="container">
+
+        @* This is for the white card that holds the form.
+           "data-reveal" makes it fade in when the page opens *@
+        <div class="auth-card" data-reveal>
+
+            @* This is for the round blue circle with the "person with a plus" picture at the top of the card *@
+            <span class="icon-chip icon-chip-lg tone-blue auth-icon"><partial name="_Icon" model='"userplus"' /></span>
+            <h1>Create your account</h1>
+            <p class="auth-sub">Start building your reviewers. It is free.</p>
+
+            @* This is for the yellow notice. It only shows AFTER the form was sent (Submitted is true).
+               It says that this page is only a design preview. "role=status" tells screen readers to read it *@
+            @if (Model.Submitted)
+            {
+                <div class="form-alert form-alert-info" role="status">
+                    This is a design preview. No account was created yet.
+                </div>
+            }
+
+            @* This is the form. "method=post" means it sends the information to the C# file (OnPost).
+               ASP.NET adds a hidden security code to the form by itself, to block fake forms.
+               "auth-form" is the name that auth.js looks for to check the form *@
+            <form method="post" class="auth-form">
+
+                @* ----- BOX 1: USERNAME ----- *@
+                <div class="form-field">
+                    <label for="Username">Username</label>
+                    @* data-rule="username" tells auth.js which check to use for this box.
+                       The other words (required, minlength, maxlength) are the browser's own checks. *@
+                    <input id="Username" name="Username" type="text" class="form-input"
+                           autocomplete="username" required minlength="3" maxlength="20"
+                           data-rule="username" aria-describedby="Username-error" />
+                    @* This empty line is where auth.js writes the red message for this box *@
+                    <span class="field-error" id="Username-error" aria-live="polite"></span>
+                    <span class="field-hint">This is your display name on Rebyulusyon.</span>
+                </div>
+
+                @* ----- BOX 2: EMAIL ADDRESS ----- *@
+                <div class="form-field">
+                    <label for="Email">Email Address</label>
+                    <input id="Email" name="Email" type="email" class="form-input"
+                           autocomplete="email" required
+                           data-rule="email" aria-describedby="Email-error" />
+                    <span class="field-error" id="Email-error" aria-live="polite"></span>
+                </div>
+
+                @* ----- BOX 3: PASSWORD (with the show/hide eye button) ----- *@
+                <div class="form-field">
+                    <label for="Password">Password</label>
+                    <div class="password-field">
+                        <input id="Password" name="Password" type="password" class="form-input"
+                               autocomplete="new-password" required minlength="8"
+                               data-rule="newpassword" aria-describedby="Password-error" />
+                        @* This is the eye button. data-target tells auth.js which box it controls.
+                           type="button" means it does NOT send the form when clicked *@
+                        <button type="button" class="toggle-password" data-target="Password"
+                                aria-label="Show password" aria-pressed="false">
+                            <span class="eye-show"><partial name="_Icon" model='"eye"' /></span>
+                            <span class="eye-hide"><partial name="_Icon" model='"eyeoff"' /></span>
+                        </button>
+                    </div>
+                    <span class="field-error" id="Password-error" aria-live="polite"></span>
+                    <span class="field-hint">At least 8 characters, with an uppercase letter, a lowercase letter, and a number.</span>
+                </div>
+
+                @* ----- BOX 4: CONFIRM PASSWORD ----- *@
+                <div class="form-field">
+                    <label for="ConfirmPassword">Confirm Password</label>
+                    <div class="password-field">
+                        @* data-match="Password" tells auth.js to compare this box with the Password box *@
+                        <input id="ConfirmPassword" name="ConfirmPassword" type="password" class="form-input"
+                               autocomplete="new-password" required
+                               data-rule="confirm" data-match="Password" aria-describedby="ConfirmPassword-error" />
+                        <button type="button" class="toggle-password" data-target="ConfirmPassword"
+                                aria-label="Show password" aria-pressed="false">
+                            <span class="eye-show"><partial name="_Icon" model='"eye"' /></span>
+                            <span class="eye-hide"><partial name="_Icon" model='"eyeoff"' /></span>
+                        </button>
+                    </div>
+                    <span class="field-error" id="ConfirmPassword-error" aria-live="polite"></span>
+                </div>
+
+                @* This is the blue button that sends the form.
+                   btn-block makes it as wide as the card.
+                   data-loading-text is the words shown while the form is being sent *@
+                <button type="submit" class="btn btn-primary btn-lg btn-block" data-loading-text="Creating account…">
+                    <span class="btn-label">Create account</span>
+                </button>
+            </form>
+
+            @* This is for the line under the form. The link opens the Login page (not built yet) *@
+            <p class="auth-switch">Already have an account? <a href="/Login">Log in</a></p>
+        </div>
+    </div>
+</section>
+
+@* This loads auth.js (the checks and the eye button) into the "Scripts" spot at the bottom of _Layout.cshtml. *@
+@section Scripts {
+    <script src="~/js/auth.js" asp-append-version="true"></script>
+}

@@ -1,0 +1,112 @@
+﻿@* ============================================================
+   This file is the LOG IN PAGE (the page you see at "/Login").
+   It opens when someone clicks "Log In" in the top bar, or in the footer,
+   or "Log in" at the bottom of the Get Started page.
+   For now it is a DESIGN PREVIEW: the form does not log anyone in.
+   The top bar and the footer are NOT here. They come from _Layout.cshtml.
+   ============================================================ *@
+@page
+
+@* This is for connecting this page to its C# file (Login.cshtml.cs). *@
+@model LoginModel
+
+@{
+    // This is for the name on the browser tab. It shows "Log In - Rebyulusyon".
+    ViewData["Title"] = "Log In";
+}
+
+@* This loads auth.css (the styles of this page) into the "Styles" spot in the head of _Layout.cshtml.
+   It is the same style file the Get Started page uses. *@
+@section Styles {
+    <link rel="stylesheet" href="~/css/auth.css" asp-append-version="true" />
+}
+
+@* This is for the whole page: the soft colored background and the space around the card. *@
+<section class="auth-page">
+    <div class="container">
+
+        @* This is for the white card that holds the form.
+           "data-reveal" makes it fade in when the page opens *@
+        <div class="auth-card" data-reveal>
+
+            @* This is for the round blue circle with the "arrow going into a door" picture at the top of the card *@
+            <span class="icon-chip icon-chip-lg tone-blue auth-icon"><partial name="_Icon" model='"login"' /></span>
+            <h1>Welcome back</h1>
+            <p class="auth-sub">Log in to continue reviewing.</p>
+
+            @* This is for the yellow notice. It only shows AFTER the form was sent (Submitted is true).
+               It says that this page is only a design preview. "role=status" tells screen readers to read it *@
+            @if (Model.Submitted)
+            {
+                <div class="form-alert form-alert-info" role="status">
+                    This is a design preview. You were not logged in yet.
+                </div>
+            }
+
+            @* This is the form. "method=post" means it sends the information to the C# file (OnPost).
+               ASP.NET adds a hidden security code to the form by itself, to block fake forms.
+               "auth-form" is the name that auth.js looks for to check the form *@
+            <form method="post" class="auth-form">
+
+                @* ----- BOX 1: USERNAME OR EMAIL ADDRESS -----
+                   One box that will accept either one, once real login is added.
+                   data-rule="required" tells auth.js that this box must not be empty.
+                   data-required-message is the red message shown when it is empty. *@
+                <div class="form-field">
+                    <label for="UserNameOrEmail">Username or Email Address</label>
+                    <input id="UserNameOrEmail" name="UserNameOrEmail" type="text" class="form-input"
+                           autocomplete="username" required
+                           data-rule="required"
+                           data-required-message="Please enter your username or email address."
+                           aria-describedby="UserNameOrEmail-error" />
+                    @* This empty line is where auth.js writes the red message for this box *@
+                    <span class="field-error" id="UserNameOrEmail-error" aria-live="polite"></span>
+                </div>
+
+                @* ----- BOX 2: PASSWORD (with the show/hide eye button) ----- *@
+                <div class="form-field">
+                    <label for="Password">Password</label>
+                    <div class="password-field">
+                        @* autocomplete="current-password" lets the browser offer a saved password *@
+                        <input id="Password" name="Password" type="password" class="form-input"
+                               autocomplete="current-password" required
+                               data-rule="required"
+                               data-required-message="Please enter your password."
+                               aria-describedby="Password-error" />
+                        @* This is the eye button. data-target tells auth.js which box it controls.
+                           type="button" means it does NOT send the form when clicked *@
+                        <button type="button" class="toggle-password" data-target="Password"
+                                aria-label="Show password" aria-pressed="false">
+                            <span class="eye-show"><partial name="_Icon" model='"eye"' /></span>
+                            <span class="eye-hide"><partial name="_Icon" model='"eyeoff"' /></span>
+                        </button>
+                    </div>
+                    <span class="field-error" id="Password-error" aria-live="polite"></span>
+                </div>
+
+                @* ----- REMEMBER ME -----
+                   A check box. For now it does nothing. Later it will keep the person logged in longer. *@
+                <label class="check-row">
+                    <input type="checkbox" name="RememberMe" value="true" />
+                    <span>Remember me</span>
+                </label>
+
+                @* This is the blue button that sends the form.
+                   btn-block makes it as wide as the card.
+                   data-loading-text is the words shown while the form is being sent *@
+                <button type="submit" class="btn btn-primary btn-lg btn-block" data-loading-text="Logging in…">
+                    <span class="btn-label">Log in</span>
+                </button>
+            </form>
+
+            @* This is for the line under the form. The link opens the Get Started (Register) page *@
+            <p class="auth-switch">New to Rebyulusyon? <a href="/Register">Create an account</a></p>
+        </div>
+    </div>
+</section>
+
+@* This loads auth.js (the checks and the eye button) into the "Scripts" spot at the bottom of _Layout.cshtml.
+   It is the same file the Get Started page uses. *@
+@section Scripts {
+    <script src="~/js/auth.js" asp-append-version="true"></script>
+}

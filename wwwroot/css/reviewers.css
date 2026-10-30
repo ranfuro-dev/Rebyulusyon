@@ -1,0 +1,346 @@
+﻿/* ==========================================================
+   This file is reviewers.css.
+   It is the style file for the Explore Reviewers page only.
+   It is loaded through the "Styles" spot in _Layout.cshtml.
+   It uses the colors and fonts from site.css (like var(--blue)).
+   The title "Explore Reviewers" and the three color bars use the "about-hero" styles from site.css.
+   ========================================================== */
+
+
+/* This hides something on the screen but keeps it for screen readers.
+   It is used for the label of the search box (we show a magnifying glass instead of the word). */
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+/* This is for the short sentence under the page title. */
+.page-sub {
+    max-width: 560px;
+    margin: 12px auto 0;
+    font-size: 18px;
+    color: var(--muted);
+}
+
+/* This is for the part of the page under the title: the search bar, the chips, and the cards. */
+.reviewers-section {
+    padding: 24px 0 88px;
+}
+
+
+/* ===== THE SEARCH BAR AND THE CATEGORY CHIPS ===== */
+
+/* This is for the box that holds the search bar and the chips, one under the other. */
+.reviewers-toolbar {
+    display: grid;
+    gap: 18px;
+    margin-bottom: 28px;
+}
+
+/* This is for the search form: the search box and the button side by side, in the middle of the page. */
+.search-form {
+    display: flex;
+    gap: 12px;
+    width: 100%;
+    max-width: 680px;
+    margin: 0 auto;
+}
+
+/* This is for the box that holds the typing area and the magnifying glass.
+   "relative" lets the magnifying glass sit inside the typing area. "flex: 1" makes it take the free space. */
+.search-box {
+    position: relative;
+    flex: 1;
+    min-width: 0; /* lets the box get smaller on a phone */
+}
+
+/* This is for the magnifying glass picture on the left side inside the search box. */
+.search-icon {
+    position: absolute;
+    top: 50%;
+    left: 18px;
+    transform: translateY(-50%);
+    font-size: 20px;
+    line-height: 0;
+    color: var(--muted);
+    pointer-events: none; /* a click goes through the picture to the box */
+}
+
+/* This is for the typing area of the search bar. The left space leaves room for the magnifying glass. */
+.search-input {
+    width: 100%;
+    height: 54px;
+    padding: 0 18px 0 50px;
+    font: inherit; /* uses the same font as the rest of the website */
+    color: var(--ink);
+    background: #fff;
+    border: 2px solid #d5def5;
+    border-radius: 999px;
+    -webkit-appearance: none;
+    appearance: none;
+    transition: border-color .15s ease, box-shadow .15s ease;
+}
+
+    /* This is for the gray words shown when the search bar is empty. */
+    .search-input::placeholder {
+        color: #66728d;
+    }
+
+    /* This is for when you point at the search bar: the border gets a little darker. */
+    .search-input:hover {
+        border-color: #b9c9f2;
+    }
+
+    /* This is for when you click inside the search bar: a blue border and a soft blue ring. */
+    .search-input:focus {
+        outline: none;
+        border-color: var(--blue);
+        box-shadow: 0 0 0 4px rgba(0, 56, 168, .15);
+    }
+
+/* This is for the blue "Search" button. It has the same height as the search bar. */
+.search-form .btn {
+    flex: none;
+    height: 54px;
+    padding: 0 24px;
+}
+
+/* This is for the row of category chips ("All Reviewers", "Mathematics", ...).
+   "flex-wrap" lets a chip go to the next line when there is not enough space. */
+.chips {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+}
+
+/* This is for one chip: a white pill with a light blue border. */
+.chip {
+    padding: 9px 16px;
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--muted);
+    background: #fff;
+    border: 2px solid #d5def5;
+    border-radius: 999px;
+    transition: color .15s ease, border-color .15s ease, background .15s ease;
+}
+
+    /* This is for when you point at a chip: the words and the border turn blue. */
+    .chip:hover {
+        color: var(--blue);
+        border-color: var(--blue);
+    }
+
+    /* This is for the chip that is chosen now: a solid blue pill with white words. */
+    .chip.is-active {
+        color: #fff;
+        background: var(--blue);
+        border-color: var(--blue);
+    }
+
+    /* This is for when you reach a chip with the Tab key: a blue ring so you can see where you are. */
+    .chip:focus-visible {
+        outline: 3px solid var(--blue);
+        outline-offset: 2px;
+    }
+
+/* This is for the line "Showing 12 of 12 public reviewers". */
+.results-info {
+    margin: 0 0 24px;
+    text-align: center;
+    color: var(--muted);
+}
+
+/* This is for the "Clear filters" link at the end of that line. */
+.clear-link {
+    margin-left: 8px;
+    font-weight: 700;
+    color: var(--blue);
+}
+
+    /* When you point at the link, a line appears under it. */
+    .clear-link:hover {
+        text-decoration: underline;
+    }
+
+
+/* ===== THE REVIEWER CARDS ===== */
+
+/* This is for the box that holds all the cards: 3 equal columns on a computer screen. */
+.reviewer-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+}
+
+/* This is for one reviewer card: a white box with round corners and a light border.
+   "flex-direction: column" puts the parts one under the other, so the button can stay at the bottom. */
+.reviewer-card {
+    display: flex;
+    flex-direction: column;
+    padding: 26px;
+    background: #fff;
+    border: 1px solid #d5def5;
+    border-radius: 22px;
+    transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease;
+}
+
+    /* This is for when you point at a card: it moves up a little and gets a soft shadow. */
+    .reviewer-card:hover {
+        transform: translateY(-3px);
+        border-color: #b9c9f2;
+        box-shadow: 0 16px 36px rgba(0, 56, 168, .12);
+    }
+
+    /* This is for the card title (the name of the reviewer). */
+    .reviewer-card h3 {
+        margin: 14px 0 8px;
+        font-family: var(--font-head);
+        font-size: 20px;
+        font-weight: 600;
+        line-height: 1.25;
+    }
+
+/* This is for the small colored tag with the category name ("Mathematics", "Science", ...).
+   Its colors come from the .tone-blue, .tone-red, and .tone-yellow styles in site.css. */
+.reviewer-tag {
+    align-self: flex-start; /* the tag is only as wide as its words */
+    padding: 5px 12px;
+    font-size: 13px;
+    font-weight: 800;
+    border-radius: 999px;
+}
+
+/* This is for the short description. It shows at most 3 lines, and a long text is cut with "...". */
+.reviewer-desc {
+    margin: 0 0 18px;
+    font-size: 15.5px;
+    color: var(--muted);
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+/* This is for the bottom part of the card (the facts and the button).
+   "margin-top: auto" pushes it to the bottom, so all the buttons in a row line up. */
+.reviewer-foot {
+    display: grid;
+    gap: 16px;
+    margin-top: auto;
+}
+
+/* This is for the list of facts: the number of flashcards and the creator.
+   "list-style: none" removes the normal small dots. */
+.reviewer-meta {
+    display: grid;
+    gap: 8px;
+    margin: 0;
+    padding: 14px 0 0;
+    list-style: none;
+    font-size: 14.5px;
+    color: var(--muted);
+    border-top: 1px solid var(--line);
+}
+
+    /* This is for one fact: the small picture and the words, side by side. */
+    .reviewer-meta li {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    /* This is for the small pictures in the facts: blue. */
+    .reviewer-meta .icon {
+        font-size: 18px;
+        color: var(--blue);
+    }
+
+    /* This is for the creator name ("@ranfuro"): darker and bold. */
+    .reviewer-meta strong {
+        color: var(--ink);
+    }
+
+/* This is for the "Open Reviewer" button: as wide as the card. */
+.reviewer-card .btn {
+    width: 100%;
+}
+
+
+/* ===== WHEN NOTHING IS FOUND ===== */
+
+/* This is for the box shown when no reviewer matches the search or the category. */
+.empty-state {
+    max-width: 460px;
+    margin: 20px auto 0;
+    padding: 44px 28px;
+    text-align: center;
+    background: #fff;
+    border: 1px solid #d5def5;
+    border-radius: 22px;
+}
+
+    /* This is for the round blue circle with the magnifying glass. "margin: 0 auto" puts it in the middle. */
+    .empty-state .icon-chip {
+        margin: 0 auto 16px;
+    }
+
+    /* This is for the title "No reviewers found". */
+    .empty-state h2 {
+        margin: 0 0 8px;
+        font-family: var(--font-head);
+        font-size: 26px;
+        font-weight: 700;
+        line-height: 1.2;
+    }
+
+    /* This is for the short help text and the space before the button. */
+    .empty-state p {
+        margin: 0 0 22px;
+        color: var(--muted);
+    }
+
+/* This is for people who turned off animations in their computer settings: cards do not move. */
+@media (prefers-reduced-motion: reduce) {
+    .reviewer-card:hover {
+        transform: none;
+    }
+}
+
+
+/* ===== SMALLER SCREENS ===== */
+
+/* This is for tablets (narrower than 960 pixels): 2 cards in each row. */
+@media (max-width: 960px) {
+    .reviewer-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+/* This is for phones (narrower than 600 pixels): 1 card in each row, and less space around the page. */
+@media (max-width: 600px) {
+    .reviewers-section {
+        padding-bottom: 64px;
+    }
+
+    .reviewer-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .reviewer-card {
+        padding: 22px;
+    }
+
+    .search-form .btn {
+        padding: 0 18px;
+    }
+}

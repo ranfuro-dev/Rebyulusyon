@@ -1,0 +1,149 @@
+﻿@* ============================================================
+   This file is the CONTACT PAGE (the page you see at "/Contact").
+   It opens when someone clicks "Contact" in the footer.
+   It has these parts, from top to bottom:
+   1) The title "Contact"
+   2) Two columns: the info card on the left and the message form on the right
+   For now the form is a DESIGN PREVIEW: it does not send anything.
+   The top bar and the footer are NOT here. They come from _Layout.cshtml.
+   ============================================================ *@
+@page
+
+@* This is for connecting this page to its C# file (Contact.cshtml.cs). *@
+@model ContactModel
+
+@{
+    // This is for the name on the browser tab. It shows "Contact - Rebyulusyon".
+    ViewData["Title"] = "Contact";
+
+    // This is the list of choices in the Subject drop-down list.
+    // To change a choice, change the words here. To add one, add a new line.
+    var subjects = new[]
+    {
+        "General question",
+        "Feedback",
+        "Report a problem",
+        "Partnership"
+    };
+}
+
+@* This loads two style files into the "Styles" spot in the head of _Layout.cshtml:
+   auth.css (the form boxes and buttons) and contact.css (the layout of this page). *@
+@section Styles {
+    <link rel="stylesheet" href="~/css/auth.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/contact.css" asp-append-version="true" />
+}
+
+@* ===== PART 1: THE TITLE ===== *@
+@* This uses the same title style as the About page ("about-hero") *@
+<section class="about-hero">
+    <div class="container" data-reveal>
+        <h1>Contact</h1>
+
+        @* The three short colored lines under the title (blue, red, yellow, like the Philippine flag).
+           They are only for decoration, so "aria-hidden" tells screen readers to skip them *@
+        <div class="flag-bar" aria-hidden="true">
+            <span class="bar-blue"></span><span class="bar-red"></span><span class="bar-yellow"></span>
+        </div>
+    </div>
+</section>
+
+@* ===== PART 2: THE TWO COLUMNS ===== *@
+<section class="contact-section">
+    <div class="container contact-grid">
+
+        @* ----- LEFT COLUMN: the info card ----- *@
+        <div class="contact-info" data-reveal>
+
+            @* CHANGED: The "Email" card was removed, so no email address is shown on this page.
+
+               This is for the "Response time" card. It reuses the card style from the Home page ("feature-card").
+               TEMPORARY: change the words to what is true for you *@
+            <article class="feature-card contact-item">
+                <span class="icon-chip tone-yellow"><partial name="_Icon" model='"clock"' /></span>
+                <h3>Response time</h3>
+                <p>We reply to messages within a few days.</p>
+            </article>
+        </div>
+
+        @* ----- RIGHT COLUMN: the message form ----- *@
+        @* "auth-card" is the white card style from auth.css, and "contact-card" makes it fill its column *@
+        <div class="auth-card contact-card" data-reveal>
+            <h2 class="contact-form-title">Send us a message</h2>
+            <p class="contact-form-sub">Have a question or an idea? Write to us below.</p>
+
+            @* This is for the yellow notice. It only shows AFTER the form was sent (Submitted is true).
+               It says that this page is only a design preview. "role=status" tells screen readers to read it *@
+            @if (Model.Submitted)
+            {
+                <div class="form-alert form-alert-info" role="status">
+                    This is a design preview. Your message was not sent.
+                </div>
+            }
+
+            @* This is the form. "method=post" means it sends the information to the C# file (OnPost).
+               ASP.NET adds a hidden security code to the form by itself, to block fake forms.
+               "auth-form" is the name that auth.js looks for to check the form *@
+            <form method="post" class="auth-form">
+
+                @* ----- BOX 1: USERNAME -----
+                   data-rule="required" tells auth.js that this box must not be empty.
+                   data-required-message is the red message shown when it is empty. *@
+                <div class="form-field">
+                    <label for="Username">Username</label>
+                    <input id="Username" name="Username" type="text" class="form-input"
+                           autocomplete="username" required maxlength="20"
+                           data-rule="required" data-required-message="Please enter your username."
+                           aria-describedby="Username-error" />
+                    @* This empty line is where auth.js writes the red message for this box *@
+                    <span class="field-error" id="Username-error" aria-live="polite"></span>
+                </div>
+
+                @* ----- BOX 2: SUBJECT (a drop-down list) -----
+                   The first choice has no value, so it means "nothing chosen yet".
+                   The other choices come from the "subjects" list at the top of this file *@
+                <div class="form-field">
+                    <label for="Subject">Subject</label>
+                    <select id="Subject" name="Subject" class="form-input" required
+                            data-rule="required" data-required-message="Please choose a subject."
+                            aria-describedby="Subject-error">
+                        <option value="">Choose a subject</option>
+                        @* "foreach" means "do this again for every item in the list".
+                           Here it makes one choice for each subject *@
+                        @foreach (var subject in subjects)
+                        {
+                            <option value="@subject">@subject</option>
+                        }
+                    </select>
+                    <span class="field-error" id="Subject-error" aria-live="polite"></span>
+                </div>
+
+                @* ----- BOX 3: MESSAGE (a big box for many lines) -----
+                   data-rule="message" tells auth.js to use the message check (10 to 1000 letters) *@
+                <div class="form-field">
+                    <label for="Message">Message</label>
+                    <textarea id="Message" name="Message" rows="6" class="form-input"
+                              required maxlength="1000"
+                              data-rule="message" aria-describedby="Message-error"></textarea>
+                    <span class="field-error" id="Message-error" aria-live="polite"></span>
+                    <span class="field-hint">Up to 1000 characters.</span>
+                </div>
+
+                @* This is the blue button that sends the form.
+                   btn-block makes it as wide as the card.
+                   data-loading-text is the words shown while the form is being sent.
+                   The paper plane picture is OUTSIDE the "btn-label" span, so only the words change *@
+                <button type="submit" class="btn btn-primary btn-lg btn-block" data-loading-text="Sending…">
+                    <partial name="_Icon" model='"send"' /> <span class="btn-label">Send message</span>
+                </button>
+            </form>
+        </div>
+
+    </div>
+</section>
+
+@* This loads auth.js (the checks) into the "Scripts" spot at the bottom of _Layout.cshtml.
+   It is the same file the Get Started and Log In pages use. *@
+@section Scripts {
+    <script src="~/js/auth.js" asp-append-version="true"></script>
+}

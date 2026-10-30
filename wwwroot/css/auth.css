@@ -1,0 +1,274 @@
+﻿/* ==========================================================
+   This file is auth.css.
+   It is the style file for the Get Started (Register) page and the Log In page.
+   It is only loaded on those pages (through the "Styles" spot in _Layout.cshtml).
+   It uses the colors and fonts from site.css (like var(--blue)), so site.css must load first.
+   ========================================================== */
+
+
+/* This is for the whole page behind the form card:
+   a soft blue glow at the top left and a soft yellow glow at the bottom right, like the Home page. */
+.auth-page {
+    padding: 56px 0 88px;
+    background: radial-gradient(520px 360px at 10% 0%, rgba(0, 56, 168, .10), transparent 70%), radial-gradient(520px 360px at 95% 100%, rgba(252, 209, 22, .20), transparent 70%);
+}
+
+/* This is for the white card that holds the form. It is in the middle of the page and not too wide. */
+.auth-card {
+    max-width: 460px;
+    margin: 0 auto;
+    padding: 36px;
+    background: #fff;
+    border: 1px solid #d5def5;
+    border-radius: 24px;
+    box-shadow: 0 20px 50px rgba(0, 56, 168, .12);
+}
+
+/* This is for the round blue picture at the top of the card.
+   "margin: 0 auto" puts it in the middle. */
+.auth-icon {
+    margin: 0 auto 16px;
+}
+
+/* This is for the big title of the card ("Create your account"). */
+.auth-card h1 {
+    margin: 0 0 8px;
+    font-family: var(--font-head);
+    font-size: 30px;
+    font-weight: 700;
+    line-height: 1.15;
+    text-align: center;
+}
+
+/* This is for the short sentence under the title. */
+.auth-sub {
+    margin: 0 0 24px;
+    text-align: center;
+    color: var(--muted);
+}
+
+
+/* ===== THE FORM FIELDS ===== */
+
+/* This is for one field: the label, the box, the error message, and the hint, stacked on top of each other. */
+.form-field {
+    display: grid;
+    gap: 6px;
+    margin-bottom: 18px;
+}
+
+    /* This is for the label above a box (like "Username"). */
+    .form-field label {
+        font-size: 15px;
+        font-weight: 700;
+    }
+
+/* This is for the boxes where you type. */
+.form-input {
+    width: 100%;
+    padding: 13px 16px;
+    font: inherit; /* uses the same font as the rest of the website */
+    color: var(--ink);
+    background: #fff;
+    border: 2px solid #d5def5;
+    border-radius: 14px;
+    transition: border-color .15s ease, box-shadow .15s ease; /* makes the color change smooth */
+}
+
+    /* This is for when you point at a box with the mouse: the border gets a little darker. */
+    .form-input:hover {
+        border-color: #b9c9f2;
+    }
+
+    /* This is for when you click inside a box: a blue border and a soft blue ring around it. */
+    .form-input:focus {
+        outline: none;
+        border-color: var(--blue);
+        box-shadow: 0 0 0 4px rgba(0, 56, 168, .15);
+    }
+
+    /* This is for a box with a problem (the JavaScript marks it): a red border. */
+    .form-input[aria-invalid="true"] {
+        border-color: var(--red);
+    }
+
+        /* This is for a box with a problem when you click inside it: a red ring instead of a blue one. */
+        .form-input[aria-invalid="true"]:focus {
+            box-shadow: 0 0 0 4px rgba(206, 17, 38, .15);
+        }
+
+/* This is for the red error message under a box (like "Please enter a valid email address."). */
+.field-error {
+    color: var(--red);
+    font-size: 14px;
+    font-weight: 700;
+}
+
+    /* When there is no message, the space is removed. */
+    .field-error:empty {
+        display: none;
+    }
+
+/* This is for the small gray help text under a box (like the password rules). */
+.field-hint {
+    color: var(--muted);
+    font-size: 13px;
+}
+
+
+/* ===== THE SHOW / HIDE PASSWORD BUTTON ===== */
+
+/* This is for the box that holds a password box and its eye button. "relative" lets the button sit inside the box. */
+.password-field {
+    position: relative;
+}
+
+    /* This leaves room on the right side of the password box, so the text does not go under the eye button. */
+    .password-field .form-input {
+        padding-right: 52px;
+    }
+
+/* This is for the eye button. It sits on the right side inside the password box, in the middle (up and down). */
+.toggle-password {
+    position: absolute;
+    top: 50%;
+    right: 8px;
+    transform: translateY(-50%);
+    padding: 8px;
+    font-size: 20px;
+    line-height: 0;
+    color: var(--muted);
+    background: none;
+    border: 0;
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+    /* This is for when you point at the eye button: it turns blue. */
+    .toggle-password:hover {
+        color: var(--blue);
+    }
+
+    /* This is for when you reach the eye button with the Tab key: a blue ring so you can see where you are. */
+    .toggle-password:focus-visible {
+        outline: 3px solid var(--blue);
+    }
+
+    /* The "crossed eye" picture is hidden at first. JavaScript adds the word "is-shown" when the password is visible,
+       and then the two pictures swap. */
+    .toggle-password .eye-hide {
+        display: none;
+    }
+
+    .toggle-password.is-shown .eye-show {
+        display: none;
+    }
+
+    .toggle-password.is-shown .eye-hide {
+        display: inline;
+    }
+
+
+/* ===== OTHER PARTS OF THE FORM ===== */
+
+/* This is for the "Remember me" line with a check box. It is used on the Login page. */
+.check-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 22px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+    /* This is for the check box itself. "accent-color" makes it blue when it is checked. */
+    .check-row input {
+        width: 18px;
+        height: 18px;
+        accent-color: var(--blue);
+    }
+
+/* This is for a button that is as wide as the card. */
+.btn-block {
+    width: 100%;
+}
+
+/* This is for a button that cannot be clicked (while the form is being sent). It looks lighter. */
+.btn:disabled {
+    opacity: .7;
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* This is for the small spinning circle shown after the button words while the form is being sent. */
+.btn.is-loading .btn-label::after {
+    content: "";
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    margin-left: 10px;
+    vertical-align: -3px;
+    border: 2px solid rgba(255, 255, 255, .5);
+    border-top-color: #fff;
+    border-radius: 50%;
+    animation: spin .7s linear infinite;
+}
+
+/* This describes the spinning: one full turn, again and again. */
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* This is for people who turned off animations in their computer settings: the circle does not spin. */
+@media (prefers-reduced-motion: reduce) {
+    .btn.is-loading .btn-label::after {
+        animation: none;
+    }
+}
+
+/* This is for the yellow notice box above the form (it says that this is only a design preview). */
+.form-alert {
+    margin-bottom: 18px;
+    padding: 12px 16px;
+    border-radius: 14px;
+    font-size: 15px;
+    font-weight: 700;
+}
+
+/* The yellow color of the notice. */
+.form-alert-info {
+    color: #5a4500;
+    background: var(--yellow-soft);
+    border: 1px solid #f3dc7a;
+}
+
+/* This is for the line under the form, like "Already have an account? Log in". */
+.auth-switch {
+    margin: 22px 0 0;
+    text-align: center;
+    color: var(--muted);
+}
+
+    /* This is for the link inside that line: blue and bold. */
+    .auth-switch a {
+        color: var(--blue);
+        font-weight: 700;
+    }
+
+        /* When you point at the link, a line appears under it. */
+        .auth-switch a:hover {
+            text-decoration: underline;
+        }
+
+/* This is for phones (narrower than 600 pixels): less space around the page and inside the card. */
+@media (max-width: 600px) {
+    .auth-page {
+        padding: 32px 0 64px;
+    }
+
+    .auth-card {
+        padding: 26px 20px;
+    }
+}

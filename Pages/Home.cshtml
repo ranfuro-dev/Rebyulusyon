@@ -1,0 +1,249 @@
+﻿@* ============================================================
+   This file is the HOME PAGE (the page you see at "/").
+   CHANGED: This file was called Index.cshtml before. It is now Home.cshtml.
+   It has 4 sections, from top to bottom:
+   1) Hero (the big opening part)
+   2) Features (the six cards)
+   3) Review routine (the three steps)
+   4) AI Study Tools card and the blue banner
+   The top bar and the footer are NOT here. They come from _Layout.cshtml.
+   ============================================================ *@
+
+@* "@page" gives this file its own web address.
+   CHANGED: We write "/" after it. Normally only a file named Index opens at "/".
+   Because this file is named Home, the "/" tells ASP.NET: "show THIS page at the main address".
+   So the Home page opens at "/", and "/Home" does NOT work. *@
+@page "/"
+
+@* This is for connecting this page to its C# file (Home.cshtml.cs).
+   That file holds the lists of cards, steps, and checklist items.
+   This is what lets us write Model.Features, Model.Steps, and Model.AiTools below.
+   CHANGED: The name is now HomeModel (it was IndexModel).
+   This line must stay outside the @{ } block. *@
+@model HomeModel
+
+@{
+    // This is for the name on the browser tab. It shows "Home - Rebyulusyon".
+    // _Layout.cshtml reads this title and puts it on the tab.
+    ViewData["Title"] = "Home";
+}
+
+@* ===== SECTION 1: HERO (the big opening area at the top of the Home page) ===== *@
+<section class="hero">
+
+    @* "container" keeps the content in the middle of the page.
+       "hero-grid" splits it into 2 columns: text on the left, picture on the right *@
+    <div class="container hero-grid">
+
+        @* ----- LEFT COLUMN: the text part ----- *@
+        @* "data-reveal" makes this part fade in the first time you scroll to it *@
+        <div class="hero-copy" data-reveal>
+
+            @* This is for the small badge at the top ("Para sa mga estudyanteng Pilipino").
+               "pill" makes the round capsule shape and "pill-red" makes it red.
+               The sparkle picture comes from _Icon.cshtml *@
+            <span class="pill pill-red">
+                <partial name="_Icon" model='"sparkles"' /> Para sa mga estudyanteng Pilipino
+            </span>
+
+            @* This is for the small blue words above the big headline *@
+            <p class="eyebrow">Rebyu Ngayon, Pasado Bukas.</p>
+
+            @* This is for the big headline on the Home page.
+               The word "Revolutionize" is inside "accent", so it turns blue *@
+            <h1><span class="accent">Revolutionize</span> the way you review.</h1>
+
+            @* This is for the paragraph under the headline. "lead" makes it bigger and gray *@
+            <p class="lead">
+                Rebyulusyon helps you build your own reviewers, organize them under subjects you create,
+                and master them with flashcards — one focused session at a time.
+            </p>
+
+            @* This is for the two buttons under the paragraph.
+               btn = the button shape, btn-lg = the large size,
+               btn-primary = the blue button, btn-outline = the white button with a border *@
+            <div class="btn-row">
+                @* This is for the blue "Get Started Free" button. It opens the Register page *@
+                <a class="btn btn-primary btn-lg" href="/Register">
+                    <partial name="_Icon" model='"zap"' /> Get Started Free
+                </a>
+                @* This is for the white "Explore Reviewers" button. It opens the Reviewers page *@
+                <a class="btn btn-outline btn-lg" href="/Reviewers">Explore Reviewers</a>
+            </div>
+
+            @* This is for the box with three short facts (Free, 5 min, Mobile).
+               "dt" is the big word and "dd" is the small text under it.
+               The color classes (text-blue, text-red, text-ink) only change the color of the big word *@
+            <dl class="stats">
+                <div><dt class="text-blue">Free</dt><dd>for students</dd></div>
+                <div><dt class="text-red">5 min</dt><dd>to your first reviewer</dd></div>
+                <div><dt class="text-ink">Mobile</dt><dd>ready anywhere</dd></div>
+            </dl>
+        </div>
+
+        @* ----- RIGHT COLUMN: the picture and the small card on top of it ----- *@
+        @* data-delay="1" makes this side start fading in a little later than the text side *@
+        <div class="hero-art" data-reveal data-delay="1">
+
+            @* This is for the picture of flashcards. The ~ sign means the wwwroot folder.
+               "alt" is the text shown if the picture does not load, and it is read by screen readers *@
+            <img class="art-card" src="~/images/flashcard.svg" alt="A stack of flashcards" />
+
+            @* This is for the small "Today's Progress" card that floats over the picture.
+               NOTE: these numbers are typed by hand for now. They are not real.
+               Later they will come from the database *@
+            <div class="progress-card">
+                <div class="progress-top">
+                    <span>Today’s Progress</span>
+                    @* This is for the small "7 days" badge with the flame picture *@
+                    <span class="pill pill-yellow pill-sm"><partial name="_Icon" model='"flame"' /> 7 days</span>
+                </div>
+                <strong class="progress-count">12 / 20 cards</strong>
+
+                @* This is for the blue progress bar. The gray part is the full bar and the blue part is the progress.
+                   width: 60% means 12 out of 20 cards (12 divided by 20 is 0.6) *@
+                <div class="bar"><div class="bar-fill" style="width: 60%"></div></div>
+            </div>
+        </div>
+
+    </div>
+</section>
+
+@* ===== SECTION 2: FEATURES (the six cards under "Everything in one place") ===== *@
+<section class="features">
+    <div class="container">
+
+        @* This is for the centered title area above the cards *@
+        <div class="section-head" data-reveal>
+            @* This is for the small blue label. The thin lines on its left and right are drawn by CSS *@
+            <p class="eyebrow eyebrow-lines">Everything in one place</p>
+            <h2>Built around how students actually review</h2>
+            <p class="section-sub">
+                No clutter, no noisy dashboards. Just the tools you need to prepare for the next quiz,
+                finals or board exam.
+            </p>
+        </div>
+
+        @* This is for the box that holds the six cards (3 in a row on a computer screen) *@
+        <div class="feature-grid">
+
+            @* "foreach" means "do this again for every item in the list".
+               Here it makes one card for each item in Model.Features.
+               The list is written in Home.cshtml.cs. "f" means the card it is working on now.
+               So if you add a card to that list, a new card shows up here by itself *@
+            @foreach (var f in Model.Features)
+            {
+                @* This is for one feature card. "article" is the web page tag for a small block like a card *@
+                <article class="feature-card" data-reveal>
+
+                    @* This is for the round colored circle with the small picture.
+                       "tone-@f.Tone" makes a name like "tone-blue", and the CSS uses it to pick the circle color.
+                       model="f.Icon" tells _Icon.cshtml which picture to draw *@
+                    <span class="icon-chip tone-@f.Tone"><partial name="_Icon" model="f.Icon" /></span>
+
+                    @* These two lines show the card title and the card text from the list *@
+                    <h3>@f.Title</h3>
+                    <p>@f.Description</p>
+                </article>
+            }
+        </div>
+    </div>
+</section>
+
+
+@* ===== SECTION 3: REVIEW ROUTINE (the pink part with the three steps) ===== *@
+<section class="routine">
+
+    @* "routine-grid" splits this part into 2 columns: picture on the left, text on the right *@
+    <div class="container routine-grid">
+
+        @* This is for the picture of the book on the left. It uses the same round frame as the hero picture *@
+        <img class="art-card" src="~/images/book.svg" alt="An open book with a bookmark" data-reveal />
+
+        @* This is for the text side on the right: the title, the three steps, and a button *@
+        <div class="routine-copy" data-reveal data-delay="1">
+
+            @* This is for the title. "br" starts a new line. The words "review routine" turn red *@
+            <h2>From scattered notes<br />to a <span class="text-red">review routine</span></h2>
+
+            @* "ol" is a numbered list. This list holds the three steps *@
+            <ol class="steps">
+
+                @* This makes one step for each item in Model.Steps (the list in Home.cshtml.cs) *@
+                @foreach (var s in Model.Steps)
+                {
+                    <li>
+                        @* This is for the red circle with the step number (1, 2, or 3) *@
+                        <span class="step-num">@s.Number</span>
+
+                        @* This is for the step title and the small text under it *@
+                        <div class="step-text">
+                            <strong>@s.Title</strong>
+                            <span>@s.Description</span>
+                        </div>
+                    </li>
+                }
+            </ol>
+
+            @* This is for the blue "Start your first reviewer" button. It opens the Register page *@
+            <a class="btn btn-primary" href="/Register">Start your first reviewer</a>
+        </div>
+
+    </div>
+</section>
+
+
+@* ===== SECTION 4: AI STUDY TOOLS CARD AND THE BLUE BANNER (the last part of the Home page) ===== *@
+<section class="closing">
+    <div class="container">
+
+        @* ----- THE AI STUDY TOOLS CARD (a white box with 2 columns) ----- *@
+        <div class="ai-card" data-reveal>
+
+            @* LEFT SIDE: the badge, the title, and the paragraph *@
+            <div>
+                @* This is for the small "Coming Soon" badge (yellow and small) *@
+                <span class="pill pill-yellow pill-sm">
+                    <partial name="_Icon" model='"sparkles"' /> Coming Soon
+                </span>
+                <h2>AI Study Tools</h2>
+                <p>
+                    We are working on study tools that draft flashcards from your own notes and help explain
+                    the answers you keep missing. Not available yet — but it is where Rebyulusyon is heading.
+                </p>
+            </div>
+
+            @* RIGHT SIDE: the yellow box with four checked items.
+               "ul" is a list of items. The CSS removes the small dots *@
+            <ul class="ai-list">
+
+                @* This makes one line for each text in Model.AiTools (written in Home.cshtml.cs).
+                   "item" means the text it is working on now *@
+                @foreach (var item in Model.AiTools)
+                {
+                    <li><partial name="_Icon" model='"check"' /> @item</li>
+                }
+            </ul>
+        </div>
+
+        @* ----- THE BLUE BANNER AT THE BOTTOM ("Handa ka na bang mag-umpisa?") ----- *@
+        <div class="cta" data-reveal>
+            <h2>Handa ka na bang mag-umpisa?</h2>
+            <p>Gawin mong routine ang pag-review. Build your first reviewer today and keep the streak alive.</p>
+
+            @* This is for the two buttons on the blue banner.
+               btn-white = the white button with blue text,
+               btn-ghost = the see-through button with a white border.
+               "center" puts the buttons in the middle *@
+            <div class="btn-row center">
+                @* This is for the white "Get Started Free" button. It opens the Register page *@
+                <a class="btn btn-white btn-lg" href="/Register">
+                    <partial name="_Icon" model='"zap"' /> Get Started Free
+                </a>
+                @* This is for the "Explore Reviewers" button. It opens the Reviewers page *@
+                <a class="btn btn-ghost btn-lg" href="/Reviewers">Explore Reviewers</a>
+            </div>
+        </div>
+
+    </div>
+</section>
