@@ -1,0 +1,172 @@
+﻿@* ============================================================
+   This file is the FLASHCARD STUDY PAGE (for example "/FlashcardStudy/5").
+   It opens when someone clicks "Start Studying" on the Reviewer Details page.
+   It has these parts, from top to bottom:
+   1) The top part: the back link, the title, and the creator
+   2) The flip card, with the progress bar and the buttons (this works with JavaScript)
+   3) The results box, shown after the last card
+   4) A plain list of all the cards, shown ONLY when JavaScript does not work
+   The cards come from sample data. They do NOT come from a database yet.
+   The top bar and the footer are NOT here. They come from _Layout.cshtml.
+   ============================================================ *@
+
+@* "@page" gives this file its own web address.
+   "{id:int}" means the address must end with a whole number, for example /FlashcardStudy/5.
+   That number is the "id" that the C# file uses to find the reviewer. *@
+@page "{id:int}"
+
+@* This is for connecting this page to its C# file (FlashcardStudy.cshtml.cs). *@
+@model FlashcardStudyModel
+
+@{
+    // This is for the name on the browser tab. It shows "Study: Algebra Basics: Factoring Practice - Rebyulusyon".
+    ViewData["Title"] = "Study: " + Model.Reviewer.Title;
+}
+
+@* This loads flashcard-study.css (the styles of this page) into the "Styles" spot in the head of _Layout.cshtml. *@
+@section Styles {
+    <link rel="stylesheet" href="~/css/flashcard-study.css" asp-append-version="true" />
+}
+
+<section class="study-section">
+    <div class="container study-wrap">
+
+        @* ===== PART 1: THE TOP PART ===== *@
+        @* "data-reveal" makes this part fade in when the page opens *@
+        <div data-reveal>
+
+            @* This is for the "Back to reviewer" link. It goes back to the Reviewer Details page of this same reviewer.
+               The arrow picture points right, and the CSS turns it around to point left *@
+            <a class="study-back" href="/ReviewerDetails/@(Model.Reviewer.Id)">
+                <span class="arrow-back"><partial name="_Icon" model='"arrow"' /></span>
+                Back to reviewer
+            </a>
+
+            @* This is for the title. Razor makes the text safe, so special letters cannot break the page *@
+            <h1 class="study-title">@Model.Reviewer.Title</h1>
+
+            @* This is for the creator. @("@" + ...) puts a @ sign before the username *@
+            <p class="study-by">
+                <partial name="_Icon" model='"user"' />
+                <span>Created by <strong>@("@" + Model.Reviewer.Creator)</strong></span>
+            </p>
+        </div>
+
+        @* ===== PART 2: THE FLIP CARD (works with JavaScript) =====
+           The CSS shows this part ONLY when JavaScript works. The words on the card are written by
+           flashcard-study.js. The first card is already written here, so the page is never empty. *@
+        <div class="study-app" id="studyApp">
+
+            @* This is the box that holds the progress, the card, and the buttons.
+               The JavaScript hides it at the end, to show the results *@
+            <div id="deckArea">
+
+                @* This is for the progress: "Card 1 of 5" on the left, the score on the right, and the bar under them.
+                   The bar uses the styles of the progress bar on the Home page *@
+                <div class="study-progress">
+                    <div class="study-progress-top">
+                        <span id="progressText">Card 1 of @Model.Cards.Count</span>
+                        <span id="scoreText">0 right · 0 missed</span>
+                    </div>
+                    <div class="bar" id="progressBar" role="progressbar" aria-label="Progress through the cards"
+                         aria-valuemin="1" aria-valuemax="@Model.Cards.Count" aria-valuenow="1">
+                        <div class="bar-fill" id="progressFill" style="width: 0%"></div>
+                    </div>
+                </div>
+
+                @* This is the flip card. It is a "div" that works like a button:
+                   role="button" tells screen readers it is a button, and tabindex="0" lets the Tab key reach it.
+                   aria-describedby points to the help line under the card.
+                   The JavaScript turns it over when it is clicked, or when Enter or Space is pressed *@
+                <div class="flip-card" id="flipCard" role="button" tabindex="0" aria-describedby="flipHint">
+                    <div class="flip-inner" id="flipInner">
+
+                        @* The FRONT side: the question *@
+                        <div class="flip-face flip-front" id="faceFront">
+                            <span class="face-label">Question</span>
+                            <span class="face-text" id="frontText">@Model.Cards[0].Question</span>
+                        </div>
+
+                        @* The BACK side: the answer. It is hidden from screen readers until the card is turned over *@
+                        <div class="flip-face flip-back" id="faceBack" aria-hidden="true">
+                            <span class="face-label">Answer</span>
+                            <span class="face-text" id="backText">@Model.Cards[0].Answer</span>
+                        </div>
+                    </div>
+                </div>
+
+                <p class="flip-hint" id="flipHint">Click the card to flip it. Use the left and right arrow keys to move between cards.</p>
+
+                @* This is the row with "I missed it" and "I got it". It stays hidden until the card is turned over.
+                   "is-hidden" hides it but keeps its space, so the page does not jump *@
+                <div class="study-actions is-hidden" id="ratingRow">
+                    <button type="button" class="btn btn-miss btn-lg" id="btnMissed">I missed it</button>
+                    <button type="button" class="btn btn-primary btn-lg" id="btnGot">I got it</button>
+                </div>
+
+                @* This is the row with "Previous" on the left and "Next" on the right.
+                   "Next" says "Finish" on the last card (the JavaScript changes the word).
+                   "Previous" cannot be used on the first card, so it starts as disabled *@
+                <div class="study-nav">
+                    <button type="button" class="btn btn-outline btn-sm" id="btnPrev" disabled>
+                        <span class="arrow-back"><partial name="_Icon" model='"arrow"' /></span> Previous
+                    </button>
+                    <button type="button" class="btn btn-outline btn-sm" id="btnNext">
+                        <span id="nextLabel">Next</span> <partial name="_Icon" model='"arrow"' />
+                    </button>
+                </div>
+            </div>
+
+            @* ===== PART 3: THE RESULTS BOX =====
+               It is hidden at first. The JavaScript shows it after the last card.
+               tabindex="-1" on the title lets the code move the keyboard and screen reader here *@
+            <div class="study-results" id="results" hidden>
+                <span class="icon-chip icon-chip-lg tone-yellow"><partial name="_Icon" model='"target"' /></span>
+                <h2 id="resultTitle" tabindex="-1">Nice work!</h2>
+                <p class="results-line" id="resultLine"></p>
+
+                @* These are the three numbers: how many were right, missed, and not rated *@
+                <div class="results-stats">
+                    <div><strong class="stat-got" id="statGot">0</strong><span>Got it</span></div>
+                    <div><strong class="stat-missed" id="statMissed">0</strong><span>Missed</span></div>
+                    <div><strong class="stat-skipped" id="statSkipped">0</strong><span>Not rated</span></div>
+                </div>
+
+                <div class="study-actions">
+                    <button type="button" class="btn btn-primary btn-lg" id="btnRestart">Study again</button>
+                    <a class="btn btn-outline btn-lg" href="/ReviewerDetails/@(Model.Reviewer.Id)">Back to reviewer</a>
+                </div>
+            </div>
+
+            @* This is a hidden line that screen readers read aloud when the card changes or turns over.
+               "aria-live" means: read it as soon as it changes *@
+            <p class="sr-only" id="announce" aria-live="polite"></p>
+        </div>
+
+        @* ===== PART 4: THE PLAIN LIST OF ALL THE CARDS =====
+           This is the list that flashcard-study.js reads the cards from.
+           The CSS hides it when JavaScript works, and shows it when JavaScript does NOT work,
+           so the page is never empty.
+           "foreach" means "do this again for every item in the list". "card" is the flashcard it is working on now.
+           data-question and data-answer are the names the JavaScript looks for *@
+        <div class="study-fallback">
+            <p>Turn on JavaScript to flip the cards. Here are all the cards:</p>
+            <ol id="deck">
+                @foreach (var card in Model.Cards)
+                {
+                    <li>
+                        <strong data-question>@card.Question</strong>
+                        <span data-answer>@card.Answer</span>
+                    </li>
+                }
+            </ol>
+        </div>
+
+    </div>
+</section>
+
+@* This loads flashcard-study.js (the flipping, the buttons, and the results) into the "Scripts" spot
+   at the bottom of _Layout.cshtml. It comes after site.js. *@
+@section Scripts {
+    <script src="~/js/flashcard-study.js" asp-append-version="true"></script>
+}

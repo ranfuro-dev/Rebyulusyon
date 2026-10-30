@@ -1,0 +1,451 @@
+﻿/* ==========================================================
+   This file is flashcard-study.css.
+   It is the style file for the Flashcard Study page only.
+   It is loaded through the "Styles" spot in _Layout.cshtml.
+   It uses the colors and fonts from site.css (like var(--blue)),
+   and the progress bar (.bar and .bar-fill) from site.css too.
+   ========================================================== */
+
+
+/* This makes the "hidden" word in the HTML really hide something.
+   Some of our boxes have a "display" style, which can win over "hidden", so we say it here.
+   This is the same rule for every box on this page. */
+[hidden] {
+    display: none !important;
+}
+
+/* This hides something on the screen but keeps it for screen readers.
+   It is used for the message that tells screen readers which card is shown. */
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+
+/* ===== THE TOP PART (back link, title, creator) ===== */
+
+/* This is for the whole page: the space above and below. */
+.study-section {
+    padding: 28px 0 88px;
+}
+
+/* This makes the content column narrower than normal (760 pixels), so the card is easy to read. */
+.study-wrap {
+    max-width: 760px;
+}
+
+/* This is for the "Back to reviewer" link. */
+.study-back {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 18px;
+    font-weight: 700;
+    color: var(--muted);
+    transition: color .15s ease;
+}
+
+    /* This is for when you point at the link: it turns blue. */
+    .study-back:hover {
+        color: var(--blue);
+    }
+
+    /* This is for when you reach the link with the Tab key: a blue ring so you can see where you are. */
+    .study-back:focus-visible {
+        outline: 3px solid var(--blue);
+        outline-offset: 3px;
+        border-radius: 6px;
+    }
+
+/* This turns the arrow picture around. The arrow points RIGHT, and we want it to point LEFT.
+   It is used on the back link and on the "Previous" button. */
+.arrow-back {
+    display: inline-flex;
+    font-size: 18px;
+    transform: rotate(180deg);
+}
+
+/* This is for the title of the reviewer. */
+.study-title {
+    margin: 0 0 10px;
+    font-family: var(--font-head);
+    font-size: clamp(1.7rem, 4vw, 2.4rem);
+    font-weight: 700;
+    line-height: 1.15;
+}
+
+/* This is for the line "Created by @username". */
+.study-by {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 0;
+    color: var(--muted);
+}
+
+    /* This is for the small person picture: blue. */
+    .study-by .icon {
+        font-size: 18px;
+        color: var(--blue);
+    }
+
+    /* This is for the username: darker and bold. */
+    .study-by strong {
+        color: var(--ink);
+    }
+
+
+/* ===== SHOWING THE RIGHT VERSION OF THE PAGE =====
+   When JavaScript works, the page has the word "js" (added by _Layout.cshtml),
+   and we show the card. When JavaScript does NOT work, we show a plain list of all the cards instead. */
+
+/* The flip card area is hidden at first, and shown only when JavaScript works. */
+.study-app {
+    display: none;
+    margin-top: 28px;
+}
+
+.js .study-app {
+    display: block;
+}
+
+/* The plain list is shown at first, and hidden when JavaScript works. */
+.study-fallback {
+    margin-top: 28px;
+    padding: 24px;
+    background: #fff;
+    border: 1px solid #d5def5;
+    border-radius: 22px;
+}
+
+.js .study-fallback {
+    display: none;
+}
+
+/* This is for the short message above the plain list. */
+.study-fallback p {
+    margin: 0 0 16px;
+    color: var(--muted);
+}
+
+/* This is for the plain list: each item has the question in bold and the answer under it. */
+.study-fallback ol {
+    margin: 0;
+    padding-left: 22px;
+}
+
+.study-fallback li {
+    margin-bottom: 14px;
+}
+
+.study-fallback strong {
+    display: block;
+}
+
+
+/* ===== THE PROGRESS BAR ===== */
+
+/* This is for the space under the progress part. */
+.study-progress {
+    margin-bottom: 24px;
+}
+
+/* This is for the line above the bar: "Card 1 of 5" on the left and the score on the right. */
+.study-progress-top {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 10px;
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--muted);
+}
+
+/* This makes the blue part of the bar grow smoothly (the bar itself is styled in site.css). */
+.study-progress .bar-fill {
+    transition: width .3s ease;
+}
+
+
+/* ===== THE FLIP CARD ===== */
+
+/* This is for the whole card. "perspective" gives the flip a 3D look.
+   It is a "div" that works like a button (role="button" in the HTML), so the flip works the same in every browser.
+   "user-select: none" stops the words from being selected when you click the card quickly. */
+.flip-card {
+    perspective: 1400px;
+    border-radius: 28px;
+    cursor: pointer;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+}
+
+    /* This is for when you reach the card with the Tab key: a blue ring so you can see where you are. */
+    .flip-card:focus-visible {
+        outline: 3px solid var(--blue);
+        outline-offset: 5px;
+    }
+
+/* This is the part that turns around. Its two sides sit on top of each other in the same place (a grid with one cell).
+   "preserve-3d" keeps both sides in 3D, and "min-height" makes the card tall enough. */
+.flip-inner {
+    display: grid;
+    grid-template-columns: 1fr;
+    min-height: 320px;
+    transform-style: preserve-3d;
+    transition: transform .55s ease;
+}
+
+/* When the card is flipped, the whole thing turns half way around (180 degrees). */
+.flip-card.is-flipped .flip-inner {
+    transform: rotateY(180deg);
+}
+
+/* This switches the animation off for a moment. We use it when changing to the next card,
+   so you never see the answer of the old card while the card turns back. */
+.flip-inner.no-anim {
+    transition: none;
+}
+
+/* This is for one side of the card (front or back).
+   "grid-area: 1 / 1" puts both sides in the same place.
+   "backface-visibility: hidden" hides a side when it is turned away from you. */
+.flip-face {
+    grid-area: 1 / 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    padding: 36px 28px;
+    text-align: center;
+    border-radius: 28px;
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+}
+
+/* The FRONT side: white, with a soft blue border. It shows the question. */
+.flip-front {
+    background: #fff;
+    border: 2px solid #cfd9f3;
+    box-shadow: 0 20px 50px rgba(0, 56, 168, .12);
+}
+
+/* The BACK side: flag blue, with white words. It shows the answer.
+   It starts turned around (180 degrees), so it is hidden until the card flips. */
+.flip-back {
+    color: #fff;
+    background: linear-gradient(135deg, var(--blue), #0a2f8f);
+    box-shadow: 0 20px 50px rgba(0, 56, 168, .25);
+    transform: rotateY(180deg);
+}
+
+/* This is for the small word on top of each side ("Question" or "Answer"). */
+.face-label {
+    font-size: 13px;
+    font-weight: 800;
+    letter-spacing: .2em;
+    text-transform: uppercase;
+}
+
+.flip-front .face-label {
+    color: var(--blue);
+}
+
+.flip-back .face-label {
+    color: rgba(255, 255, 255, .8);
+}
+
+/* This is for the big words on the card (the question or the answer).
+   "overflow-wrap" lets a very long word go to the next line, so it never leaves the card. */
+.face-text {
+    font-family: var(--font-head);
+    font-size: clamp(1.35rem, 3.2vw, 2rem);
+    font-weight: 600;
+    line-height: 1.3;
+    overflow-wrap: anywhere;
+}
+
+/* This is for the short help line under the card. */
+.flip-hint {
+    margin: 16px 0 0;
+    text-align: center;
+    font-size: 14.5px;
+    color: var(--muted);
+}
+
+
+/* ===== THE BUTTONS UNDER THE CARD ===== */
+
+/* This is for the row with "I missed it" and "I got it". It is in the middle of the page. */
+.study-actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 12px;
+    margin-top: 22px;
+}
+
+    /* This hides the row but keeps its space, so the page does not jump when the row shows up.
+   A hidden row cannot be clicked or reached with the Tab key. */
+    .study-actions.is-hidden {
+        visibility: hidden;
+    }
+
+/* This is for the red "I missed it" button: white with a red border and red words. */
+.btn-miss {
+    color: var(--red);
+    background: #fff;
+    border-color: #f5b8bf;
+}
+
+    /* This is for when you point at it: a soft red background and a solid red border. */
+    .btn-miss:hover {
+        background: var(--red-soft);
+        border-color: var(--red);
+    }
+
+/* This is for a button that cannot be clicked (like "Previous" on the first card): it looks lighter. */
+.btn:disabled {
+    opacity: .5;
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* This is for the row with "Previous" on the left and "Next" on the right, under a thin line. */
+.study-nav {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    margin-top: 22px;
+    padding-top: 22px;
+    border-top: 1px solid var(--line);
+}
+
+
+/* ===== THE RESULTS (shown after the last card) ===== */
+
+/* This is for the white results box. */
+.study-results {
+    padding: 40px 28px;
+    text-align: center;
+    background: #fff;
+    border: 1px solid #d5def5;
+    border-radius: 24px;
+    box-shadow: 0 20px 50px rgba(0, 56, 168, .12);
+}
+
+    /* This puts the round colored circle with the target picture in the middle. */
+    .study-results .icon-chip {
+        margin: 0 auto 16px;
+    }
+
+    /* This is for the title ("Great job!"). We make the title able to get focus from the code,
+       so screen readers read the results, but no ring is drawn around it. */
+    .study-results h2 {
+        margin: 0 0 8px;
+        font-family: var(--font-head);
+        font-size: 30px;
+        font-weight: 700;
+        line-height: 1.2;
+    }
+
+        .study-results h2:focus {
+            outline: none;
+        }
+
+/* This is for the line under the title ("You got 4 of 5 right."). */
+.results-line {
+    margin: 0 0 24px;
+    font-size: 18px;
+    color: var(--muted);
+}
+
+/* This is for the three numbers (Got it, Missed, Not rated), side by side. */
+.results-stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin-bottom: 28px;
+}
+
+    /* This is for one number box: a big number and a small word under it. */
+    .results-stats > div {
+        display: grid;
+        gap: 4px;
+        padding: 16px 8px;
+        background: var(--bg);
+        border: 1px solid var(--line);
+        border-radius: 16px;
+    }
+
+    .results-stats strong {
+        font-family: var(--font-head);
+        font-size: 30px;
+        line-height: 1;
+    }
+
+    .results-stats span {
+        font-size: 14px;
+        font-weight: 700;
+        color: var(--muted);
+    }
+
+    /* The colors of the three numbers: blue, red, and gray. */
+    .results-stats .stat-got {
+        color: var(--blue);
+    }
+
+    .results-stats .stat-missed {
+        color: var(--red);
+    }
+
+    .results-stats .stat-skipped {
+        color: var(--muted);
+    }
+
+
+/* ===== SMALLER SCREENS AND SETTINGS ===== */
+
+/* This is for people who turned off animations in their computer settings:
+   the card turns over right away, and the bar does not slide. */
+@media (prefers-reduced-motion: reduce) {
+    .flip-inner,
+    .study-progress .bar-fill {
+        transition: none;
+    }
+}
+
+/* This is for phones (narrower than 600 pixels): a shorter card, less space inside, and buttons as wide as the screen. */
+@media (max-width: 600px) {
+    .study-section {
+        padding-bottom: 64px;
+    }
+
+    .flip-inner {
+        min-height: 260px;
+    }
+
+    .flip-face {
+        padding: 28px 20px;
+    }
+
+    .study-actions .btn {
+        flex: 1 1 100%;
+    }
+
+    .study-nav .btn {
+        flex: 1;
+    }
+
+    .study-results {
+        padding: 32px 20px;
+    }
+}
