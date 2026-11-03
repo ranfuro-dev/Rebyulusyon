@@ -1,12 +1,10 @@
-﻿/* ==========================================================
+﻿﻿ /* ==========================================================
    This file is contact.css.
    It is the style file for the Contact page only.
    It is loaded AFTER auth.css, because the form boxes use the styles from auth.css
    (.form-field, .form-input, .field-error...). Here we only add what is new.
    The title "Contact" and the three color bars use the About page styles from site.css.
    ========================================================== */
-
-
 /* This is for the part of the page under the title. It has the two columns. */
 .contact-section {
     padding: 24px 0 88px;

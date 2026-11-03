@@ -14,6 +14,7 @@ namespace Rebyulusyon.Pages;
 // It decides which sample reviewers the page shows.
 // The sample reviewers are not typed in this file. They are in Samples/ReviewerSamples.cs,
 // so the Explore Reviewers page and the Reviewer Details page use the SAME list.
+// IMPORTANT: The class in this file must be called ReviewersModel, because Reviewers.cshtml uses that name.
 public class ReviewersModel : PageModel
 {
     // These are the category chips, in the order they show on the page.

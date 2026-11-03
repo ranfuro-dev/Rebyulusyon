@@ -1,11 +1,9 @@
-﻿/* ==========================================================
+﻿﻿ /* ==========================================================
    This file is auth.css.
    It is the style file for the Get Started (Register) page and the Log In page.
    It is only loaded on those pages (through the "Styles" spot in _Layout.cshtml).
    It uses the colors and fonts from site.css (like var(--blue)), so site.css must load first.
    ========================================================== */
-
-
 /* This is for the whole page behind the form card:
    a soft blue glow at the top left and a soft yellow glow at the bottom right, like the Home page. */
 .auth-page {

@@ -1,12 +1,10 @@
-﻿/* ==========================================================
+﻿﻿ /* ==========================================================
    This file is flashcard-study.css.
    It is the style file for the Flashcard Study page only.
    It is loaded through the "Styles" spot in _Layout.cshtml.
    It uses the colors and fonts from site.css (like var(--blue)),
    and the progress bar (.bar and .bar-fill) from site.css too.
    ========================================================== */
-
-
 /* This makes the "hidden" word in the HTML really hide something.
    Some of our boxes have a "display" style, which can win over "hidden", so we say it here.
    This is the same rule for every box on this page. */

@@ -11,7 +11,8 @@ using Rebyulusyon.Samples;
 namespace Rebyulusyon.Pages;
 
 // This is for the C# side of the REVIEWER DETAILS page (Pages/ReviewerDetails.cshtml).
-// It finds ONE reviewer by its number and checks that it is public.
+// It finds ONE reviewer by its slug (the name in the web address) and checks that it is public.
+// IMPORTANT: The class in this file must be called ReviewerDetailsModel, because ReviewerDetails.cshtml uses that name.
 // NOTE: the reviewers are sample data for now. They do NOT come from a database.
 public class ReviewerDetailsModel : PageModel
 {
@@ -24,16 +25,16 @@ public class ReviewerDetailsModel : PageModel
     // We only keep the QUESTIONS in the page. The answers stay hidden.
     public IReadOnlyList<SampleCard> Preview { get; private set; } = Array.Empty<SampleCard>();
 
-    // "OnGet" runs when someone OPENS this page, for example /ReviewerDetails/5.
-    // The "id" is the number from the web address. ASP.NET fills it in by itself.
+    // "OnGet" runs when someone OPENS this page, for example /ReviewerDetails/algebra-basics-factoring.
+    // The "slug" is the name from the web address. ASP.NET fills it in by itself.
     // "IActionResult" means this method can answer in two ways: show the page, or say "not found".
-    public IActionResult OnGet(int id)
+    public IActionResult OnGet(string slug)
     {
-        // THE PRIVACY RULE: look for the reviewer by its number, but ONLY among the PUBLIC reviewers.
-        var reviewer = ReviewerSamples.FindPublic(id);
+        // THE PRIVACY RULE: look for the reviewer by its slug, but ONLY among the PUBLIC reviewers.
+        var reviewer = ReviewerSamples.FindPublicBySlug(slug);
 
-        // If there is no public reviewer with this number, say "not found".
-        // This happens for numbers that do not exist AND for PRIVATE reviewers, with the SAME answer.
+        // If there is no public reviewer with this slug, say "not found".
+        // This happens for slugs that do not exist AND for PRIVATE reviewers, with the SAME answer.
         // So nobody can tell if a private reviewer exists. (Later, the owner will be able to open their own.)
         if (reviewer is null)
         {
@@ -42,7 +43,7 @@ public class ReviewerDetailsModel : PageModel
 
         // The reviewer was found and it is public, so we save it and its preview for the page.
         Reviewer = reviewer;
-        Preview = ReviewerSamples.PreviewFor(id);
+        Preview = ReviewerSamples.PreviewFor(reviewer);
         return Page();
     }
 

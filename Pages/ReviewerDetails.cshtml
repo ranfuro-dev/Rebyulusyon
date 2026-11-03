@@ -1,5 +1,5 @@
 ﻿@* ============================================================
-   This file is the REVIEWER DETAILS PAGE (for example "/ReviewerDetails/5").
+   This file is the REVIEWER DETAILS PAGE (for example "/ReviewerDetails/algebra-basics-factoring").
    It opens when someone clicks "Open Reviewer" on a card on the Explore Reviewers page.
    It has these parts, from top to bottom:
    1) The top part: the back link, the category tag, the title, and the creator
@@ -9,10 +9,10 @@
    ============================================================ *@
 
 @* "@page" gives this file its own web address.
-   "{id:int}" means the address must end with a whole number, for example /ReviewerDetails/5.
-   That number is the "id" that the C# file uses to find the reviewer.
-   An address like /ReviewerDetails/abc does not open this page. *@
-@page "{id:int}"
+   CHANGED: "{slug}" means the address ends with a name, for example /ReviewerDetails/algebra-basics-factoring.
+   That name is the "slug" that the C# file uses to find the reviewer.
+   (It was "{id:int}" before, which needed a number.) *@
+@page "{slug}"
 
 @* This is for connecting this page to its C# file (ReviewerDetails.cshtml.cs). *@
 @model ReviewerDetailsModel
@@ -23,7 +23,7 @@
     ViewData["Title"] = Model.Reviewer.Title;
 
     // This is how many flashcards are NOT shown in the preview.
-    // Example: a reviewer with 24 flashcards and 3 in the preview has 21 more.
+    // Example: a reviewer with 5 flashcards and 3 in the preview has 2 more.
     var more = Model.Reviewer.CardCount - Model.Preview.Count;
 }
 
@@ -79,10 +79,10 @@
             </ul>
 
             @* This is for the big blue "Start Studying" button.
-               The Flashcard Study page is NOT built yet, so this link shows "not found" for now.
-               It goes to /FlashcardStudy/ and the reviewer number *@
+               CHANGED: It goes to /FlashcardStudy/ and the reviewer's SLUG,
+               for example /FlashcardStudy/algebra-basics-factoring (it used the number before). *@
             <div class="details-actions">
-                <a class="btn btn-primary btn-lg" href="/FlashcardStudy/@(Model.Reviewer.Id)">
+                <a class="btn btn-primary btn-lg" href="/FlashcardStudy/@(Model.Reviewer.Slug)">
                     <partial name="_Icon" model='"flashcard"' /> Start Studying
                 </a>
             </div>

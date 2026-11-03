@@ -6,14 +6,13 @@
    2) The search bar and the category chips
    3) The line "Showing X of Y public reviewers"
    4) The reviewer cards (or "No reviewers found")
-   The cards come from sample data in Reviewers.cshtml.cs. They do NOT come from a database yet.
+   The cards come from sample data in Samples/ReviewerSamples.cs. They do NOT come from a database yet.
    The top bar and the footer are NOT here. They come from _Layout.cshtml.
    ============================================================ *@
 @page
 
 @* This is for connecting this page to its C# file (Reviewers.cshtml.cs).
-   That file holds the sample reviewers and decides which ones to show.
-   CHANGED: The name is now ReviewersModel (it was IndexModel). *@
+   That file decides which sample reviewers to show. *@
 @model ReviewersModel
 
 @{
@@ -159,9 +158,9 @@
                             </ul>
 
                             @* This is the "Open Reviewer" button.
-                               CHANGED: It now goes to /ReviewerDetails/ and the reviewer number (for example /ReviewerDetails/5).
-                               The ReviewerDetails page is NOT built yet, so this link shows "not found" for now. *@
-                            <a class="btn btn-primary btn-sm" href="/ReviewerDetails/@(r.Id)">
+                               CHANGED: It now goes to /ReviewerDetails/ and the reviewer's SLUG,
+                               for example /ReviewerDetails/algebra-basics-factoring (it used the number before). *@
+                            <a class="btn btn-primary btn-sm" href="/ReviewerDetails/@(r.Slug)">
                                 Open Reviewer <partial name="_Icon" model='"arrow"' />
                             </a>
                         </div>
@@ -179,6 +178,5 @@
                 <a class="btn btn-outline" href="/Reviewers">Show all reviewers</a>
             </div>
         }
-
     </div>
 </section>

@@ -1,5 +1,5 @@
 ﻿@* ============================================================
-   This file is the FLASHCARD STUDY PAGE (for example "/FlashcardStudy/5").
+   This file is the FLASHCARD STUDY PAGE (for example "/FlashcardStudy/algebra-basics-factoring").
    It opens when someone clicks "Start Studying" on the Reviewer Details page.
    It has these parts, from top to bottom:
    1) The top part: the back link, the title, and the creator
@@ -11,9 +11,10 @@
    ============================================================ *@
 
 @* "@page" gives this file its own web address.
-   "{id:int}" means the address must end with a whole number, for example /FlashcardStudy/5.
-   That number is the "id" that the C# file uses to find the reviewer. *@
-@page "{id:int}"
+   CHANGED: "{slug}" means the address ends with a name, for example /FlashcardStudy/algebra-basics-factoring.
+   That name is the "slug" that the C# file uses to find the reviewer.
+   (It was "{id:int}" before, which needed a number.) *@
+@page "{slug}"
 
 @* This is for connecting this page to its C# file (FlashcardStudy.cshtml.cs). *@
 @model FlashcardStudyModel
@@ -36,8 +37,9 @@
         <div data-reveal>
 
             @* This is for the "Back to reviewer" link. It goes back to the Reviewer Details page of this same reviewer.
+               CHANGED: It uses the SLUG, for example /ReviewerDetails/algebra-basics-factoring.
                The arrow picture points right, and the CSS turns it around to point left *@
-            <a class="study-back" href="/ReviewerDetails/@(Model.Reviewer.Id)">
+            <a class="study-back" href="/ReviewerDetails/@(Model.Reviewer.Slug)">
                 <span class="arrow-back"><partial name="_Icon" model='"arrow"' /></span>
                 Back to reviewer
             </a>
@@ -132,9 +134,10 @@
                     <div><strong class="stat-skipped" id="statSkipped">0</strong><span>Not rated</span></div>
                 </div>
 
+                @* CHANGED: The "Back to reviewer" link uses the SLUG here too *@
                 <div class="study-actions">
                     <button type="button" class="btn btn-primary btn-lg" id="btnRestart">Study again</button>
-                    <a class="btn btn-outline btn-lg" href="/ReviewerDetails/@(Model.Reviewer.Id)">Back to reviewer</a>
+                    <a class="btn btn-outline btn-lg" href="/ReviewerDetails/@(Model.Reviewer.Slug)">Back to reviewer</a>
                 </div>
             </div>
 

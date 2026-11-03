@@ -11,7 +11,8 @@ using Rebyulusyon.Samples;
 namespace Rebyulusyon.Pages;
 
 // This is for the C# side of the FLASHCARD STUDY page (Pages/FlashcardStudy.cshtml).
-// It finds ONE reviewer by its number, checks that it is public, and gets all of its flashcards.
+// It finds ONE reviewer by its slug (the name in the web address), checks that it is public,
+// and gets all of its flashcards.
 // NOTE: the reviewers and flashcards are sample data for now. They do NOT come from a database.
 public class FlashcardStudyModel : PageModel
 {
@@ -23,14 +24,15 @@ public class FlashcardStudyModel : PageModel
     // The browser needs the answers to turn the card over, so this is only filled for PUBLIC reviewers.
     public IReadOnlyList<SampleCard> Cards { get; private set; } = Array.Empty<SampleCard>();
 
-    // "OnGet" runs when someone OPENS this page, for example /FlashcardStudy/5.
-    // The "id" is the number from the web address. ASP.NET fills it in by itself.
-    public IActionResult OnGet(int id)
+    // "OnGet" runs when someone OPENS this page, for example /FlashcardStudy/algebra-basics-factoring.
+    // CHANGED: The "slug" is the name from the web address. It was a number before.
+    // ASP.NET fills it in by itself.
+    public IActionResult OnGet(string slug)
     {
-        // THE PRIVACY RULE: look for the reviewer by its number, but ONLY among the PUBLIC reviewers.
-        var reviewer = ReviewerSamples.FindPublic(id);
+        // THE PRIVACY RULE: look for the reviewer by its slug, but ONLY among the PUBLIC reviewers.
+        var reviewer = ReviewerSamples.FindPublicBySlug(slug);
 
-        // A PRIVATE reviewer and a number that does not exist get the SAME answer: "not found".
+        // A PRIVATE reviewer and a slug that does not exist get the SAME answer: "not found".
         // So nobody can tell if a private reviewer exists, and the answers of a private reviewer are never sent.
         if (reviewer is null)
         {
@@ -38,7 +40,7 @@ public class FlashcardStudyModel : PageModel
         }
 
         // Get the flashcards. If a reviewer has none, there is nothing to study, so we say "not found".
-        var cards = ReviewerSamples.CardsFor(id);
+        var cards = ReviewerSamples.CardsFor(reviewer);
         if (cards.Count == 0)
         {
             return NotFound();

@@ -50,8 +50,8 @@ if (revealTargets.length > 0) {
         }, {
             threshold: 0,                   // runs as soon as even 1 pixel of the part is in view
             rootMargin: "0px 0px -8% 0px"   // the watched area is 8% shorter at the bottom of the screen,
-                                            // so a part starts to fade in a little after it appears,
-                                            // and not at the very edge of the screen
+            // so a part starts to fade in a little after it appears,
+            // and not at the very edge of the screen
         });
 
         // Tell the watcher to start watching every part that has "data-reveal".

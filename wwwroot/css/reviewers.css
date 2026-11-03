@@ -1,12 +1,10 @@
-﻿/* ==========================================================
+﻿﻿ /* ==========================================================
    This file is reviewers.css.
    It is the style file for the Explore Reviewers page only.
    It is loaded through the "Styles" spot in _Layout.cshtml.
    It uses the colors and fonts from site.css (like var(--blue)).
    The title "Explore Reviewers" and the three color bars use the "about-hero" styles from site.css.
    ========================================================== */
-
-
 /* This hides something on the screen but keeps it for screen readers.
    It is used for the label of the search box (we show a magnifying glass instead of the word). */
 .sr-only {

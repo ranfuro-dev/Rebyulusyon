@@ -3,12 +3,14 @@
 namespace Rebyulusyon.Samples;
 
 // This describes ONE sample reviewer. A "record" is a quick way to make a small box of information.
-// Id = a number for each reviewer (used in the web address, like /ReviewerDetails/5)
+// Id = a number for each reviewer (the flashcards are saved under this number)
+// Slug = the short name used in the web address, like algebra-basics-factoring
+//        NEW: Use only small letters, numbers, and hyphens (-). Every slug must be DIFFERENT.
 // Title, Category, Description = the words about the reviewer
 // CardCount = how many flashcards it has
 // Creator = the username of the person who made it (shown as "Created by @username")
 // IsPublic = true means everyone can see it. false means it is PRIVATE.
-public record SampleReviewer(int Id, string Title, string Category, string Description, int CardCount, string Creator, bool IsPublic);
+public record SampleReviewer(int Id, string Slug, string Title, string Category, string Description, int CardCount, string Creator, bool IsPublic);
 
 // This describes ONE flashcard: the question on the front and the answer on the back.
 public record SampleCard(string Question, string Answer);
@@ -23,34 +25,34 @@ public static class ReviewerSamples
     // This is the list of all sample reviewers.
     // The first 12 are PUBLIC (the last word on each line is true).
     // The last 4 are PRIVATE (the last word is false). They are here to show that private reviewers are never shown to other people.
-    // CHANGED: The public reviewers now say 5 flashcards, because each one has 5 sample cards below.
+    // CHANGED: Every reviewer now has a slug (the second thing on each line).
     public static readonly IReadOnlyList<SampleReviewer> Reviewers = new List<SampleReviewer>
     {
         // --- PUBLIC reviewers (everyone can see these) ---
-        new(1,  "Algebra Basics: Factoring Practice",       "Mathematics",          "Practice factoring trinomials, perfect squares, and common factors with quick questions.",      5, "ranfuro",        true),
-        new(2,  "Trigonometry: Identities and the Unit Circle", "Mathematics",      "Review the key identities, angle formulas, and unit circle values one card at a time.",         5, "maria_santos",   true),
-        new(3,  "Calculus: Limits and Derivatives",         "Mathematics",          "Learn the limit laws and the basic derivative rules, then test yourself with examples.",         5, "kuya_ben",       true),
-        new(4,  "Physics: Motion and Forces",               "Science",              "Go over velocity, acceleration, and Newton's laws with short definition and problem cards.",     5, "ate_lyn",        true),
-        new(5,  "Chemistry: Periodic Table Trends",         "Science",              "Compare atomic size, electronegativity, and ionization energy across groups and periods.",       5, "claire_studies", true),
-        new(6,  "Biology: Cell Parts and Functions",        "Science",              "Match each cell part to its job, from the nucleus to the mitochondria.",                         5, "ranfuro",        true),
-        new(7,  "Digital Logic: Gates and Truth Tables",    "Computer Engineering", "Learn the AND, OR, NOT, NAND, NOR, and XOR gates and how to read their truth tables.",           5, "dev.paolo",      true),
-        new(8,  "Number Systems and Conversions",           "Computer Engineering", "Convert between binary, octal, decimal, and hexadecimal with worked examples.",                 5, "nikka_r",        true),
-        new(9,  "C# Basics: Variables and Loops",           "Programming",          "Review data types, variables, if statements, and for and while loops in C#.",                    5, "jmendoza",       true),
-        new(10, "Python Lists, Tuples, and Dictionaries",   "Programming",          "Know when to use each collection type and the common methods that go with them.",               5, "dev.paolo",      true),
-        new(11, "Philippine History: Key Events Timeline",  "General Education",    "Remember the major events from the pre-colonial period to modern times, in order.",             5, "maria_santos",   true),
-        new(12, "Understanding the Self: Key Terms",        "General Education",    "Review the main ideas and thinkers from your Understanding the Self course.",                   5, "ate_lyn",        true),
+        new(1,  "algebra-basics-factoring",            "Algebra Basics: Factoring Practice",       "Mathematics",          "Practice factoring trinomials, perfect squares, and common factors with quick questions.",      5, "ranfuro",        true),
+        new(2,  "trigonometry-identities-unit-circle", "Trigonometry: Identities and the Unit Circle", "Mathematics",      "Review the key identities, angle formulas, and unit circle values one card at a time.",         5, "maria_santos",   true),
+        new(3,  "calculus-limits-derivatives",         "Calculus: Limits and Derivatives",         "Mathematics",          "Learn the limit laws and the basic derivative rules, then test yourself with examples.",         5, "kuya_ben",       true),
+        new(4,  "physics-motion-forces",               "Physics: Motion and Forces",               "Science",              "Go over velocity, acceleration, and Newton's laws with short definition and problem cards.",     5, "ate_lyn",        true),
+        new(5,  "chemistry-periodic-table-trends",     "Chemistry: Periodic Table Trends",         "Science",              "Compare atomic size, electronegativity, and ionization energy across groups and periods.",       5, "claire_studies", true),
+        new(6,  "biology-cell-parts-functions",        "Biology: Cell Parts and Functions",        "Science",              "Match each cell part to its job, from the nucleus to the mitochondria.",                         5, "ranfuro",        true),
+        new(7,  "digital-logic-gates-truth-tables",    "Digital Logic: Gates and Truth Tables",    "Computer Engineering", "Learn the AND, OR, NOT, NAND, NOR, and XOR gates and how to read their truth tables.",           5, "dev.paolo",      true),
+        new(8,  "number-systems-conversions",          "Number Systems and Conversions",           "Computer Engineering", "Convert between binary, octal, decimal, and hexadecimal with worked examples.",                 5, "nikka_r",        true),
+        new(9,  "csharp-basics-variables-loops",       "C# Basics: Variables and Loops",           "Programming",          "Review data types, variables, if statements, and for and while loops in C#.",                    5, "jmendoza",       true),
+        new(10, "python-lists-tuples-dictionaries",    "Python Lists, Tuples, and Dictionaries",   "Programming",          "Know when to use each collection type and the common methods that go with them.",               5, "dev.paolo",      true),
+        new(11, "philippine-history-key-events",       "Philippine History: Key Events Timeline",  "General Education",    "Remember the major events from the pre-colonial period to modern times, in order.",             5, "maria_santos",   true),
+        new(12, "understanding-the-self-key-terms",    "Understanding the Self: Key Terms",        "General Education",    "Review the main ideas and thinkers from your Understanding the Self course.",                   5, "ate_lyn",        true),
 
         // --- PRIVATE reviewers (only their creators should ever see these) ---
-        new(13, "Board Exam Weak Topics",                   "Science",              "My own list of topics that I keep forgetting.",                                                  14, "ranfuro",        false),
-        new(14, "Midterm Mistakes Log",                     "Mathematics",          "The questions I got wrong on my last midterm.",                                                   9, "maria_santos",   false),
-        new(15, "My Calculus Cheat Notes",                  "Mathematics",          "Short notes for my calculus quizzes.",                                                           12, "kuya_ben",       false),
-        new(16, "Interview Practice Drafts",                "Programming",          "Draft answers for my coding interview practice.",                                                11, "jmendoza",       false),
+        new(13, "board-exam-weak-topics",              "Board Exam Weak Topics",                   "Science",              "My own list of topics that I keep forgetting.",                                                  14, "ranfuro",        false),
+        new(14, "midterm-mistakes-log",                "Midterm Mistakes Log",                     "Mathematics",          "The questions I got wrong on my last midterm.",                                                   9, "maria_santos",   false),
+        new(15, "my-calculus-cheat-notes",             "My Calculus Cheat Notes",                  "Mathematics",          "Short notes for my calculus quizzes.",                                                           12, "kuya_ben",       false),
+        new(16, "interview-practice-drafts",           "Interview Practice Drafts",                "Programming",          "Draft answers for my coding interview practice.",                                                11, "jmendoza",       false),
     };
 
     // These are the flashcards of each PUBLIC reviewer. Each one has 5 cards.
-    // The number in the square brackets is the reviewer's Id.
+    // The number in the square brackets is the reviewer's Id (not the slug).
     // The private reviewers have no cards here, because their pages are never shown to other people.
-    // NEW: The Reviewer Details page shows the first 3 of these as the "Preview".
+    // The Reviewer Details page shows the first 3 of these as the "Preview".
     // The Flashcard Study page uses all 5.
     private static readonly Dictionary<int, SampleCard[]> Cards = new()
     {
@@ -153,22 +155,27 @@ public static class ReviewerSamples
     };
 
     // THE PRIVACY RULE.
-    // This finds a reviewer by its number, but ONLY if it is PUBLIC.
-    // If the reviewer is private, or the number does not exist, it gives back "null" (nothing).
-    // The pages then show "not found" in both cases, so nobody can tell the difference.
-    public static SampleReviewer? FindPublic(int id) =>
-        Reviewers.FirstOrDefault(reviewer => reviewer.Id == id && reviewer.IsPublic);
+    // CHANGED: This now finds a reviewer by its SLUG (the name in the web address), and ONLY if it is PUBLIC.
+    // Capital and small letters do not matter, so /Algebra-Basics-Factoring works too.
+    // If the reviewer is private, or the slug does not exist, or nothing was given, it gives back "null" (nothing).
+    // The pages then show "not found" in all of these cases, so nobody can tell the difference.
+    public static SampleReviewer? FindPublicBySlug(string? slug) =>
+        string.IsNullOrWhiteSpace(slug)
+            ? null
+            : Reviewers.FirstOrDefault(reviewer =>
+                reviewer.IsPublic && string.Equals(reviewer.Slug, slug, StringComparison.OrdinalIgnoreCase));
 
-    // NEW: This gives back ALL the flashcards of a reviewer, for the Flashcard Study page.
+    // This gives back ALL the flashcards of a reviewer, for the Flashcard Study page.
     // It checks the privacy rule AGAIN here, so the cards of a PRIVATE reviewer are never given out,
     // even if some page forgets to check. If there are no cards, it gives back an empty list.
-    public static IReadOnlyList<SampleCard> CardsFor(int id) =>
-        FindPublic(id) is not null && Cards.TryGetValue(id, out var cards) ? cards : Array.Empty<SampleCard>();
+    // CHANGED: It now takes the reviewer itself (it took a number before).
+    public static IReadOnlyList<SampleCard> CardsFor(SampleReviewer reviewer) =>
+        reviewer.IsPublic && Cards.TryGetValue(reviewer.Id, out var cards) ? cards : Array.Empty<SampleCard>();
 
-    // CHANGED: This gives back only the first 3 flashcards, for the "Preview" on the Reviewer Details page.
+    // This gives back only the first 3 flashcards, for the "Preview" on the Reviewer Details page.
     // It uses the same cards as CardsFor, so the preview and the study page always agree.
-    public static IReadOnlyList<SampleCard> PreviewFor(int id) =>
-        CardsFor(id).Take(3).ToList();
+    public static IReadOnlyList<SampleCard> PreviewFor(SampleReviewer reviewer) =>
+        CardsFor(reviewer).Take(3).ToList();
 
     // This is for the color of the category tag (blue, red, or yellow).
     // The names match the .tone-blue, .tone-red, and .tone-yellow styles in site.css.

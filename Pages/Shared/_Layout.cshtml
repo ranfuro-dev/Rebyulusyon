@@ -1,13 +1,13 @@
-﻿@{
-    // This is for finding out which page the visitor is on right now (for example "/Index" or "/About").
-    // We use it to color the matching link in the top menu blue.
-    // This line saves the name of the page that is open. If it cannot find one, it uses empty text.
-    var currentPage = ViewContext.RouteData.Values["page"]?.ToString() ?? "";
+﻿﻿@{
+// This is for finding out which page the visitor is on right now (for example "/Index" or "/About").
+// We use it to color the matching link in the top menu blue.
+// This line saves the name of the page that is open. If it cannot find one, it uses empty text.
+var currentPage = ViewContext.RouteData.Values["page"]?.ToString() ?? "";
 
-    // This is a small helper for the top menu links.
-    // If the link belongs to the page that is open, it gives back "nav-link active" (a blue pill).
-    // If not, it gives back only "nav-link" (plain gray text).
-    string NavClass(string page) => currentPage == page ? "nav-link active" : "nav-link";
+// This is a small helper for the top menu links.
+// If the link belongs to the page that is open, it gives back "nav-link active" (a blue pill).
+// If not, it gives back only "nav-link" (plain gray text).
+string NavClass(string page) => currentPage == page ? "nav-link active" : "nav-link";
 }
 @* ============================================================
    This file is _Layout.cshtml.

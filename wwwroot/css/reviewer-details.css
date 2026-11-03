@@ -1,14 +1,11 @@
-﻿/* ==========================================================
+﻿﻿ /* ==========================================================
    This file is reviewer-details.css.
    It is the style file for the Reviewer Details page only.
    It is loaded AFTER reviewers.css, because this page also uses some styles from there
    (the colored category tag, the list of facts, and the hidden-for-screen-readers text).
    It uses the colors and fonts from site.css (like var(--blue)).
    ========================================================== */
-
-
 /* ===== THE TOP PART (back link, tag, title, creator) ===== */
-
 /* This is for the top part of the page. */
 .details-hero {
     padding: 40px 0 8px;
