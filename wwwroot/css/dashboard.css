@@ -1,0 +1,735 @@
+﻿/* ==========================================================
+   This file is dashboard.css.
+   It is the style file for the Dashboard page only.
+   It is loaded through the "Styles" spot in _Layout.cshtml, after site.css.
+   It uses the colors and fonts from site.css (like var(--blue)),
+   and the progress bar (.bar and .bar-fill), the round picture circle (.icon-chip),
+   and the three circle colors (.tone-blue, .tone-red, .tone-yellow) from site.css too.
+   ========================================================== */
+
+
+/* This hides something on the screen but keeps it for screen readers.
+   It is used for the words that say "cards, Mon" next to each number of the chart. */
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+/* This is for the whole page: the space above and below. */
+.dash {
+    padding: 32px 0 88px;
+}
+
+
+/* ===== THE TOP PART (welcome, main button, notice) ===== */
+
+/* This puts the welcome on the left and the "Continue studying" button on the right.
+   "flex-wrap" lets the button go under the welcome on a narrow screen. */
+.dash-head {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 20px;
+    margin-bottom: 20px;
+}
+
+    /* This is for the small blue word "DASHBOARD" above the welcome. */
+    .dash-head .eyebrow {
+        margin: 0 0 6px;
+    }
+
+    /* This is for the welcome ("Welcome back, @ranfuro"). */
+    .dash-head h1 {
+        margin: 0;
+        font-family: var(--font-head);
+        font-size: clamp(1.8rem, 3.8vw, 2.5rem);
+        font-weight: 600;
+        line-height: 1.15;
+        overflow-wrap: anywhere; /* a very long username goes to the next line, and never leaves the screen */
+    }
+
+/* This is for the line under the welcome ("Next up: ..."). */
+.dash-sub {
+    margin: 8px 0 0;
+    font-size: 17px;
+    color: var(--muted);
+}
+
+    .dash-sub strong {
+        color: var(--ink);
+    }
+
+/* This is for the yellow notice that says the numbers are only a preview. */
+.dash-notice {
+    margin: 0 0 24px;
+    padding: 12px 16px;
+    font-size: 15px;
+    font-weight: 700;
+    color: #5a4500;
+    background: var(--yellow-soft);
+    border: 1px solid #f3dc7a;
+    border-radius: 14px;
+}
+
+
+/* ===== THE FOUR NUMBER CARDS ===== */
+
+/* This is for the box that holds the four cards: 4 equal columns on a computer screen.
+   "minmax(0, 1fr)" lets a column get smaller than its words, so nothing pushes the page wider. */
+.kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+/* This is for one number card: a white box with round corners and a light border (like the cards on the Home page). */
+.kpi {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 22px;
+    background: #fff;
+    border: 1px solid #d5def5;
+    border-radius: 22px;
+}
+
+/* This is for the small title of a card ("Studied today"). */
+.kpi-label {
+    margin: 0;
+    font-family: var(--font-body);
+    font-size: 14px;
+    font-weight: 800;
+    letter-spacing: .04em;
+    color: var(--muted);
+}
+
+/* This is for the big number. */
+.kpi-value {
+    margin: 0;
+    font-family: var(--font-head);
+    font-size: 38px;
+    font-weight: 600;
+    line-height: 1.05;
+    color: var(--ink);
+}
+
+/* This is for the small words next to the big number ("days", "/ 20 cards"). */
+.kpi-unit {
+    font-family: var(--font-body);
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--muted);
+}
+
+/* This is for the sentence under the number. */
+.kpi-note {
+    margin: 0;
+    font-size: 14.5px;
+    color: var(--muted);
+}
+
+/* The goal bar: a little space above it, and it moves smoothly when the goal changes. */
+.kpi .bar {
+    margin-top: 4px;
+}
+
+.kpi .bar-fill {
+    transition: width .3s ease;
+}
+
+/* The goal buttons are hidden at first. They only show when JavaScript works
+   (the page has the word "js", added by _Layout.cshtml), because without JavaScript they could not do anything. */
+.goal-set {
+    display: none;
+    align-items: center;
+    gap: 8px;
+    margin-top: 6px;
+    padding-top: 14px;
+    border-top: 1px solid var(--line);
+}
+
+.js .goal-set {
+    display: flex;
+}
+
+/* This is for the words "Daily goal". "flex: 1" pushes the buttons to the right. */
+.goal-set-label {
+    flex: 1;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--muted);
+}
+
+/* This is for the goal number between the two buttons. */
+.goal-set-value {
+    min-width: 2.2ch;
+    text-align: center;
+    font-family: var(--font-head);
+    font-size: 20px;
+    font-weight: 600;
+}
+
+/* This is for the round "-" and "+" buttons. They are 44 by 44 pixels, so they are easy to touch on a phone. */
+.step-btn {
+    display: grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    font: inherit;
+    font-size: 22px;
+    font-weight: 700;
+    line-height: 1;
+    color: var(--blue);
+    background: #fff;
+    border: 2px solid #cfd9f3;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: border-color .15s ease, background .15s ease;
+}
+
+    /* When you point at a button that can be used: a blue border and a light blue background. */
+    .step-btn:hover:not(:disabled) {
+        background: var(--blue-soft);
+        border-color: var(--blue);
+    }
+
+    /* When you reach a button with the Tab key: a blue ring so you can see where you are. */
+    .step-btn:focus-visible {
+        outline: 3px solid var(--blue);
+        outline-offset: 2px;
+    }
+
+    /* A button that cannot be used (the goal is already at its smallest or biggest) looks lighter. */
+    .step-btn:disabled {
+        opacity: .4;
+        cursor: not-allowed;
+    }
+
+
+/* ===== THE TWO BOXES (continue studying and the chart) ===== */
+
+/* This is for the two boxes side by side. The left box (the reviewers) is a little wider.
+   "start" makes each box only as tall as its words. */
+.dash-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr);
+    gap: 24px;
+    align-items: start;
+}
+
+/* This is for one box: a white box with round corners and a light border. */
+.panel {
+    padding: 28px;
+    background: #fff;
+    border: 1px solid #d5def5;
+    border-radius: 22px;
+}
+
+/* This is for the top row of a box: the title on the left and a link or a switch on the right. */
+.panel-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-bottom: 8px;
+}
+
+    /* This is for the title of a box ("Continue studying", "Cards studied"). */
+    .panel-head h2 {
+        margin: 0;
+        font-family: var(--font-head);
+        font-size: 22px;
+        font-weight: 600;
+        line-height: 1.2;
+    }
+
+/* This is for the link "Find more reviewers". */
+.panel-link {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--blue);
+}
+
+    .panel-link:hover {
+        text-decoration: underline;
+    }
+
+/* This is for the sentence under the title of the chart box. */
+.panel-sub {
+    margin: 0;
+    font-size: 15px;
+    color: var(--muted);
+}
+
+
+/* ===== THE LIST "CONTINUE STUDYING" ===== */
+
+/* This is for the list of reviewers. "list-style: none" removes the normal dots. */
+.dash-list {
+    margin: 12px 0 0;
+    padding: 0;
+    list-style: none;
+}
+
+/* This is for one reviewer: the words on the left and the "Study" button on the right.
+   There is a thin line between two reviewers. */
+.dash-row {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding: 20px 0;
+    border-top: 1px solid var(--line);
+}
+
+    .dash-row:first-child {
+        padding-top: 8px;
+        border-top: 0;
+    }
+
+/* This is for the words of a reviewer. "min-width: 0" lets a long title go to the next line. */
+.dash-row-main {
+    display: grid;
+    flex: 1;
+    gap: 8px;
+    justify-items: start;
+    min-width: 0;
+}
+
+/* This is for the small colored category tag. The colors come from .tone-blue, .tone-red, and .tone-yellow in site.css. */
+.dash-tag {
+    padding: 4px 12px;
+    font-size: 13px;
+    font-weight: 800;
+    border-radius: 999px;
+}
+
+/* This is for the title of a reviewer. */
+.dash-row-title {
+    margin: 0;
+    font-family: var(--font-head);
+    font-size: 19px;
+    font-weight: 600;
+    line-height: 1.25;
+}
+
+    .dash-row-title a:hover {
+        color: var(--blue);
+        text-decoration: underline;
+    }
+
+    .dash-row-title a:focus-visible {
+        outline: 3px solid var(--blue);
+        outline-offset: 3px;
+        border-radius: 4px;
+    }
+
+/* This is for the line "Studied today · by @username". */
+.dash-row-meta {
+    margin: 0;
+    font-size: 14.5px;
+    color: var(--muted);
+}
+
+/* This is for the progress bar of a reviewer and the words next to it ("3 of 5 mastered"). */
+.dash-row-progress {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+}
+
+    .dash-row-progress .bar {
+        flex: 1;
+        min-width: 0;
+    }
+
+    .dash-row-progress span {
+        flex: none;
+        font-size: 14px;
+        font-weight: 700;
+        color: var(--muted);
+        white-space: nowrap;
+    }
+
+/* This is for the box shown when there is nothing to continue. */
+.dash-empty {
+    margin-top: 12px;
+    padding: 28px 16px;
+    text-align: center;
+    background: var(--bg);
+    border: 1px dashed #b9c9f2;
+    border-radius: 16px;
+}
+
+    .dash-empty h3 {
+        margin: 0 0 6px;
+        font-family: var(--font-head);
+        font-size: 20px;
+        font-weight: 600;
+    }
+
+    .dash-empty p {
+        margin: 0 0 16px;
+        color: var(--muted);
+    }
+
+/* This is for the list of finished reviewers under the main list. */
+.done {
+    margin-top: 12px;
+    padding-top: 20px;
+    border-top: 1px solid var(--line);
+}
+
+.done-title {
+    margin: 0 0 12px;
+    font-family: var(--font-body);
+    font-size: 14px;
+    font-weight: 800;
+    letter-spacing: .04em;
+    color: var(--muted);
+}
+
+.done-list {
+    display: grid;
+    gap: 10px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+    .done-list li {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .done-list a {
+        flex: 1;
+        min-width: 0;
+        font-weight: 700;
+    }
+
+        .done-list a:hover {
+            color: var(--blue);
+            text-decoration: underline;
+        }
+
+/* This is for the small blue circle with the check mark. */
+.done-check {
+    display: grid;
+    place-items: center;
+    width: 26px;
+    height: 26px;
+    flex: none;
+    font-size: 15px;
+    color: var(--blue);
+    background: var(--blue-soft);
+    border-radius: 50%;
+}
+
+.done-count {
+    flex: none;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--muted);
+}
+
+
+/* ===== THE SWITCH (last 7 days / previous 7 days) ===== */
+
+/* This is for the little switch: two links inside a light rounded box. */
+.seg {
+    display: inline-flex;
+    padding: 3px;
+    background: var(--bg);
+    border: 1px solid var(--line);
+    border-radius: 999px;
+}
+
+/* This is for one link of the switch. It is 44 pixels tall, so it is easy to touch. */
+.seg-link {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    padding: 0 16px;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--muted);
+    border-radius: 999px;
+    transition: color .15s ease, background .15s ease;
+}
+
+    .seg-link:hover {
+        color: var(--ink);
+    }
+
+    /* This is for the link that is chosen now: a solid blue pill with white words. */
+    .seg-link.is-active {
+        color: #fff;
+        background: var(--blue);
+    }
+
+    .seg-link:focus-visible {
+        outline: 3px solid var(--blue);
+        outline-offset: 2px;
+    }
+
+
+/* ===== THE CHART ===== */
+
+/* This is for the chart area. It is 180 pixels tall. The "margin-top" leaves room for the numbers above the tallest bars.
+   "relative" lets the dashed goal line be placed inside it. The thin line at the bottom is the ground of the bars. */
+.week-chart {
+    position: relative;
+    height: 180px;
+    margin-top: 36px;
+    border-bottom: 1px solid #cfd9f3;
+}
+
+/* This is for the dashed red line that shows the daily goal. It goes across the whole chart, in front of the bars. */
+.goal-line {
+    position: absolute;
+    right: 0;
+    left: 0;
+    z-index: 2;
+    border-top: 2px dashed var(--red);
+    pointer-events: none; /* a click goes through the line */
+    transition: bottom .3s ease;
+}
+
+/* This is for the 7 columns of the chart. Each column is the same width, and as tall as the chart. */
+.week-plot {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    grid-template-columns: repeat(7, minmax(0, 1fr));
+    grid-template-rows: minmax(0, 1fr);
+    gap: 10px;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+/* This is for one column. The bar sits at the bottom of it. */
+.week-col {
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    height: 100%;
+}
+
+/* This is for one bar. Its height (in percent) is written in the HTML, and the JavaScript changes it when the goal changes.
+   It is a medium blue (about 3 to 1 against white, so it can be seen well). */
+.week-bar {
+    position: relative;
+    width: 100%;
+    max-width: 44px;
+    background: #6b8fd9;
+    border-radius: 8px 8px 0 0;
+    transition: height .3s ease;
+}
+
+/* The bar of today is the strong flag blue. Today is also named "Today" under the bar, so color is not the only sign. */
+.week-col.is-today .week-bar {
+    background: var(--blue);
+}
+
+/* A day with 0 cards shows a small gray line, and its number (0) is still written above it. */
+.week-bar[data-value="0"] {
+    min-height: 3px;
+    background: #cfd9f3;
+    border-radius: 99px;
+}
+
+/* This is for the number above a bar. */
+.week-val {
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    padding-bottom: 4px;
+    font-size: 14px;
+    font-weight: 800;
+    color: var(--ink);
+    white-space: nowrap;
+    transform: translateX(-50%);
+}
+
+/* This is for the row of day names under the chart. */
+.week-days {
+    display: grid;
+    grid-template-columns: repeat(7, minmax(0, 1fr));
+    gap: 10px;
+    margin: 8px 0 0;
+    padding: 0;
+    list-style: none;
+    text-align: center;
+    font-size: 13.5px;
+    font-weight: 700;
+    color: var(--muted);
+}
+
+    .week-days .is-today {
+        color: var(--blue);
+    }
+
+/* This is for the line that explains the dashed line ("Daily goal: 20 cards"). */
+.goal-key {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 18px 0 0;
+    font-size: 14.5px;
+    color: var(--muted);
+}
+
+/* This is for the small dashed red line before the words. */
+.goal-key-line {
+    width: 28px;
+    flex: none;
+    border-top: 2px dashed var(--red);
+}
+
+
+/* ===== THE QUICK ACTIONS ===== */
+
+/* This is for the two big links under the boxes: 2 equal columns. */
+.actions {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+    margin-top: 24px;
+}
+
+/* This is for one big link: the round picture, the words, and an arrow, in one row. */
+.action-card {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 20px 22px;
+    background: #fff;
+    border: 1px solid #d5def5;
+    border-radius: 22px;
+    transition: border-color .15s ease, transform .15s ease;
+}
+
+    /* When you point at it: a blue border, and it moves up a little. */
+    .action-card:hover {
+        border-color: var(--blue);
+        transform: translateY(-2px);
+    }
+
+    .action-card:focus-visible {
+        outline: 3px solid var(--blue);
+        outline-offset: 3px;
+    }
+
+/* This is for the words: a bold title and a gray line under it. */
+.action-text {
+    flex: 1;
+    min-width: 0;
+}
+
+    .action-text strong {
+        display: block;
+        font-family: var(--font-head);
+        font-size: 18px;
+        font-weight: 600;
+    }
+
+    .action-text span {
+        font-size: 15px;
+        color: var(--muted);
+    }
+
+/* This is for the blue arrow on the right. */
+.action-arrow {
+    flex: none;
+    font-size: 20px;
+    color: var(--blue);
+}
+
+
+/* ===== SETTINGS AND SMALLER SCREENS ===== */
+
+/* This is for people who turned off animations in their computer settings: nothing moves or slides. */
+@media (prefers-reduced-motion: reduce) {
+    .kpi .bar-fill,
+    .week-bar,
+    .goal-line,
+    .action-card,
+    .seg-link,
+    .step-btn {
+        transition: none;
+    }
+
+        .action-card:hover {
+            transform: none;
+        }
+}
+
+/* This is for tablets (narrower than 960 pixels):
+   the four number cards are in 2 columns (the first card is as wide as the two), and the two boxes are one under the other. */
+@media (max-width: 960px) {
+    .kpi-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .kpi-wide {
+        grid-column: 1 / -1;
+    }
+
+    .dash-grid {
+        grid-template-columns: minmax(0, 1fr);
+    }
+}
+
+/* This is for phones (narrower than 600 pixels):
+   less space, the number cards in 1 column, the quick actions in 1 column, and each reviewer's "Study" button under its words. */
+@media (max-width: 600px) {
+    .dash {
+        padding: 24px 0 64px;
+    }
+
+    .dash-head .btn {
+        width: 100%;
+    }
+
+    .dash-head > div:last-child {
+        width: 100%;
+    }
+
+    .kpi-grid,
+    .actions {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .panel {
+        padding: 22px 18px;
+    }
+
+    .dash-row {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 14px;
+    }
+
+        .dash-row .btn {
+            width: 100%;
+        }
+
+    .week-plot,
+    .week-days {
+        gap: 6px;
+    }
+}

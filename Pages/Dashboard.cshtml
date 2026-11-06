@@ -1,0 +1,282 @@
+﻿@* ============================================================
+   This file is the DASHBOARD PAGE (the page you see at "/Dashboard").
+   It opens from the "Dashboard" link in the footer.
+   It has these parts, from top to bottom:
+   1) The top part: a welcome, the "Continue studying" button, and the preview notice
+   2) Four number cards: studied today (with the goal buttons), study streak, last 7 days, and mastered cards
+   3) Two boxes side by side: "Continue studying" (the reviewers) and the "Cards studied" chart
+   4) Two quick action cards
+   IMPORTANT: This is a PREVIEW. All the numbers are SAMPLE numbers of a pretend student (Samples/DashboardSamples.cs).
+   Nothing comes from a database, and nobody has to be logged in yet.
+   The top bar and the footer are NOT here. They come from _Layout.cshtml.
+   ============================================================ *@
+@page
+
+@* This is for connecting this page to its C# file (Dashboard.cshtml.cs). *@
+@model DashboardModel
+
+@{
+    // This is for the name on the browser tab. It shows "Dashboard - Rebyulusyon".
+    ViewData["Title"] = "Dashboard";
+}
+
+@* This loads dashboard.css (the styles of this page) into the "Styles" spot in the head of _Layout.cshtml. *@
+@section Styles {
+    <link rel="stylesheet" href="~/css/dashboard.css" asp-append-version="true" />
+}
+
+@* This is the whole page. The "data-" words give the JavaScript (dashboard.js) the numbers it needs:
+   today = the cards studied today, and the goal numbers for the "-" and "+" buttons. *@
+<section class="dash" id="dashboard"
+         data-today="@Model.CardsToday"
+         data-default-goal="@Model.Goal"
+         data-min-goal="@Model.MinGoal"
+         data-max-goal="@Model.MaxGoal"
+         data-goal-step="@Model.GoalStep">
+    <div class="container">
+
+        @* ===== PART 1: THE TOP PART ===== *@
+        @* "data-reveal" makes this part fade in when the page opens *@
+        <header class="dash-head" data-reveal>
+            <div>
+                <p class="eyebrow">Dashboard</p>
+
+                @* This is for the welcome. @("@" + ...) puts a @ sign before the username *@
+                <h1>Welcome back, @("@" + Model.Username)</h1>
+
+                @* This line says which reviewer is next. If every reviewer is finished (or there are none), it says something else. *@
+                @if (Model.Next is not null)
+                {
+                    <p class="dash-sub">Next up: <strong>@Model.Next.Reviewer.Title</strong></p>
+                }
+                else
+                {
+                    <p class="dash-sub">Pick a reviewer to start studying.</p>
+                }
+            </div>
+
+            @* This is for the main button of the page. It goes straight to the study page of the next reviewer.
+               If there is no next reviewer, it opens Explore Reviewers instead. *@
+            <div>
+                @if (Model.Next is not null)
+                {
+                    <a class="btn btn-primary btn-lg" href="/FlashcardStudy/@(Model.Next.Reviewer.Slug)">
+                        <partial name="_Icon" model='"flashcard"' /> Continue studying
+                    </a>
+                }
+                else
+                {
+                    <a class="btn btn-primary btn-lg" href="/Reviewers">
+                        <partial name="_Icon" model='"search"' /> Explore reviewers
+                    </a>
+                }
+            </div>
+        </header>
+
+        @* This is for the yellow notice. It says that the numbers on this page are not real yet. *@
+        <p class="dash-notice" role="note">
+            Preview with sample numbers. Your real progress will appear here after sign-in is built.
+        </p>
+
+        @* ===== PART 2: THE FOUR NUMBER CARDS ===== *@
+        <div class="kpi-grid" data-reveal>
+
+            @* ----- CARD 1: STUDIED TODAY (with the goal buttons) ----- *@
+            <article class="kpi kpi-wide" aria-labelledby="kpiTodayTitle">
+                <h2 class="kpi-label" id="kpiTodayTitle">Studied today</h2>
+
+                @* The big number is the cards studied today, and "/ 20 cards" is the goal.
+                   The goal number is inside its own span, so the JavaScript can change it. *@
+                <p class="kpi-value">@Model.CardsToday <span class="kpi-unit">/ <span id="goalOf">@Model.Goal</span> cards</span></p>
+
+                @* This is the progress bar toward the goal. It uses the same bar style as the Home page.
+                   role="progressbar" and the "aria-" words tell screen readers what the bar means. *@
+                <div class="bar" id="goalBar" role="progressbar" aria-label="Progress toward today's goal"
+                     aria-valuemin="0" aria-valuemax="@Model.Goal" aria-valuenow="@(Math.Min(Model.CardsToday, Model.Goal))">
+                    <div class="bar-fill" id="goalFill" style="width: @(Model.GoalPercent)%"></div>
+                </div>
+
+                @* This is the sentence under the bar. "aria-live" makes screen readers read it when it changes. *@
+                <p class="kpi-note" id="goalNote" aria-live="polite">@Model.GoalNote</p>
+
+                @* These are the goal buttons. They only show when JavaScript works (the CSS hides them otherwise),
+                   because without JavaScript they could not do anything.
+                   "-" makes the goal smaller and "+" makes it bigger. The goal is kept in this browser. *@
+                <div class="goal-set" role="group" aria-label="Daily goal">
+                    <span class="goal-set-label">Daily goal</span>
+                    <button type="button" class="step-btn" id="goalDown" aria-label="Lower the daily goal by @Model.GoalStep cards">&minus;</button>
+                    <span class="goal-set-value" id="goalValue">@Model.Goal</span>
+                    <button type="button" class="step-btn" id="goalUp" aria-label="Raise the daily goal by @Model.GoalStep cards">+</button>
+                </div>
+            </article>
+
+            @* ----- CARD 2: STUDY STREAK ----- *@
+            <article class="kpi" aria-labelledby="kpiStreakTitle">
+                <h2 class="kpi-label" id="kpiStreakTitle">Study streak</h2>
+                <p class="kpi-value">@Model.Streak <span class="kpi-unit">@DashboardModel.Plural(Model.Streak, "day")</span></p>
+                <p class="kpi-note">@Model.StreakNote</p>
+            </article>
+
+            @* ----- CARD 3: THE LAST 7 DAYS ----- *@
+            <article class="kpi" aria-labelledby="kpiWeekTitle">
+                <h2 class="kpi-label" id="kpiWeekTitle">Last 7 days</h2>
+                <p class="kpi-value">@Model.Last7 <span class="kpi-unit">@DashboardModel.Plural(Model.Last7, "card")</span></p>
+                <p class="kpi-note">@Model.ComparisonNote</p>
+            </article>
+
+            @* ----- CARD 4: MASTERED CARDS ----- *@
+            <article class="kpi" aria-labelledby="kpiMasteredTitle">
+                <h2 class="kpi-label" id="kpiMasteredTitle">Mastered</h2>
+                <p class="kpi-value">@Model.MasteredCards <span class="kpi-unit">of @Model.TotalCards @DashboardModel.Plural(Model.TotalCards, "card")</span></p>
+                <p class="kpi-note">@Model.Completed.Count of @Model.TotalReviewers @DashboardModel.Plural(Model.TotalReviewers, "reviewer") completed.</p>
+            </article>
+        </div>
+
+        @* ===== PART 3: THE TWO BOXES ===== *@
+        <div class="dash-grid">
+
+            @* ----- LEFT BOX: CONTINUE STUDYING ----- *@
+            <section class="panel" aria-labelledby="continueTitle" data-reveal>
+                <div class="panel-head">
+                    <h2 id="continueTitle">Continue studying</h2>
+                    <a class="panel-link" href="/Reviewers">Find more reviewers</a>
+                </div>
+
+                @if (Model.InProgress.Count > 0)
+                {
+                    @* This is the list of unfinished reviewers. "foreach" means "do this again for every item in the list".
+                       "r" is the reviewer it is working on now. *@
+                    <ul class="dash-list">
+                        @foreach (var r in Model.InProgress)
+                        {
+                            <li class="dash-row">
+                                <div class="dash-row-main">
+                                    @* This is the small colored tag with the category name (the colors are in site.css) *@
+                                    <span class="dash-tag tone-@(Model.ToneOf(r.Reviewer.Category))">@r.Reviewer.Category</span>
+
+                                    @* The title is a link to the Reviewer Details page *@
+                                    <h3 class="dash-row-title"><a href="/ReviewerDetails/@(r.Reviewer.Slug)">@r.Reviewer.Title</a></h3>
+                                    <p class="dash-row-meta">@r.LastStudiedText &middot; by @("@" + r.Reviewer.Creator)</p>
+
+                                    @* This is the progress bar of the reviewer, and the words next to it *@
+                                    <div class="dash-row-progress">
+                                        <div class="bar" role="progressbar" aria-label="Cards mastered in @r.Reviewer.Title"
+                                             aria-valuemin="0" aria-valuemax="@r.Reviewer.CardCount" aria-valuenow="@r.Mastered">
+                                            <div class="bar-fill" style="width: @(r.Percent)%"></div>
+                                        </div>
+                                        <span>@r.Mastered of @r.Reviewer.CardCount mastered</span>
+                                    </div>
+                                </div>
+
+                                @* This is the "Study" button. It opens the Flashcard Study page of this reviewer.
+                                   aria-label gives the button the full name for screen readers. *@
+                                <a class="btn btn-primary btn-sm" href="/FlashcardStudy/@(r.Reviewer.Slug)" aria-label="Study @r.Reviewer.Title">Study</a>
+                            </li>
+                        }
+                    </ul>
+                }
+                else
+                {
+                    @* This is shown when there is nothing left to continue: no reviewers yet, or all of them are finished. *@
+                    <div class="dash-empty">
+                        <h3>@(Model.TotalReviewers == 0 ? "No reviewers yet" : "Everything is finished")</h3>
+                        <p>@(Model.TotalReviewers == 0 ? "Open a public reviewer to start studying." : "You mastered every card in your reviewers. Find a new one to keep going.")</p>
+                        <a class="btn btn-outline btn-sm" href="/Reviewers">Explore reviewers</a>
+                    </div>
+                }
+
+                @* This is the list of finished reviewers. It only shows when there is at least one. *@
+                @if (Model.Completed.Count > 0)
+                {
+                    <div class="done">
+                        <h3 class="done-title">Completed</h3>
+                        <ul class="done-list">
+                            @foreach (var r in Model.Completed)
+                            {
+                                <li>
+                                    <span class="done-check"><partial name="_Icon" model='"check"' /></span>
+                                    <a href="/ReviewerDetails/@(r.Reviewer.Slug)">@r.Reviewer.Title</a>
+                                    <span class="done-count">@r.Mastered of @r.Reviewer.CardCount</span>
+                                </li>
+                            }
+                        </ul>
+                    </div>
+                }
+            </section>
+
+            @* ----- RIGHT BOX: THE CHART "CARDS STUDIED" ----- *@
+            @* id="weekly" lets the switch links below come back to this box (the "#weekly" in their address) *@
+            <section class="panel" id="weekly" aria-labelledby="weeklyTitle" data-reveal data-delay="1">
+                <div class="panel-head">
+                    <h2 id="weeklyTitle">Cards studied</h2>
+
+                    @* This is the switch between the last 7 days and the 7 days before. They are plain links, so they work without JavaScript.
+                       aria-current tells screen readers which one is chosen now. *@
+                    <nav class="seg" aria-label="Choose which days to show">
+                        <a class="seg-link @(Model.ShowPrevious ? "" : "is-active")" href="/Dashboard#weekly" aria-current="@(Model.ShowPrevious ? null : "true")">Last 7 days</a>
+                        <a class="seg-link @(Model.ShowPrevious ? "is-active" : "")" href="/Dashboard?week=last#weekly" aria-current="@(Model.ShowPrevious ? "true" : null)">Previous 7 days</a>
+                    </nav>
+                </div>
+
+                <p class="panel-sub">@Model.ChartSummary</p>
+
+                @* This is the chart. The dashed red line is the daily goal (the JavaScript moves it when the goal changes). *@
+                <div class="week-chart" id="weekChart">
+                    <span class="goal-line" id="goalLine" style="bottom: @(Model.GoalLinePercent)%" aria-hidden="true"></span>
+
+                    @* This is a list of 7 bars, one for each day. The number above each bar is how many cards were studied.
+                       "data-value" is that number (the JavaScript uses it). The words in "sr-only" are only for screen readers. *@
+                    <ol class="week-plot">
+                        @foreach (var day in Model.Days)
+                        {
+                            <li class="week-col @(day.IsToday ? "is-today" : "")">
+                                <span class="week-bar" data-value="@day.Cards" style="height: @(Model.BarHeight(day.Cards))%">
+                                    <span class="week-val">@day.Cards<span class="sr-only"> @DashboardModel.Plural(day.Cards, "card"), @day.Label</span></span>
+                                </span>
+                            </li>
+                        }
+                    </ol>
+                </div>
+
+                @* These are the names of the days under the bars. Screen readers skip them, because the bars already say the day. *@
+                <ol class="week-days" aria-hidden="true">
+                    @foreach (var day in Model.Days)
+                    {
+                        <li class="@(day.IsToday ? "is-today" : "")">@day.Label</li>
+                    }
+                </ol>
+
+                @* This explains the dashed line. *@
+                <p class="goal-key"><span class="goal-key-line" aria-hidden="true"></span> Daily goal: <strong id="goalLineText">@Model.Goal</strong> cards</p>
+            </section>
+        </div>
+
+        @* ===== PART 4: THE QUICK ACTIONS ===== *@
+        @* These are two big links. The Create Reviewer page is NOT built yet, so that link shows "not found" for now. *@
+        <div class="actions" data-reveal>
+            <a class="action-card" href="/Reviewers">
+                <span class="icon-chip tone-blue"><partial name="_Icon" model='"search"' /></span>
+                <span class="action-text">
+                    <strong>Explore reviewers</strong>
+                    <span>Browse public reviewers by subject.</span>
+                </span>
+                <span class="action-arrow"><partial name="_Icon" model='"arrow"' /></span>
+            </a>
+            <a class="action-card" href="/ReviewerCreate">
+                <span class="icon-chip tone-red"><partial name="_Icon" model='"pencil"' /></span>
+                <span class="action-text">
+                    <strong>Create a reviewer</strong>
+                    <span>Turn your notes into flashcards.</span>
+                </span>
+                <span class="action-arrow"><partial name="_Icon" model='"arrow"' /></span>
+            </a>
+        </div>
+
+    </div>
+</section>
+
+@* This loads dashboard.js (the goal buttons and the moving chart) into the "Scripts" spot at the bottom of _Layout.cshtml.
+   It comes after site.js. *@
+@section Scripts {
+    <script src="~/js/dashboard.js" asp-append-version="true"></script>
+}
