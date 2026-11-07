@@ -1,13 +1,13 @@
-﻿﻿@{
-// This is for finding out which page the visitor is on right now (for example "/Index" or "/About").
-// We use it to color the matching link in the top menu blue.
-// This line saves the name of the page that is open. If it cannot find one, it uses empty text.
-var currentPage = ViewContext.RouteData.Values["page"]?.ToString() ?? "";
+﻿@{
+    // This is for finding out which page the visitor is on right now (for example "/Home" or "/About").
+    // We use it to color the matching link in the top menu blue.
+    // This line saves the name of the page that is open. If it cannot find one, it uses empty text.
+    var currentPage = ViewContext.RouteData.Values["page"]?.ToString() ?? "";
 
-// This is a small helper for the top menu links.
-// If the link belongs to the page that is open, it gives back "nav-link active" (a blue pill).
-// If not, it gives back only "nav-link" (plain gray text).
-string NavClass(string page) => currentPage == page ? "nav-link active" : "nav-link";
+    // This is a small helper for the top menu links.
+    // If the link belongs to the page that is open, it gives back "nav-link active" (a blue pill).
+    // If not, it gives back only "nav-link" (plain gray text).
+    string NavClass(string page) => currentPage == page ? "nav-link active" : "nav-link";
 }
 @* ============================================================
    This file is _Layout.cshtml.
@@ -52,8 +52,8 @@ string NavClass(string page) => currentPage == page ? "nav-link active" : "nav-l
        asp-append-version makes the browser load the newest copy after you change the file *@
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
 
-    @* NEW: This is a spot where a page can add its OWN style file.
-       The Get Started page uses it to load auth.css.
+    @* This is a spot where a page can add its OWN style file.
+       For example, the Explore Reviewers page uses it to load reviewers.css.
        Pages that do not need it simply leave this spot empty *@
     @await RenderSectionAsync("Styles", required: false)
 </head>
@@ -81,18 +81,25 @@ string NavClass(string page) => currentPage == page ? "nav-link active" : "nav-l
                 </span>
             </a>
 
-            @* MIDDLE: the menu links (Home, Explore Reviewers, About).
+            @* MIDDLE: the menu links (Home, Explore Reviewers, About, and Dashboard for logged-in people).
                "nav" is the web page tag for a menu.
                NavClass(...) colors the link of the page you are on as a blue pill.
                This happens by itself, so you do not need to change it for each page *@
             <nav class="main-nav" aria-label="Main">
                 @* This is for the Home link in the top menu *@
-                <a class="@NavClass("/Index")" href="/">Home</a>
-                @* This is for the "Explore Reviewers" link in the top menu.
-                   FIXED: the address is now "/Reviewers". The Reviewers page is not built yet *@
-                <a class="@NavClass("/Reviewers/Index")" href="/Reviewers">Explore Reviewers</a>
+                <a class="@NavClass("/Home")" href="/">Home</a>
+                @* This is for the "Explore Reviewers" link in the top menu *@
+                <a class="@NavClass("/Reviewers")" href="/Reviewers">Explore Reviewers</a>
                 @* This is for the About link in the top menu *@
                 <a class="@NavClass("/About")" href="/About">About</a>
+
+                @* CHANGED: This is for the Dashboard link in the top menu.
+                   It only shows when the visitor is LOGGED IN. For everyone else the link is not on the page at all.
+                   (Nobody can log in yet, because the real login is not built yet.) *@
+                @if (User.Identity?.IsAuthenticated == true)
+                {
+                    <a class="@NavClass("/Dashboard")" href="/Dashboard">Dashboard</a>
+                }
             </nav>
 
             @* RIGHT SIDE: the Log In link and the Get Started button *@
@@ -150,14 +157,15 @@ string NavClass(string page) => currentPage == page ? "nav-link active" : "nav-l
                 </div>
 
                 @* RIGHT: three lists of links (Platform, Company, Account).
-                   Some of these pages are not built yet, so they show "not found" for now *@
+                   The Contact page and the Login and Get Started pages are built.
+                   Some of these pages may still show "not found" until they are built *@
                 <nav class="footer-links" aria-label="Footer">
-                    @* The "Platform" list *@
+                    @* CHANGED: The "Platform" list now has only Home and Explore Reviewers.
+                       The Dashboard and Progress links were removed *@
                     <div>
                         <h3>Platform</h3>
+                        <a href="/">Home</a>
                         <a href="/Reviewers">Explore Reviewers</a>
-                        <a href="/Dashboard">Dashboard</a>
-                        <a href="/Progress">Progress</a>
                     </div>
                     @* The "Company" list *@
                     <div>
@@ -187,8 +195,8 @@ string NavClass(string page) => currentPage == page ? "nav-link active" : "nav-l
        Right now it makes the scroll animation work (things fade in as you scroll down) *@
     <script src="~/js/site.js" asp-append-version="true"></script>
 
-    @* NEW: This is a spot where a page can add its OWN JavaScript file.
-       The Get Started page uses it to load auth.js.
+    @* This is a spot where a page can add its OWN JavaScript file.
+       The Get Started, Log In, Contact, Flashcard Study, and Dashboard pages use it.
        It comes after site.js, so site.js always loads first *@
     @await RenderSectionAsync("Scripts", required: false)
 </body>

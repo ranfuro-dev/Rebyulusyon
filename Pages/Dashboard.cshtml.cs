@@ -1,3 +1,6 @@
+// This line lets us use [Authorize], which keeps people who are not logged in out of this page.
+using Microsoft.AspNetCore.Authorization;
+
 // This line lets us use [BindProperty], which fills a property from the web address.
 using Microsoft.AspNetCore.Mvc;
 
@@ -12,9 +15,12 @@ namespace Rebyulusyon.Pages;
 
 // This is for the C# side of the DASHBOARD page (Pages/Dashboard.cshtml).
 // It gets the numbers for the page and works out the totals.
-// NOTE: this is a PREVIEW with sample numbers of a pretend student. Nothing comes from a database,
-// and nobody has to be logged in yet. Later, the real progress of the logged-in person will be used.
+// NOTE: the numbers are still SAMPLE numbers of a pretend student. Nothing comes from a database yet.
+// [Authorize] means: only people who are logged in can open this page.
+// Everyone else is sent to the Login page.
+// (While you are building, you can put // in front of [Authorize] to look at the page. Remove the // afterwards!)
 // IMPORTANT: The class in this file must be called DashboardModel, because Dashboard.cshtml uses that name.
+//[Authorize]
 public class DashboardModel : PageModel
 {
     // This is for the chart switch. The web address /Dashboard?week=last shows the days before the last 7 days.

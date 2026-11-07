@@ -1,10 +1,13 @@
-﻿﻿ /* ==========================================================
+﻿/* ==========================================================
    This file is reviewers.css.
-   It is the style file for the Explore Reviewers page only.
+   It is the style file for the Explore Reviewers page.
    It is loaded through the "Styles" spot in _Layout.cshtml.
    It uses the colors and fonts from site.css (like var(--blue)).
    The title "Explore Reviewers" and the three color bars use the "about-hero" styles from site.css.
+   The Reviewer Details page also uses some styles from this file (the colored tag and the list of facts).
    ========================================================== */
+
+
 /* This hides something on the screen but keeps it for screen readers.
    It is used for the label of the search box (we show a magnifying glass instead of the word). */
 .sr-only {
@@ -18,6 +21,18 @@
     white-space: nowrap;
     border: 0;
 }
+
+
+/* ===== THE BACKGROUND OF THE EXPLORE REVIEWERS PAGE =====
+   NEW: "reviewers-page" is a box that wraps the title and the cards (it is in Reviewers.cshtml).
+   The background has 4 soft layers: a pale blue glow at the top left, a very pale yellow glow at the top right,
+   a very faint red glow at the bottom, and a light blue color that goes down the page.
+   The color at the very bottom (#f4f6ff) is the same as the start of the footer, so the two blend together.
+   The glows are very light, so the white cards and the dark words stay easy to read. */
+.reviewers-page {
+    background: radial-gradient(620px 420px at 6% 0%, rgba(0, 56, 168, .10), transparent 70%), radial-gradient(560px 380px at 96% 14%, rgba(252, 209, 22, .14), transparent 70%), radial-gradient(520px 340px at 50% 100%, rgba(206, 17, 38, .05), transparent 70%), linear-gradient(180deg, #eaf0ff 0%, #f1f5ff 55%, #f4f6ff 100%);
+}
+
 
 /* This is for the short sentence under the page title. */
 .page-sub {
@@ -42,9 +57,11 @@
     margin-bottom: 28px;
 }
 
-/* This is for the search form: the search box and the button side by side, in the middle of the page. */
+/* This is for the search form: the search box and the button side by side, in the middle of the page.
+   CHANGED: "align-items: center" keeps the search box and the button on the same center line. */
 .search-form {
     display: flex;
+    align-items: center;
     gap: 12px;
     width: 100%;
     max-width: 680px;
@@ -52,31 +69,51 @@
 }
 
 /* This is for the box that holds the typing area and the magnifying glass.
-   "relative" lets the magnifying glass sit inside the typing area. "flex: 1" makes it take the free space. */
+   "relative" lets the magnifying glass sit inside the typing area. "flex: 1" makes it take the free space.
+   CHANGED: It has an exact height (54 pixels), so the typing area and the magnifying glass always have the same center. */
 .search-box {
     position: relative;
     flex: 1;
     min-width: 0; /* lets the box get smaller on a phone */
+    height: 54px;
 }
 
-/* This is for the magnifying glass picture on the left side inside the search box. */
+/* This is for the magnifying glass picture on the left side inside the search box.
+   CHANGED: It is as tall as the search box ("top: 0" and "bottom: 0"), and "display: flex" with "align-items: center"
+   puts the picture in the exact vertical middle. It sits 18 pixels from the left edge, and it is 20 pixels wide,
+   so it ends at 38 pixels. */
 .search-icon {
     position: absolute;
-    top: 50%;
+    top: 0;
+    bottom: 0;
     left: 18px;
-    transform: translateY(-50%);
+    display: flex;
+    align-items: center;
     font-size: 20px;
-    line-height: 0;
+    line-height: 1;
     color: var(--muted);
     pointer-events: none; /* a click goes through the picture to the box */
 }
 
-/* This is for the typing area of the search bar. The left space leaves room for the magnifying glass. */
+    /* This makes the picture a block, so no extra space is added under it. */
+    .search-icon .icon {
+        display: block;
+    }
+
+/* This is for the typing area of the search bar.
+   CHANGED: "display: block" removes the small extra space that browsers add under a typing area.
+   "height: 100%" makes it as tall as the search box (54 pixels).
+   "line-height: normal" lets the browser put the words in the exact vertical middle.
+   The left space is 50 pixels: the magnifying glass ends at 38 pixels, so there are 12 pixels between the picture and the words.
+   That is the same space as between the search bar and the Search button. The right space is 18 pixels. */
 .search-input {
+    display: block;
     width: 100%;
-    height: 54px;
+    height: 100%;
+    margin: 0;
     padding: 0 18px 0 50px;
     font: inherit; /* uses the same font as the rest of the website */
+    line-height: normal;
     color: var(--ink);
     background: #fff;
     border: 2px solid #d5def5;
@@ -86,9 +123,12 @@
     transition: border-color .15s ease, box-shadow .15s ease;
 }
 
-    /* This is for the gray words shown when the search bar is empty. */
+    /* This is for the gray words shown when the search bar is empty (the placeholder).
+       "opacity: 1" stops some browsers from making the words lighter than this color. */
     .search-input::placeholder {
         color: #66728d;
+        opacity: 1;
+        line-height: normal;
     }
 
     /* This is for when you point at the search bar: the border gets a little darker. */
@@ -103,7 +143,7 @@
         box-shadow: 0 0 0 4px rgba(0, 56, 168, .15);
     }
 
-/* This is for the blue "Search" button. It has the same height as the search bar. */
+/* This is for the blue "Search" button. It has the same height as the search bar (54 pixels). */
 .search-form .btn {
     flex: none;
     height: 54px;
@@ -180,7 +220,8 @@
 }
 
 /* This is for one reviewer card: a white box with round corners and a light border.
-   "flex-direction: column" puts the parts one under the other, so the button can stay at the bottom. */
+   "flex-direction: column" puts the parts one under the other, so the button can stay at the bottom.
+   CHANGED: A very faint blue shadow, so the white card stands out a little on the new background. */
 .reviewer-card {
     display: flex;
     flex-direction: column;
@@ -188,6 +229,7 @@
     background: #fff;
     border: 1px solid #d5def5;
     border-radius: 22px;
+    box-shadow: 0 2px 8px rgba(0, 56, 168, .05);
     transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease;
 }
 
@@ -324,8 +366,13 @@
     }
 }
 
-/* This is for phones (narrower than 600 pixels): 1 card in each row, and less space around the page. */
+/* This is for phones (narrower than 600 pixels): 1 card in each row, and less space around the page.
+   CHANGED: The background glows are smaller, so they fit a narrow screen and do not take over the page. */
 @media (max-width: 600px) {
+    .reviewers-page {
+        background: radial-gradient(360px 300px at 0% 0%, rgba(0, 56, 168, .10), transparent 70%), radial-gradient(320px 280px at 100% 10%, rgba(252, 209, 22, .14), transparent 70%), linear-gradient(180deg, #eaf0ff 0%, #f1f5ff 55%, #f4f6ff 100%);
+    }
+
     .reviewers-section {
         padding-bottom: 64px;
     }
