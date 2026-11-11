@@ -1,0 +1,66 @@
+﻿@* ============================================================
+   This file is _Footer.cshtml.
+   It is the footer shared by the public pages and the logged-in pages.
+   The Account links change automatically depending on whether someone is logged in.
+   ============================================================ *@
+   <footer class="site-footer">
+    <div class="container">
+        <div class="footer-top">
+            <div class="footer-brand">
+                <a class="footer-logo" href="/">
+                    <span class="brand-mark"><partial name="_Icon" model='"flashcard"' /></span>
+                    <span class="footer-logo-name">Rebyulusyon</span>
+                </a>
+
+                <p class="footer-tagline">
+                    Rebyu. Tandaan. Pumasa. A study platform built for Filipino students who review with intent.
+                </p>
+
+                <div class="footer-dots" aria-hidden="true">
+                    <span class="dot-blue"></span>
+                    <span class="dot-red"></span>
+                    <span class="dot-yellow"></span>
+                </div>
+            </div>
+
+            <nav class="footer-links" aria-label="Footer">
+                <div>
+                    <h3>Platform</h3>
+                    <a href="/">Home</a>
+                    <a href="/Reviewers">Explore Reviewers</a>
+                </div>
+
+                <div>
+                    <h3>Company</h3>
+                    <a href="/About">About</a>
+                    <a href="/Contact">Contact</a>
+                </div>
+
+                <div>
+                    @* The Account links depend on whether the visitor is logged in.
+                         Signed-in visitors get a Log out button. Everyone else gets Log In and Get Started. *@
+                    <h3>Account</h3>
+
+                    @* Log out uses a POST form so another website cannot log the visitor out by accident.
+                    ASP.NET adds the hidden security code to this form automatically. *@
+                    @if (User.Identity?.IsAuthenticated == true)
+                    {
+                        <form method="post" asp-page="/Logout">
+                            <button type="submit" class="footer-logout-link">Log out</button>
+                        </form>
+                    }
+                    else
+                    {
+                        <a href="/Login">Log In</a>
+                        <a href="/Register">Get Started</a>
+                    }
+                </div>
+            </nav>
+        </div>
+
+        <div class="footer-bottom">
+            @* DateTime.Now.Year updates the copyright year automatically. *@
+            <p>© @DateTime.Now.Year Rebyulusyon. Gawa ng mga Pilipino, para sa mga estudyante.</p>
+        </div>
+    </div>
+</footer>

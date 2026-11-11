@@ -1180,6 +1180,28 @@ main {
         .footer-links a:hover {
             color: var(--blue);
         }
+    /* The form keeps the Log out button aligned with the other Account links. */
+    .footer-links form {
+        margin: 0;
+    }
+
+    /* This makes the Log out button look like the other footer links. */
+    .footer-logout-link {
+        padding: 0;
+        font: inherit;
+        font-size: 16px;
+        color: var(--muted);
+        text-align: left;
+        background: none;
+        border: 0;
+        cursor: pointer;
+        transition: color .15s ease;
+}
+
+    /* The Log out link turns blue when the visitor points at it. */
+    .footer-logout-link:hover {
+        color: var(--blue);
+    }
 
 /* --- The bottom row of the footer --- */
 

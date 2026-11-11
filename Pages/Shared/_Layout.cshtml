@@ -92,10 +92,7 @@
                 <a class="@NavClass("/Reviewers")" href="/Reviewers">Explore Reviewers</a>
                 @* This is for the About link in the top menu *@
                 <a class="@NavClass("/About")" href="/About">About</a>
-
-                @* CHANGED: This is for the Dashboard link in the top menu.
-                   It only shows when the visitor is LOGGED IN. For everyone else the link is not on the page at all.
-                   (Nobody can log in yet, because the real login is not built yet.) *@
+                @* Show the Dashboard link only when the visitor is logged in. *@
                 @if (User.Identity?.IsAuthenticated == true)
                 {
                     <a class="@NavClass("/Dashboard")" href="/Dashboard">Dashboard</a>
@@ -138,70 +135,8 @@
         @RenderBody()
     </main>
 
-    @* ---------- THE FOOTER (shows on every page because it is in this file) ---------- *@
-    <footer class="site-footer">
-        <div class="container">
-
-            @* TOP ROW: the logo and short text on the left, three link lists on the right *@
-            <div class="footer-top">
-
-                @* LEFT: the logo, the short text, and three colored dots *@
-                <div class="footer-brand">
-                    @* The footer logo. Clicking it goes to the Home page *@
-                    <a class="footer-logo" href="/">
-                        @* This uses the same blue square from the top bar (the "brand-mark" style) *@
-                        <span class="brand-mark"><partial name="_Icon" model='"flashcard"' /></span>
-                        <span class="footer-logo-name">Rebyulusyon</span>
-                    </a>
-                    @* The short text under the footer logo *@
-                    <p class="footer-tagline">
-                        Rebyu. Tandaan. Pumasa. A study platform built for Filipino students who review with intent.
-                    </p>
-
-                    @* These are three small dots in the colors of the Philippine flag (blue, red, yellow).
-                       The colors are set in site.css. They are only for decoration,
-                       so "aria-hidden" tells screen readers to skip them *@
-                    <div class="footer-dots" aria-hidden="true">
-                        <span class="dot-blue"></span>
-                        <span class="dot-red"></span>
-                        <span class="dot-yellow"></span>
-                    </div>
-                </div>
-
-                @* RIGHT: three lists of links (Platform, Company, Account).
-                   The Contact page and the Login and Get Started pages are built.
-                   Some of these pages may still show "not found" until they are built *@
-                <nav class="footer-links" aria-label="Footer">
-                    @* CHANGED: The "Platform" list now has only Home and Explore Reviewers.
-                       The Dashboard and Progress links were removed *@
-                    <div>
-                        <h3>Platform</h3>
-                        <a href="/">Home</a>
-                        <a href="/Reviewers">Explore Reviewers</a>
-                    </div>
-                    @* The "Company" list *@
-                    <div>
-                        <h3>Company</h3>
-                        <a href="/About">About</a>
-                        <a href="/Contact">Contact</a>
-                    </div>
-                    @* The "Account" list *@
-                    <div>
-                        <h3>Account</h3>
-                        <a href="/Login">Log In</a>
-                        <a href="/Register">Get Started</a>
-                    </div>
-                </nav>
-            </div>
-
-            @* BOTTOM ROW: the copyright line under a thin line.
-               DateTime.Now.Year shows the current year by itself, so you never have to update it *@
-            <div class="footer-bottom">
-                <p>© @DateTime.Now.Year Rebyulusyon. Gawa ng mga Pilipino, para sa mga estudyante.</p>
-            </div>
-
-        </div>
-    </footer>
+    @* The shared footer keeps the same links and account actions on every public page. *@
+    <partial name="_Footer" />
 
     @* This loads the JavaScript file (wwwroot/js/site.js).
        Right now it makes the scroll animation work (things fade in as you scroll down) *@
