@@ -1,0 +1,425 @@
+﻿/* ==========================================================
+   This file is dashboard-layout.css.
+   It styles the LOGGED-IN area of the website: the sidebar on the left, the top bar on phones,
+   and the simple "coming soon" pages.
+   It is only loaded by _DashboardLayout.cshtml, so the public pages are not affected.
+   It uses the colors and fonts from site.css (like var(--blue)),
+   and the logo styles (.brand, .brand-mark, .brand-text...) and the button styles (.btn) from site.css too.
+   ========================================================== */
+
+
+/* ===== THE LINK TO SKIP THE SIDEBAR ===== */
+
+/* This link is hidden above the screen. It slides into view when you reach it with the Tab key.
+   It helps people who use the keyboard to go straight to the content. */
+.skip-link {
+    position: absolute;
+    top: -64px;
+    left: 16px;
+    z-index: 100;
+    padding: 10px 16px;
+    font-weight: 800;
+    color: #fff;
+    background: var(--blue);
+    border-radius: 10px;
+    transition: top .15s ease;
+}
+
+    .skip-link:focus {
+        top: 12px;
+    }
+
+
+/* ===== THE WHOLE LOGGED-IN PAGE ===== */
+
+/* This puts the sidebar on the left and the content on the right.
+   (The body in site.css is already a column that is at least as tall as the window.) */
+.app-shell {
+    display: flex;
+    flex: 1 0 auto;
+    width: 100%;
+}
+
+/* This is the right side: the top bar (phones only) and the content. "min-width: 0" stops long words from pushing the page wider. */
+.app-body {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    min-width: 0;
+}
+
+/* This is for the content of a page. It takes all the free space under the top bar. */
+.app-main {
+    flex: 1;
+    min-width: 0;
+}
+
+    /* The browser draws a ring around the content when the skip link sends you there. We do not need it. */
+    .app-main:focus {
+        outline: none;
+    }
+
+
+/* ===== THE SIDEBAR ===== */
+
+/* This is the sidebar. On a computer it stays on the left while the content scrolls ("sticky"),
+   it is as tall as the window, and if the menu is too long, the sidebar itself can scroll.
+   The thin blue, yellow, and red stripe at the top is the Philippine flag colors, like the public top bar. */
+.sidebar {
+    position: sticky;
+    top: 0;
+    flex: none;
+    align-self: flex-start;
+    display: flex;
+    flex-direction: column;
+    width: 272px;
+    height: 100vh;
+    height: 100dvh;
+    padding: 24px 16px 16px;
+    overflow-y: auto;
+    background: linear-gradient(90deg, var(--blue) 0 33.33%, var(--yellow) 33.33% 66.66%, var(--red) 66.66% 100%) top left / 100% 4px no-repeat, #fff;
+    border-right: 1px solid var(--line);
+}
+
+/* This is for the top of the sidebar: the logo on the left and the close button (phones only) on the right. */
+.sidebar-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    padding: 0 6px;
+}
+
+/* This is for the round "X" button. It is hidden on computers. */
+.sidebar-close {
+    display: none;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    flex: none;
+    font-size: 22px;
+    color: var(--muted);
+    background: none;
+    border: 0;
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+    .sidebar-close:hover {
+        color: var(--ink);
+        background: var(--blue-soft);
+    }
+
+    .sidebar-close:focus-visible {
+        outline: 3px solid var(--blue);
+        outline-offset: 2px;
+    }
+
+/* This is for the menu. It takes the free space, so the bottom part (the user and Log out) stays at the bottom. */
+.side-nav {
+    flex: 1;
+    margin-top: 24px;
+}
+
+/* This is for the list of links, and for the smaller list inside "My Subjects". "list-style: none" removes the normal dots. */
+.side-list,
+.side-sub {
+    display: grid;
+    gap: 4px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+/* This is for "My Reviewers", the smaller list under "My Subjects": a little to the right, with a thin line on its left. */
+.side-sub {
+    margin: 4px 0 0 20px;
+    padding-left: 12px;
+    border-left: 2px solid var(--line);
+}
+
+/* This is for one link of the menu. It is 44 pixels tall, so it is easy to touch on a phone.
+   The same style is used for the Log out button. */
+.side-link {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-height: 44px;
+    padding: 0 14px;
+    font-size: 15.5px;
+    font-weight: 700;
+    color: var(--muted);
+    border-radius: 14px;
+    transition: background .15s ease, color .15s ease;
+}
+
+    /* The small picture in front of the words. */
+    .side-link .icon {
+        flex: none;
+        font-size: 20px;
+    }
+
+    /* When you point at a link: a light blue background. */
+    .side-link:hover {
+        color: var(--ink);
+        background: var(--blue-soft);
+    }
+
+    /* The page that is open now: a blue pill with white words (like the top menu of the public pages). */
+    .side-link.is-active {
+        color: #fff;
+        background: var(--blue);
+    }
+
+    /* When you reach a link with the Tab key: a blue ring so you can see where you are. */
+    .side-link:focus-visible {
+        outline: 3px solid var(--blue);
+        outline-offset: 2px;
+    }
+
+/* This is for the bottom of the sidebar: who is logged in, and the Log out button. */
+.sidebar-foot {
+    display: grid;
+    gap: 6px;
+    margin-top: 16px;
+    padding-top: 14px;
+    border-top: 1px solid var(--line);
+}
+
+/* This is for the person: a round letter and the name, side by side. */
+.side-user {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 4px 8px;
+}
+
+/* This is for the round letter (the first letter of the name). */
+.side-avatar {
+    display: grid;
+    place-items: center;
+    width: 40px;
+    height: 40px;
+    flex: none;
+    font-family: var(--font-head);
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--blue);
+    background: var(--blue-soft);
+    border-radius: 50%;
+}
+
+/* This is for the name and the small word under it. A very long name is cut with "...". */
+.side-user-text {
+    min-width: 0;
+}
+
+    .side-user-text strong {
+        display: block;
+        overflow: hidden;
+        font-size: 15px;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .side-user-text span {
+        font-size: 13.5px;
+        color: var(--muted);
+    }
+
+/* This is for the Log out button. It looks like a menu link, but it is a button inside a form.
+   "font: inherit" makes it use the same font as the links. */
+.side-logout {
+    width: 100%;
+    font: inherit;
+    font-size: 15.5px;
+    font-weight: 700;
+    text-align: left;
+    background: none;
+    border: 0;
+    cursor: pointer;
+}
+
+    /* When you point at Log out: a light red background and red words. */
+    .side-logout:hover {
+        color: var(--red);
+        background: var(--red-soft);
+    }
+
+
+/* ===== THE TOP BAR FOR PHONES ===== */
+
+/* This bar is hidden on computers. On phones (when JavaScript works) it is shown by the rules at the bottom of this file. */
+.app-topbar {
+    display: none;
+}
+
+/* This is for the round menu button (three lines). It is 44 by 44 pixels. */
+.menu-btn {
+    display: grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    flex: none;
+    font-size: 24px;
+    color: var(--ink);
+    background: #fff;
+    border: 2px solid #cfd9f3;
+    border-radius: 14px;
+    cursor: pointer;
+}
+
+    .menu-btn:hover {
+        border-color: var(--blue);
+        background: var(--blue-soft);
+    }
+
+    .menu-btn:focus-visible {
+        outline: 3px solid var(--blue);
+        outline-offset: 2px;
+    }
+
+/* This dark layer covers the page behind the open menu on phones. (It has the word "hidden" in the HTML until the menu opens.) */
+.sidebar-backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 50;
+    background: rgba(11, 27, 63, .45);
+}
+
+/* While the menu is open on a phone, the page behind it does not scroll. */
+body.no-scroll {
+    overflow: hidden;
+}
+
+
+/* ===== THE SIMPLE "COMING SOON" PAGES (My Subjects, My Reviewers, Progress, Settings) ===== */
+
+/* This is for the space around the content of these pages. */
+.app-page {
+    padding: 32px 0 88px;
+}
+
+/* This is for the title of these pages. */
+.app-title {
+    margin: 0;
+    font-family: var(--font-head);
+    font-size: clamp(1.8rem, 3.8vw, 2.5rem);
+    font-weight: 600;
+    line-height: 1.15;
+}
+
+/* This is for the short sentence under the title. */
+.app-sub {
+    max-width: 560px;
+    margin: 8px 0 0;
+    font-size: 17px;
+    color: var(--muted);
+}
+
+/* This is for the white box that says the page is not built yet. */
+.app-empty {
+    max-width: 560px;
+    margin-top: 28px;
+    padding: 36px 32px;
+    background: #fff;
+    border: 1px solid #d5def5;
+    border-radius: 22px;
+}
+
+    .app-empty .icon-chip {
+        margin-bottom: 16px;
+    }
+
+    .app-empty h2 {
+        margin: 0 0 8px;
+        font-family: var(--font-head);
+        font-size: 24px;
+        font-weight: 600;
+        line-height: 1.2;
+    }
+
+    .app-empty p {
+        margin: 0 0 22px;
+        color: var(--muted);
+    }
+
+
+/* ===== SETTINGS AND SMALLER SCREENS ===== */
+
+/* This is for people who turned off animations in their computer settings: nothing slides. */
+@media (prefers-reduced-motion: reduce) {
+    .skip-link,
+    .side-link,
+    .sidebar {
+        transition: none !important;
+    }
+}
+
+/* This is for phones and small tablets (narrower than 900 pixels). */
+@media (max-width: 900px) {
+
+    /* Without JavaScript: the sidebar is a normal block at the top of the page, above the content. It is still fully usable. */
+    .app-shell {
+        flex-direction: column;
+    }
+
+    .sidebar {
+        position: static;
+        align-self: stretch;
+        width: 100%;
+        height: auto;
+        overflow-y: visible;
+        border-right: 0;
+        border-bottom: 1px solid var(--line);
+    }
+
+    /* With JavaScript: the sidebar becomes a drawer that slides in from the left.
+       It starts hidden outside the screen ("visibility: hidden" also stops the Tab key from reaching hidden links). */
+    .js .sidebar {
+        position: fixed;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        z-index: 60;
+        width: min(300px, 86vw);
+        height: 100vh;
+        height: 100dvh;
+        overflow-y: auto;
+        border-right: 1px solid var(--line);
+        border-bottom: 0;
+        visibility: hidden;
+        transform: translateX(-100%);
+        transition: transform .25s ease, visibility 0s linear .25s;
+    }
+
+        /* When the menu is open: the drawer slides in and a shadow shows it is above the page. */
+        .js .sidebar.is-open {
+            visibility: visible;
+            transform: none;
+            box-shadow: 0 0 40px rgba(11, 27, 63, .25);
+            transition: transform .25s ease, visibility 0s;
+        }
+
+    .js .sidebar-close {
+        display: grid;
+    }
+
+    /* With JavaScript: the top bar with the menu button is shown, and it stays at the top while you scroll. */
+    .js .app-topbar {
+        position: sticky;
+        top: 0;
+        z-index: 30;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        height: 64px;
+        padding: 0 16px;
+        background: #fff;
+        border-bottom: 1px solid var(--line);
+    }
+
+    .app-page {
+        padding: 24px 0 64px;
+    }
+}

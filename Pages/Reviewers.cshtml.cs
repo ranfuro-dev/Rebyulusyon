@@ -106,6 +106,16 @@ public class ReviewersModel : PageModel
     // This makes the web address for a chip. For example: /Reviewers?category=Science&q=cell
     // It keeps the words from the search bar, so choosing a chip does not erase the search.
     // If the category is null ("All Reviewers"), it is left out of the address.
-    public string PageLink(string? category) =>
-        Url.Page("/Reviewers", new { category, q = Q }) ?? "/Reviewers";
+    // This makes the web address for a category chip and keeps the current layout.
+    public string PageLink(string? category)
+    {
+        var insideDashboard = Request.Query["inside"].ToString() == "dashboard";
+
+        return Url.Page("/Reviewers", new
+        {
+            category,
+            q = Q,
+            inside = insideDashboard ? "dashboard" : null
+        }) ?? "/Reviewers";
+    }
 }

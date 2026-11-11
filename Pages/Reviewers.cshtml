@@ -16,6 +16,10 @@
 @model ReviewersModel
 
 @{
+    // Use the dashboard sidebar when this page is opened from the sidebar.
+    var insideDashboard = Request.Query["inside"].ToString() == "dashboard";
+    Layout = insideDashboard ? "_DashboardLayout" : "_Layout";
+
     // This is for the name on the browser tab. It shows "Explore Reviewers - Rebyulusyon".
     ViewData["Title"] = "Explore Reviewers";
 
@@ -58,6 +62,10 @@
                The search is done in C# and not in JavaScript, so private reviewers are never sent to the browser.
                role="search" tells screen readers that this is a search area. *@
             <form method="get" role="search" class="search-form">
+                @if (insideDashboard)
+                {
+                <input type="hidden" name="inside" value="dashboard" />
+                }
 
                 @* This is the label of the search box. It is hidden on the screen (we show a magnifying glass),
                    but screen readers read it. *@
@@ -122,7 +130,7 @@
             }
             @if (filtersOn)
             {
-                <a class="clear-link" href="/Reviewers">Clear filters</a>
+                <a class="clear-link" href="@(insideDashboard ? "/Reviewers?inside=dashboard" : "/Reviewers")">Clear filters</a>
             }
         </p>
 

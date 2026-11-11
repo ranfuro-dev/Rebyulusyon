@@ -16,6 +16,9 @@
 @model DashboardModel
 
 @{
+    // This tells the page to use the dashboard layout (the sidebar on the left) and not the public layout.
+    Layout = "_DashboardLayout";
+
     // This is for the name on the browser tab. It shows "Dashboard - Rebyulusyon".
     ViewData["Title"] = "Dashboard";
 }

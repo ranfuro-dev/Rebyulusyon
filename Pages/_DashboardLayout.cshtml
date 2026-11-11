@@ -1,0 +1,161 @@
+﻿@{
+    // This is for finding out which page the person is on right now (for example "/Dashboard" or "/MySubjects").
+    // We use it to color the matching link in the sidebar.
+    var currentPage = ViewContext.RouteData.Values["page"]?.ToString() ?? "";
+
+    // This gives back "side-link is-active" (a blue pill) for the page that is open, and "side-link" for the others.
+    string SideClass(string page) => currentPage == page ? "side-link is-active" : "side-link";
+
+    // This gives back the word "page" for the page that is open (screen readers use it), and nothing for the others.
+    string? Current(string page) => currentPage == page ? "page" : null;
+
+    // This is for the name of the person who is logged in.
+    // If there is no name, we write "Student" instead.
+    var userName = User.Identity?.Name;
+    var handle = string.IsNullOrWhiteSpace(userName) ? "Student" : "@" + userName;
+    var initial = string.IsNullOrWhiteSpace(userName) ? "S" : userName[..1].ToUpperInvariant();
+}
+@* ============================================================
+   This file is _DashboardLayout.cshtml.
+   It is the frame for the LOGGED-IN area of the website (the Dashboard and the pages next to it).
+   It has a sidebar on the left, and the content of each page on the right.
+   The public pages (Home, About, Explore Reviewers...) do NOT use this file. They use _Layout.cshtml.
+   A page chooses this layout by writing   Layout = "_DashboardLayout";   at the top of the page.
+   ============================================================ *@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Rebyulusyon</title>
+
+    @* This adds the word "js" to the page when JavaScript works. The phone menu only turns into a drawer when this word is there,
+       so without JavaScript the sidebar is simply shown at the top of the page. *@
+    <script>document.documentElement.classList.add("js");</script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous" />
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+    @* The main style file of the website, and the styles of the sidebar. *@
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/dashboard-layout.css" asp-append-version="true" />
+
+    @* A page can add its OWN style file here (the Dashboard uses it for dashboard.css). *@
+    @await RenderSectionAsync("Styles", required: false)
+</head>
+<body>
+
+    @* This link is only seen when you press the Tab key. It lets keyboard users skip the sidebar and go straight to the content. *@
+    <a class="skip-link" href="#appMain">Skip to content</a>
+
+    <div class="app-shell">
+
+        @* ---------- THE SIDEBAR (on the left) ---------- *@
+        <aside class="sidebar" id="sidebar" aria-label="Dashboard sidebar">
+
+            @* The logo (same as the public top bar). It goes to the Dashboard. The "X" button is only for phones: it closes the menu. *@
+            <div class="sidebar-top">
+                <a class="brand" href="/Dashboard">
+                    <span class="brand-mark"><partial name="_Icon" model='"flashcard"' /></span>
+                    <span class="brand-text">
+                        <span class="brand-name">Rebyu<span class="accent">lusyon</span></span>
+                        <span class="brand-tag">Rebyu. Tandaan. Pumasa.</span>
+                    </span>
+                </a>
+                <button type="button" class="sidebar-close" id="sidebarClose" aria-label="Close menu">
+                    <partial name="_Icon" model='"close"' />
+                </button>
+            </div>
+
+            @* The menu. "My Reviewers" is a smaller list inside "My Subjects", so it shows under it.
+               aria-current="page" tells screen readers which page is open. *@
+            <nav class="side-nav" aria-label="Dashboard">
+                <ul class="side-list">
+                    <li>
+                        <a class="@SideClass("/Dashboard")" href="/Dashboard" aria-current="@Current("/Dashboard")">
+                            <partial name="_Icon" model='"dashboard"' /> Dashboard
+                        </a>
+                    </li>
+                    <li>
+                        @* Explore Reviewers in a sidebar tab. *@
+                        <a class="side-link" href="/Reviewers?inside=dashboard">
+                            <partial name="_Icon" model='"search"' /> Explore Reviewers
+                        </a>
+                    </li>
+                    <li>
+                        <a class="@SideClass("/MySubjects")" href="/MySubjects" aria-current="@Current("/MySubjects")">
+                            <partial name="_Icon" model='"folder"' /> My Subjects
+                        </a>
+                        <ul class="side-sub">
+                            <li>
+                                <a class="@SideClass("/MyReviewers")" href="/MyReviewers" aria-current="@Current("/MyReviewers")">
+                                    <partial name="_Icon" model='"book"' /> My Reviewers
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li>
+                        <a class="@SideClass("/Progress")" href="/Progress" aria-current="@Current("/Progress")">
+                            <partial name="_Icon" model='"chart"' /> Progress
+                        </a>
+                    </li>
+                    <li>
+                        <a class="@SideClass("/Settings")" href="/Settings" aria-current="@Current("/Settings")">
+                            <partial name="_Icon" model='"settings"' /> Settings
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+
+            @* The bottom of the sidebar: who is logged in, and the Log out button.
+               Log out is a small form that sends a POST (not a plain link), so another website cannot log you out by accident.
+               ASP.NET adds a hidden security code to the form by itself. *@
+            <div class="sidebar-foot">
+                <div class="side-user">
+                    <span class="side-avatar" aria-hidden="true">@initial</span>
+                    <span class="side-user-text">
+                        <strong>@handle</strong>
+                        <span>Signed in</span>
+                    </span>
+                </div>
+                <form method="post" asp-page="/Logout">
+                    <button type="submit" class="side-link side-logout">
+                        <partial name="_Icon" model='"logout"' /> Log out
+                    </button>
+                </form>
+            </div>
+        </aside>
+
+        @* ---------- THE RIGHT SIDE: the top bar for phones, and the content of the page ---------- *@
+        <div class="app-body">
+
+            @* This bar is only shown on phones (when JavaScript works). The menu button opens the sidebar. *@
+            <header class="app-topbar">
+                <button type="button" class="menu-btn" id="menuBtn" aria-label="Open menu" aria-controls="sidebar" aria-expanded="false">
+                    <partial name="_Icon" model='"menu"' />
+                </button>
+                <a class="brand" href="/Dashboard">
+                    <span class="brand-mark"><partial name="_Icon" model='"flashcard"' /></span>
+                    <span class="brand-text">
+                        <span class="brand-name">Rebyu<span class="accent">lusyon</span></span>
+                    </span>
+                </a>
+            </header>
+
+            @* This is where the content of the open page appears (Dashboard, My Subjects, and so on). *@
+            <main class="app-main" id="appMain" tabindex="-1">
+                @RenderBody()
+            </main>
+        </div>
+    </div>
+
+    @* This dark layer covers the page behind the open menu on phones. Clicking it closes the menu. It is hidden at first. *@
+    <div class="sidebar-backdrop" id="sidebarBackdrop" hidden></div>
+
+    @* The scroll animation, then the menu code, then any scripts of the page. *@
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="~/js/dashboard-layout.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

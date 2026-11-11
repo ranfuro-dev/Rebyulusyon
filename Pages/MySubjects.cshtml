@@ -1,0 +1,29 @@
+﻿@page
+
+@{
+    // This tells the page to use the dashboard layout (the sidebar on the left).
+    Layout = "_DashboardLayout";
+
+    // This is for the name on the browser tab. It shows "My Subjects - Rebyulusyon".
+    ViewData["Title"] = "My Subjects";
+}
+
+@* ============================================================
+   This file is the My Subjects PAGE (the page you see at "/MySubjects").
+   It is NOT built yet. It only shows a "coming soon" message, so the link in the sidebar has a page to open.
+   Only people who are logged in can open it (the list of protected pages is in Program.cs).
+   ============================================================ *@
+<section class="app-page">
+    <div class="container">
+        <p class="eyebrow">Your library</p>
+        <h1 class="app-title">My Subjects</h1>
+        <p class="app-sub">Organize your reviewers under the subjects you study.</p>
+
+        <div class="app-empty">
+            <span class="icon-chip tone-blue"><partial name="_Icon" model='"folder"' /></span>
+            <h2>Coming soon</h2>
+            <p>You will create subjects here, like Mathematics or Board Exam, and keep your reviewers in them.</p>
+            <a class="btn btn-primary btn-sm" href="/Dashboard">Back to dashboard</a>
+        </div>
+    </div>
+</section>

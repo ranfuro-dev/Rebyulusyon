@@ -5,7 +5,17 @@ using Rebyulusyon.Data;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddRazorPages();
+builder.Services.AddRazorPages(options =>
+{
+    // These pages are ONLY for people who are logged in.
+    // Everyone else is sent to the Login page (the "LoginPath" set in the login cookie below).
+    // When you build a new page for the dashboard, add its name to this list.
+    options.Conventions.AuthorizePage("/Dashboard");
+    options.Conventions.AuthorizePage("/MySubjects");
+    options.Conventions.AuthorizePage("/MyReviewers");
+    options.Conventions.AuthorizePage("/Progress");
+    options.Conventions.AuthorizePage("/Settings");
+});
 
 // ----- Database -----
 // Reads the connection string from appsettings.json and connects to SQL Server.

@@ -1,0 +1,34 @@
+﻿// This line lets us use SignOutAsync, which removes the login cookie.
+using Microsoft.AspNetCore.Authentication;
+
+// This line lets us use "IActionResult", which lets a page answer with a redirect.
+using Microsoft.AspNetCore.Mvc;
+
+// This line lets us use "PageModel", the starting point for a Razor Page's C# code.
+using Microsoft.AspNetCore.Mvc.RazorPages;
+
+// This is the "address" of this code inside your project. It is the same as your other pages.
+namespace Rebyulusyon.Pages;
+
+// This is for the C# side of LOG OUT (the page at "/Logout").
+// This page has nothing to show. It only logs the person out and sends them to the Home page.
+public class LogoutModel : PageModel
+{
+    // "OnGet" runs when someone types /Logout in the address bar. It must NOT log anyone out
+    // (another website could use a plain link to log people out by accident), so it only goes to the Home page.
+    public IActionResult OnGet()
+    {
+        return LocalRedirect("/");
+    }
+
+    // "OnPostAsync" runs when the "Log out" button is pressed (the button is a small form that sends a POST).
+    // ASP.NET also checks the hidden security code of the form, so a fake form from another website is refused.
+    public async Task<IActionResult> OnPostAsync()
+    {
+        // This removes the login cookie from the browser.
+        await HttpContext.SignOutAsync();
+
+        // Then we go to the Home page. "LocalRedirect" only allows addresses inside this website.
+        return LocalRedirect("/");
+    }
+}

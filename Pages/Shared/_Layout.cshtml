@@ -103,16 +103,28 @@
             </nav>
 
             @* RIGHT SIDE: the Log In link and the Get Started button *@
-            <div class="header-actions">
-                @* This is for the Log In link. It opens the Login page *@
-                <a class="link-login" href="/Login">Log In</a>
+                        <div class="header-actions">
+                @* CHANGED: If the person is LOGGED IN, we show a "Log out" button.
+                   Log out is a small form that sends a POST (not a plain link), so another website cannot log you out by accident.
+                   If the person is NOT logged in, we show the Log In link and the Get Started button like before. *@
+                @if (User.Identity?.IsAuthenticated == true)
+                {
+                    <form method="post" asp-page="/Logout">
+                        <button type="submit" class="btn btn-outline btn-sm">Log out</button>
+                    </form>
+                }
+                else
+                {
+                    @* This is for the Log In link. It opens the Login page *@
+                    <a class="link-login" href="/Login">Log In</a>
 
-                @* This is for the blue Get Started button. It opens the Get Started (Register) page.
-                   btn = the button shape, btn-primary = the blue color, btn-sm = the small size.
-                   "zap" is the lightning picture inside the button *@
-                <a class="btn btn-primary btn-sm" href="/Register">
-                    <partial name="_Icon" model='"zap"' /> Get Started
-                </a>
+                    @* This is for the blue Get Started button. It opens the Get Started (Register) page.
+                       btn = the button shape, btn-primary = the blue color, btn-sm = the small size.
+                       "zap" is the lightning picture inside the button *@
+                    <a class="btn btn-primary btn-sm" href="/Register">
+                        <partial name="_Icon" model='"zap"' /> Get Started
+                    </a>
+                }
             </div>
 
         </div>
