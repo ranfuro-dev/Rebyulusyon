@@ -1,0 +1,18 @@
+@page
+@model NotFoundModel
+@{
+    ViewData["Title"] = "Page not found";
+    ViewData["MetaDescription"] = "The page you requested could not be found. Return to Rebyulusyon or explore public reviewers.";
+}
+
+<section class="notfound-section">
+    <div class="container notfound-content">
+        <span class="notfound-code" aria-hidden="true">404</span>
+        <h1>We couldn’t find that page</h1>
+        <p>It may have moved, or the address may be incorrect. You can head home or explore public reviewers.</p>
+        <div class="btn-row">
+            <a class="btn btn-primary btn-lg" href="/">Go to home</a>
+            <a class="btn btn-outline btn-lg" href="/Reviewers">Explore reviewers</a>
+        </div>
+    </div>
+</section>

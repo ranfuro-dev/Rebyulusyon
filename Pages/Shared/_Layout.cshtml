@@ -3,6 +3,10 @@
     // We use it to color the matching link in the top menu blue.
     // This line saves the name of the page that is open. If it cannot find one, it uses empty text.
     var currentPage = ViewContext.RouteData.Values["page"]?.ToString() ?? "";
+    var pageTitle = ViewData["Title"]?.ToString() ?? "Rebyulusyon";
+    var pageDescription = ViewData["MetaDescription"] as string
+        ?? "Create subject-based flashcard reviewers, study with active recall, and track your learning on Rebyulusyon.";
+    var robotsDirective = ViewData["Robots"] as string ?? "index, follow";
 
     // This is a small helper for the top menu links.
     // If the link belongs to the page that is open, it gives back "nav-link active" (a blue pill).
@@ -29,7 +33,14 @@
 
     @* This is for the text on the browser tab, for example "Home - Rebyulusyon".
        Each page sets its own title name, and it is placed here *@
-    <title>@ViewData["Title"] - Rebyulusyon</title>
+    <title>@pageTitle - Rebyulusyon</title>
+    <meta name="description" content="@pageDescription" />
+    <meta name="robots" content="@robotsDirective" />
+    <meta property="og:title" content="@pageTitle - Rebyulusyon" />
+    <meta property="og:description" content="@pageDescription" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Rebyulusyon" />
+    <link rel="icon" href="~/favicon.ico" sizes="any" />
 
     @* This tells the page that JavaScript is working, by adding the word "js" to the page.
        The scroll animation in site.css only hides things when this word is there,
@@ -93,7 +104,13 @@
                "nav" is the web page tag for a menu.
                NavClass(...) colors the link of the page you are on as a blue pill.
                This happens by itself, so you do not need to change it for each page *@
-            <nav class="main-nav" aria-label="Main">
+            @* This button opens the public navigation menu on small screens. *@
+            <button type="button" class="mobile-menu-toggle" id="publicMenuToggle"
+                    aria-label="Open navigation menu" aria-controls="publicMainNav" aria-expanded="false">
+                <partial name="_Icon" model='"menu"' />
+            </button>
+
+            <nav class="main-nav" id="publicMainNav" aria-label="Main">
                 @* This is for the Home link in the top menu *@
                 <a class="@NavClass("/Home")" href="/">Home</a>
                 @* This is for the "Explore Reviewers" link in the top menu *@

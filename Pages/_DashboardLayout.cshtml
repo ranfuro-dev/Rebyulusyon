@@ -2,6 +2,7 @@
     // This is for finding out which page the person is on right now (for example "/Dashboard" or "/MySubjects").
     // We use it to color the matching link in the sidebar.
     var currentPage = ViewContext.RouteData.Values["page"]?.ToString() ?? "";
+    var pageTitle = ViewData["Title"]?.ToString() ?? "Dashboard";
 
     // This gives back "side-link is-active" (a blue pill) for the page that is open, and "side-link" for the others.
     string SideClass(string page) => currentPage == page ? "side-link is-active" : "side-link";
@@ -27,7 +28,14 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - Rebyulusyon</title>
+    <title>@pageTitle - Rebyulusyon</title>
+    <meta name="robots" content="noindex, nofollow" />
+    <meta name="description" content="Your personal Rebyulusyon study workspace." />
+    <meta property="og:title" content="@pageTitle - Rebyulusyon" />
+    <meta property="og:description" content="Your personal Rebyulusyon study workspace." />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Rebyulusyon" />
+    <link rel="icon" href="~/favicon.ico" sizes="any" />
 
     @* Read the saved theme before loading styles so dark mode does not flash light first. *@
     <script>

@@ -38,5 +38,8 @@ Thumbs.db
 appsettings.Development.json
 appsettings.Local.json
 
+# Keep this personal certificate out of the repository.
+/output/pdf/Certificate - Jabonillo, Romel L.pdf
+
 # Test results
 TestResults/

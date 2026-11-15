@@ -15,6 +15,7 @@
 @{
     // This is for the name on the browser tab. It shows "Contact - Rebyulusyon".
     ViewData["Title"] = "Contact";
+    ViewData["MetaDescription"] = "Contact Rebyulusyon with questions, feedback, or partnership inquiries.";
 
     // This is the list of choices in the Subject drop-down list.
     // To change a choice, change the words here. To add one, add a new line.
@@ -62,7 +63,7 @@
             <article class="feature-card contact-item">
                 <span class="icon-chip tone-yellow"><partial name="_Icon" model='"clock"' /></span>
                 <h3>Response time</h3>
-                <p>We reply to messages within a few days.</p>
+                <p>Send us your questions, feedback, or a report using the form.</p>
             </article>
         </div>
 
@@ -86,6 +87,12 @@
                ASP.NET adds a hidden security code to the form by itself, to block fake forms.
                "auth-form" is the name that auth.js looks for to check the form *@
             <form method="post" class="auth-form">
+
+                @* This hidden field is a honeypot: real visitors leave it empty, so bot-filled forms are ignored. *@
+                <div class="contact-honeypot" aria-hidden="true">
+                    <label asp-for="CompanyWebsite">Company website</label>
+                    <input asp-for="CompanyWebsite" tabindex="-1" autocomplete="off" />
+                </div>
 
                 @* ----- BOX 1: USERNAME -----
                    data-rule="required" tells auth.js that this box must not be empty.

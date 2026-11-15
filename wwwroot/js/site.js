@@ -9,6 +9,32 @@
 
 // ===== SCROLL ANIMATION (fade in one time) =====
 
+// Open and close the public navigation menu on phones and small tablets.
+const publicMenuToggle = document.getElementById("publicMenuToggle");
+const publicMainNav = document.getElementById("publicMainNav");
+
+if (publicMenuToggle && publicMainNav) {
+    const closePublicMenu = () => {
+        publicMainNav.classList.remove("is-open");
+        publicMenuToggle.setAttribute("aria-expanded", "false");
+        publicMenuToggle.setAttribute("aria-label", "Open navigation menu");
+    };
+
+    publicMenuToggle.addEventListener("click", () => {
+        const isOpen = publicMainNav.classList.toggle("is-open");
+        publicMenuToggle.setAttribute("aria-expanded", String(isOpen));
+        publicMenuToggle.setAttribute("aria-label", isOpen ? "Close navigation menu" : "Open navigation menu");
+    });
+
+    publicMainNav.querySelectorAll("a").forEach((link) => {
+        link.addEventListener("click", closePublicMenu);
+    });
+
+    document.addEventListener("keydown", (event) => {
+        if (event.key === "Escape") closePublicMenu();
+    });
+}
+
 // Apply the chosen theme and keep the preference in this browser.
 const themeToggle = document.getElementById("darkModeToggle");
 const themeStatus = document.getElementById("themeStatus");

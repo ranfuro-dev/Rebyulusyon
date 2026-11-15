@@ -1,6 +1,9 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.RateLimiting;
 using Rebyulusyon.Data;
+using System.Threading.RateLimiting;
+using System.Xml.Linq;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,6 +18,30 @@ builder.Services.AddRazorPages(options =>
     options.Conventions.AuthorizePage("/MyReviewers");
     options.Conventions.AuthorizePage("/Progress");
     options.Conventions.AuthorizePage("/Settings");
+});
+
+// Slow automated Contact form submissions without limiting normal page browsing.
+builder.Services.AddRateLimiter(options =>
+{
+    options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
+    options.OnRejected = async (context, cancellationToken) =>
+    {
+        context.HttpContext.Response.ContentType = "text/plain; charset=utf-8";
+        await context.HttpContext.Response.WriteAsync(
+            "Too many messages were sent. Please wait a little while and try again.",
+            cancellationToken);
+    };
+
+    options.AddPolicy("ContactMessages", httpContext =>
+        RateLimitPartition.GetFixedWindowLimiter(
+            partitionKey: httpContext.Connection.RemoteIpAddress?.ToString() ?? "unknown",
+            factory: _ => new FixedWindowRateLimiterOptions
+            {
+                PermitLimit = 5,
+                Window = TimeSpan.FromMinutes(10),
+                QueueLimit = 0,
+                AutoReplenishment = true
+            }));
 });
 
 // ----- Database -----
@@ -74,6 +101,7 @@ if (!app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.UseRouting();
+app.UseRateLimiter();
 
 app.UseAuthentication();   // "who is this visitor?" (reads the login cookie). MUST come before UseAuthorization.
 app.UseAuthorization();    // "are they allowed in?"
@@ -81,5 +109,30 @@ app.UseAuthorization();    // "are they allowed in?"
 app.MapStaticAssets();
 app.MapRazorPages()
    .WithStaticAssets();
+
+// Give search engines a sitemap containing only the public pages.
+app.MapGet("/sitemap.xml", (HttpRequest request) =>
+{
+    var origin = $"{request.Scheme}://{request.Host}";
+    XNamespace sitemapNamespace = "http://www.sitemaps.org/schemas/sitemap/0.9";
+    var publicPaths = new[] { "/", "/About", "/Reviewers", "/Contact", "/Privacy" };
+    var sitemap = new XDocument(
+        new XElement(sitemapNamespace + "urlset",
+            publicPaths.Select(path => new XElement(sitemapNamespace + "url",
+                new XElement(sitemapNamespace + "loc", $"{origin}{path}")))));
+
+    return Results.Text(sitemap.ToString(SaveOptions.DisableFormatting), "application/xml; charset=utf-8");
+});
+
+// Keep member pages out of search results and point crawlers to the public sitemap.
+app.MapGet("/robots.txt", (HttpRequest request) =>
+{
+    var sitemapUrl = $"{request.Scheme}://{request.Host}/sitemap.xml";
+    var robots = $"User-agent: *\nAllow: /\nDisallow: /Dashboard\nDisallow: /MySubjects\nDisallow: /MyReviewers\nDisallow: /MyReviewerDetails\nDisallow: /ReviewerCards\nDisallow: /Progress\nDisallow: /Settings\nDisallow: /Study\nDisallow: /FlashcardStudy\nSitemap: {sitemapUrl}\n";
+    return Results.Text(robots, "text/plain; charset=utf-8");
+});
+
+// Send unknown page URLs to a friendly page that still returns the correct 404 status.
+app.MapFallbackToPage("/NotFound");
 
 app.Run();

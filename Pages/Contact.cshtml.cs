@@ -4,11 +4,13 @@ using System.Net;
 using System.Net.Mail;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.AspNetCore.RateLimiting;
 
 // This is the address of the Contact page code in this project.
 namespace Rebyulusyon.Pages;
 
 // This is the C# side of the Contact page. It checks the form and sends messages by email.
+[EnableRateLimiting("ContactMessages")]
 public class ContactModel : PageModel
 {
     private readonly IConfiguration _configuration;
@@ -30,6 +32,10 @@ public class ContactModel : PageModel
     [StringLength(1000, MinimumLength = 10, ErrorMessage = "Your message must be between 10 and 1000 characters.")]
     public string Message { get; set; } = "";
 
+    // Real visitors leave this hidden box empty; basic bots often fill every field they find.
+    [BindProperty]
+    public string CompanyWebsite { get; set; } = "";
+
     // These messages let the page tell the visitor whether the email was sent.
     public string? SuccessMessage { get; private set; }
     public string? ErrorMessage { get; private set; }
@@ -49,6 +55,13 @@ public class ContactModel : PageModel
     // "OnPostAsync" runs when someone clicks "Send message".
     public async Task<IActionResult> OnPostAsync()
     {
+        // Silently accept the form from a bot without sending its message to the inbox.
+        if (!string.IsNullOrWhiteSpace(CompanyWebsite))
+        {
+            SuccessMessage = "Your message was sent. Thank you for contacting us!";
+            return Page();
+        }
+
         // Do not try sending if any required form value is missing or invalid.
         if (!ModelState.IsValid)
         {

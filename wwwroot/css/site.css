@@ -578,6 +578,77 @@ a {
     }
 }
 
+/* On small screens, keep the public navigation in a compact menu button. */
+.mobile-menu-toggle {
+    display: none;
+    align-items: center;
+    justify-content: center;
+    width: 42px;
+    height: 42px;
+    padding: 0;
+    color: var(--blue);
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    cursor: pointer;
+}
+
+.mobile-menu-toggle svg {
+    width: 20px;
+    height: 20px;
+}
+
+@media (max-width: 860px) {
+    .header-inner {
+        flex-wrap: wrap;
+        gap: 8px;
+        padding-top: 8px;
+        padding-bottom: 8px;
+    }
+
+    .brand {
+        order: 1;
+    }
+
+    .brand-tag {
+        display: none;
+    }
+
+    .mobile-menu-toggle {
+        display: inline-flex;
+        order: 2;
+        margin-left: auto;
+    }
+
+    .header-actions {
+        order: 3;
+        gap: 10px;
+    }
+
+    .header-actions > .btn {
+        display: none;
+    }
+
+    .main-nav {
+        display: none;
+        order: 4;
+        flex: 0 0 100%;
+        flex-direction: column;
+        gap: 4px;
+        padding-top: 8px;
+        border-top: 1px solid var(--line);
+    }
+
+    .main-nav.is-open {
+        display: flex;
+    }
+
+    .main-nav .nav-link {
+        padding: 11px 14px;
+        border-radius: 12px;
+    }
+}
+
 
 /* ===== 8. FEATURES SECTION (the six cards under "Everything in one place") ===== */
 
@@ -1087,6 +1158,78 @@ main {
 /* Add a clear gap before the footer on the Contact page. */
 .site-footer.contact-footer {
     margin-top: 48px;
+}
+
+/* A centered layout for the friendly page shown when a URL does not exist. */
+.notfound-section {
+    display: grid;
+    min-height: 52vh;
+    place-items: center;
+    padding: 64px 0;
+    text-align: center;
+}
+
+.notfound-content {
+    max-width: 680px;
+}
+
+.notfound-code {
+    display: inline-block;
+    margin-bottom: 8px;
+    color: var(--blue);
+    font-family: var(--font-head);
+    font-size: clamp(56px, 12vw, 96px);
+    font-weight: 700;
+    line-height: 1;
+}
+
+.notfound-content h1 {
+    margin: 0 0 12px;
+    font-family: var(--font-head);
+}
+
+.notfound-content p {
+    margin: 0 auto 24px;
+    color: var(--muted);
+}
+
+.notfound-content .btn-row {
+    justify-content: center;
+}
+
+/* A readable text column for the Privacy Policy and other long-form site information. */
+.legal-page {
+    padding: 56px 0 80px;
+}
+
+.legal-content {
+    max-width: 840px;
+}
+
+.legal-content h1 {
+    margin: 8px 0;
+    font-family: var(--font-head);
+}
+
+.legal-content h2 {
+    margin: 32px 0 10px;
+    font-family: var(--font-head);
+    font-size: 23px;
+}
+
+.legal-content p,
+.legal-content li {
+    color: var(--muted);
+    line-height: 1.75;
+}
+
+.legal-content li + li {
+    margin-top: 8px;
+}
+
+.legal-updated {
+    margin: 0 0 24px;
+    font-size: 14px;
 }
 
 /* This is for the top row of the footer: the logo part on the left and the link lists on the right.

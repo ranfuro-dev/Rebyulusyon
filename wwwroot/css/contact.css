@@ -44,6 +44,15 @@
     margin: 0;
 }
 
+/* Keep the anti-spam honeypot out of sight and out of the keyboard tab order. */
+.contact-honeypot {
+    position: absolute;
+    left: -10000px;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+}
+
 /* This is for the title of the form ("Send us a message"). */
 .contact-form-title {
     margin: 0 0 6px;

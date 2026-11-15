@@ -1,8 +1,37 @@
-﻿@page
+@page
 @model PrivacyModel
 @{
     ViewData["Title"] = "Privacy Policy";
+    ViewData["MetaDescription"] = "Learn what account, study, and contact information Rebyulusyon uses and how to request help with your data.";
 }
-<h1>@ViewData["Title"]</h1>
 
-<p>Use this page to detail your site's privacy policy.</p>
+<section class="legal-page">
+    <div class="container legal-content">
+        <span class="eyebrow">Your information</span>
+        <h1>@ViewData["Title"]</h1>
+        <p class="legal-updated">Last updated: November 15, 2026</p>
+        <p>This page describes the information Rebyulusyon currently uses to provide its study tools and contact form.</p>
+
+        <h2>Information used by the app</h2>
+        <ul>
+            <li><strong>Account details:</strong> your username, email address, and password hash used to sign in. The app does not store your password as readable text.</li>
+            <li><strong>Study content:</strong> subjects, reviewer titles and descriptions, flashcard questions and answers, and whether your reviewers are public or private.</li>
+            <li><strong>Study activity and preferences:</strong> card activity used to show progress, your daily goal and week-start preference, and your dark-mode preference.</li>
+        </ul>
+
+        <h2>Contact messages</h2>
+        <p>The Contact form sends the username, selected subject, and message you submit to the email inbox configured by the site operator. The app does not save those messages in its study database. The email and inbox providers may process the message to deliver and store it.</p>
+
+        <h2>Cookies and browser storage</h2>
+        <p>Rebyulusyon uses an authentication cookie to keep you signed in. It also saves your dark-mode choice in your browser’s local storage. The project currently has no analytics service or advertising tracker installed.</p>
+
+        <h2>Service providers</h2>
+        <p>Account and study data are stored in the PostgreSQL database configured for the app. Contact messages are sent through the configured SMTP email provider. The site loads fonts from Google Fonts. The providers used by a deployed version depend on its hosting configuration.</p>
+
+        <h2>Keeping or requesting removal of information</h2>
+        <p>Study data remains in the app while your account is active. You can delete individual subjects and reviewers in the app. There is no self-service account deletion feature yet; contact us through the <a href="/Contact">Contact form</a> to request help removing account information. Contact messages remain in the receiving inbox until its owner deletes them.</p>
+
+        <h2>Changes and questions</h2>
+        <p>If the app’s data practices or service providers change, this page should be updated. For a privacy question, use the <a href="/Contact">Contact form</a>.</p>
+    </div>
+</section>
