@@ -1,0 +1,138 @@
+﻿@page "{reviewerId:int}"
+@model StudyModel
+
+@{
+    // This is the title shown in the browser tab.
+    ViewData["Title"] = "Study: " + Model.Reviewer.Title;
+
+    // Use the logged-in layout with its sidebar.
+    Layout = "_DashboardLayout";
+}
+
+@section Styles {
+    @* Reuse the styles from the existing interactive study page. *@
+    <link rel="stylesheet" href="~/css/flashcard-study.css" asp-append-version="true" />
+}
+
+<section class="study-section">
+    <div class="container study-wrap">
+        @* This link returns to the page where you manage this reviewer's cards. *@
+        <a class="study-back" href="@Model.BackUrl">
+            @Model.BackLabel
+        </a>
+
+        <h1 class="study-title">@Model.Reviewer.Title</h1>
+        <p class="study-by">Subject: @Model.Reviewer.Subject.Name</p>
+
+        @if (Model.Cards.Count == 0)
+        {
+            @* Show this message when the reviewer has no cards to study yet. *@
+            <div class="app-empty">
+                <p>Add at least one flashcard before studying this reviewer.</p>
+            </div>
+        }
+        else
+        {
+            @* The JavaScript reads the cards from the hidden list below. *@
+            <div class="study-app" id="studyApp" data-record-url="/Study/@Model.Reviewer.Id?handler=Record">
+                @Html.AntiForgeryToken()
+                <div id="deckArea">
+                    <div class="study-progress">
+                        <div class="study-progress-top">
+                            <span id="progressText">Card 1 of @Model.Cards.Count</span>
+                            <span id="scoreText">0 right · 0 missed</span>
+                        </div>
+
+                        <div class="bar" id="progressBar"
+                             role="progressbar"
+                             aria-label="Progress through the cards"
+                             aria-valuemin="1"
+                             aria-valuemax="@Model.Cards.Count"
+                             aria-valuenow="1">
+                            <div class="bar-fill" id="progressFill" style="width: 0%"></div>
+                        </div>
+                    </div>
+
+                    @* Clicking the card, or pressing Enter or Space, flips it. *@
+                    <div class="flip-card" id="flipCard"
+                         role="button"
+                         tabindex="0"
+                         aria-describedby="flipHint">
+                        <div class="flip-inner" id="flipInner">
+                            <div class="flip-face flip-front" id="faceFront">
+                                <span class="face-label">Question</span>
+                                <span class="face-text" id="frontText">@Model.Cards[0].Question</span>
+                            </div>
+
+                            <div class="flip-face flip-back" id="faceBack" aria-hidden="true">
+                                <span class="face-label">Answer</span>
+                                <span class="face-text" id="backText">@Model.Cards[0].Answer</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <p class="flip-hint" id="flipHint">
+                        Click the card to reveal the answer.
+                    </p>
+
+                    <div class="study-actions is-hidden" id="ratingRow">
+                        <button type="button" class="btn btn-miss btn-lg" id="btnMissed">I missed it</button>
+                        <button type="button" class="btn btn-primary btn-lg" id="btnGot">I got it</button>
+                    </div>
+
+                    <div class="study-nav">
+                        <button type="button" class="btn btn-outline btn-sm" id="btnPrev" disabled>
+                            ← Previous
+                        </button>
+                        <button type="button" class="btn btn-outline btn-sm" id="btnNext">
+                            <span id="nextLabel">Next</span> →
+                        </button>
+                    </div>
+                </div>
+
+                @* The JavaScript shows this results area after the last card. *@
+                <div class="study-results" id="results" hidden>
+                    <h2 id="resultTitle" tabindex="-1">Nice work!</h2>
+                    <p class="results-line" id="resultLine"></p>
+
+                    <div class="results-stats">
+                        <div><strong class="stat-got" id="statGot">0</strong><span>Got it</span></div>
+                        <div><strong class="stat-missed" id="statMissed">0</strong><span>Missed</span></div>
+                        <div><strong class="stat-skipped" id="statSkipped">0</strong><span>Not rated</span></div>
+                    </div>
+
+                    <div class="study-actions">
+                        <button type="button" class="btn btn-primary btn-lg" id="btnRestart">
+                            Study again
+                        </button>
+                        <a class="btn btn-outline btn-lg" href="@Model.BackUrl">
+                            Back to reviewer
+                        </a>
+                    </div>
+                </div>
+
+                @* This line announces card changes to screen readers. *@
+                <p class="sr-only" id="announce" aria-live="polite"></p>
+            </div>
+
+            @* The JavaScript reads each question and answer from this list. *@
+            <div class="study-fallback">
+                <p>Flashcards:</p>
+                <ol id="deck">
+                    @foreach (var card in Model.Cards)
+                    {
+                        <li data-card-id="@card.Id">
+                            <strong data-question>@card.Question</strong>
+                            <span data-answer>@card.Answer</span>
+                        </li>
+                    }
+                </ol>
+            </div>
+        }
+    </div>
+</section>
+
+@section Scripts {
+    @* Reuse the JavaScript that flips cards and tracks the study session. *@
+    <script src="~/js/flashcard-study.js" asp-append-version="true"></script>
+}

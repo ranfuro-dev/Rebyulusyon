@@ -3,7 +3,7 @@
    It is the footer shared by the public pages and the logged-in pages.
    The Account links change automatically depending on whether someone is logged in.
    ============================================================ *@
-   <footer class="site-footer">
+   <footer class="site-footer @(ViewContext.RouteData.Values["page"]?.ToString() == "/Contact" ? "contact-footer" : "")">
     <div class="container">
         <div class="footer-top">
             <div class="footer-brand">

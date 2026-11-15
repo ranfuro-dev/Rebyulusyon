@@ -1,22 +1,58 @@
+// This line lets us check the password and save the new account.
+using Microsoft.AspNetCore.Identity;
+
+// This line lets us check form input such as required fields and matching passwords.
+using System.ComponentModel.DataAnnotations;
+
 // This line lets us use "IActionResult", which lets a page answer with a redirect.
 using Microsoft.AspNetCore.Mvc;
 
-// This line lets us use "PageModel", the starting point for a Razor Page's C# code.
+// This line lets us use "BindProperty" and "PageModel".
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
-// This is the "address" of this code inside your project. It is the same as your other pages.
+// This line lets us use our custom account class.
+using Rebyulusyon.Data;
+
+// This is the "address" of this code inside your project.
 namespace Rebyulusyon.Pages;
 
-// This is for the C# side of the GET STARTED (REGISTER) page (Pages/Register.cshtml).
-// The form is still only a design preview: it does NOT read the form, save anything, or create an account.
+// This is for the C# side of the GET STARTED (REGISTER) page.
 public class RegisterModel : PageModel
 {
-    // This is for the yellow notice at the top of the form.
-    // It is false when the page first opens, and it becomes true after the form is sent.
-    public bool Submitted { get; private set; }
+    private readonly UserManager<ApplicationUser> _userManager;
+    private readonly SignInManager<ApplicationUser> _signInManager;
 
-    // "OnGet" runs when someone OPENS the page (for example, by clicking "Get Started").
-    // If the person is already logged in, there is no reason to show this page, so we send them to the Dashboard.
+    // ASP.NET gives us the account tools we need to create the account and sign in.
+    public RegisterModel(
+        UserManager<ApplicationUser> userManager,
+        SignInManager<ApplicationUser> signInManager)
+    {
+        _userManager = userManager;
+        _signInManager = signInManager;
+    }
+
+    // These properties receive the values typed into the registration form.
+    [BindProperty]
+    [Required]
+    [StringLength(20, MinimumLength = 3)]
+    public string Username { get; set; } = "";
+
+    [BindProperty]
+    [Required]
+    [EmailAddress]
+    public string Email { get; set; } = "";
+
+    [BindProperty]
+    [Required]
+    [MinLength(8)]
+    public string Password { get; set; } = "";
+
+    [BindProperty]
+    [Required]
+    [Compare(nameof(Password), ErrorMessage = "The passwords do not match.")]
+    public string ConfirmPassword { get; set; } = "";
+
+    // If someone is already signed in, send them to the Dashboard.
     public IActionResult OnGet()
     {
         if (User.Identity?.IsAuthenticated == true)
@@ -27,21 +63,42 @@ public class RegisterModel : PageModel
         return Page();
     }
 
-    // "OnPost" runs when someone SENDS the form (by clicking "Create account").
-    // We do NOT read the username, email, or password here, so nothing is saved or kept.
-    public IActionResult OnPost()
+    // This runs when someone submits the registration form.
+    public async Task<IActionResult> OnPostAsync()
     {
         if (User.Identity?.IsAuthenticated == true)
         {
             return RedirectToPage("/Dashboard");
         }
 
-        Submitted = true;
+        if (!ModelState.IsValid)
+        {
+            return Page();
+        }
 
-        // LATER, when the real sign-up is built: after the account is created and the person is signed in,
-        // the next line is what sends them to the Dashboard:
-        //     return RedirectToPage("/Dashboard");
+        // Make the username and email consistent by removing extra spaces.
+        var user = new ApplicationUser
+        {
+            UserName = Username.Trim(),
+            Email = Email.Trim()
+        };
 
-        return Page();
+        // ASP.NET Identity checks the password rules and saves the account to PostgreSQL.
+        var result = await _userManager.CreateAsync(user, Password);
+
+        if (!result.Succeeded)
+        {
+            // Show Identity errors, such as a username or email that is already in use.
+            foreach (var error in result.Errors)
+            {
+                ModelState.AddModelError(string.Empty, error.Description);
+            }
+
+            return Page();
+        }
+
+        // Sign in the new account and open the Dashboard.
+        await _signInManager.SignInAsync(user, isPersistent: false);
+        return RedirectToPage("/Dashboard");
     }
 }

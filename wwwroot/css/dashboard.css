@@ -41,6 +41,18 @@
     margin-bottom: 20px;
 }
 
+.dash-head-actions {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.dash-reset-form {
+    margin: 0;
+}
+
     /* This is for the small blue word "DASHBOARD" above the welcome. */
     .dash-head .eyebrow {
         margin: 0 0 6px;
@@ -444,6 +456,40 @@
     color: var(--muted);
 }
 
+.done-remove-form {
+    flex: none;
+    margin: 0;
+}
+
+.done-remove-button {
+    display: grid;
+    place-items: center;
+    width: 34px;
+    height: 34px;
+    padding: 7px;
+    color: var(--red);
+    background: var(--red-soft);
+    border: 1px solid #f3c6cb;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: background .16s ease, transform .16s ease;
+}
+
+.done-remove-button:hover {
+    background: #f8dadd;
+    transform: translateY(-1px);
+}
+
+.done-remove-button:focus-visible {
+    outline: 3px solid rgba(206, 17, 38, .22);
+    outline-offset: 2px;
+}
+
+.done-remove-button .icon {
+    width: 16px;
+    height: 16px;
+}
+
 
 /* ===== THE SWITCH (last 7 days / previous 7 days) ===== */
 
@@ -706,6 +752,11 @@
     }
 
     .dash-head > div:last-child {
+        width: 100%;
+    }
+
+    .dash-reset-form,
+    .dash-reset-form .btn {
         width: 100%;
     }
 

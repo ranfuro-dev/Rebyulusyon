@@ -233,6 +233,43 @@
     transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease;
 }
 
+/* This keeps the subject badge and delete icon on one row. */
+.reviewer-card-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+/* This keeps the delete form from adding space around the top row. */
+.reviewer-delete-form {
+    margin: 0;
+}
+
+/* This styles the small delete icon button without changing the card's main action button. */
+.reviewer-delete-button {
+    display: grid;
+    width: 34px;
+    height: 34px;
+    place-items: center;
+    padding: 0;
+    color: #b42318;
+    background: #fff1f0;
+    border: 1px solid #ffd2cf;
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+.reviewer-delete-button:hover {
+    color: #fff;
+    background: #b42318;
+}
+
+.reviewer-delete-button .icon {
+    width: 16px;
+    height: 16px;
+}
+
     /* This is for when you point at a card: it moves up a little and gets a soft shadow. */
     .reviewer-card:hover {
         transform: translateY(-3px);
@@ -315,6 +352,54 @@
     width: 100%;
 }
 
+/* Reserve space for the delete icon on flashcards in the management list. */
+.reviewer-card.flashcard-management-item {
+    min-width: 0;
+    padding: 18px 58px 18px 20px;
+}
+
+/* Show several compact flashcards on wide screens and fewer as the screen narrows. */
+.flashcard-management-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 320px), 1fr));
+    gap: 14px;
+}
+
+/* Keep the question and answer labels close to their text inside each small card. */
+.flashcard-management-item h3 {
+    margin: 0 0 4px;
+    font-size: 15px;
+}
+
+.flashcard-management-item p {
+    margin: 0 0 12px;
+    overflow-wrap: anywhere;
+    font-size: 14px;
+    color: var(--muted);
+}
+
+.flashcard-management-item p:last-child {
+    margin-bottom: 0;
+}
+
+.flashcard-delete-form {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    margin: 0;
+}
+
+@media (max-width: 600px) {
+    .flashcard-management-grid {
+        grid-template-columns: 1fr;
+        gap: 12px;
+    }
+
+    .reviewer-card.flashcard-management-item {
+        padding: 16px 54px 16px 16px;
+    }
+}
+
 
 /* ===== WHEN NOTHING IS FOUND ===== */
 
@@ -389,3 +474,4 @@
         padding: 0 18px;
     }
 }
+

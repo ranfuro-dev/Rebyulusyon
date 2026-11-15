@@ -139,6 +139,24 @@
     gap: 12px;
 }
 
+/* This separates the flashcard controls from the reviewer description and study button. */
+.details-flashcard-tools {
+    margin-top: 28px;
+    padding-top: 22px;
+    border-top: 1px solid var(--line);
+}
+
+.details-flashcard-tools h3 {
+    margin: 0 0 6px;
+    font-family: var(--font-head);
+    font-size: 19px;
+}
+
+.details-flashcard-tools p {
+    margin: 0 0 16px;
+    color: var(--muted);
+}
+
 
 /* ===== THE PREVIEW LIST ===== */
 
@@ -233,6 +251,96 @@
     }
 
     .details-actions .btn {
+        width: 100%;
+    }
+}
+
+/* Add breathing room above the private reviewer details page in the dashboard. */
+.my-reviewer-details-hero {
+    padding-top: 56px;
+}
+
+@media (max-width: 600px) {
+    .my-reviewer-details-hero {
+        padding-top: 44px;
+    }
+}
+
+/* This section controls whether the owner shares this reviewer with other users. */
+.reviewer-visibility {
+    margin-top: 28px;
+    padding-top: 22px;
+    border-top: 1px solid var(--line);
+}
+
+.reviewer-visibility h3 {
+    margin: 0 0 6px;
+    font-family: var(--font-head);
+    font-size: 19px;
+}
+
+.reviewer-visibility > p {
+    margin: 0 0 15px;
+    color: var(--muted);
+}
+
+.visibility-options {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+    margin-bottom: 14px;
+}
+
+.visibility-option {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    min-width: 0;
+    padding: 13px;
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    background: var(--bg);
+    cursor: pointer;
+}
+
+.visibility-option input {
+    flex: none;
+    margin: 3px 0 0;
+    accent-color: var(--blue);
+}
+
+.visibility-option span {
+    display: grid;
+    gap: 3px;
+}
+
+.visibility-option small {
+    color: var(--muted);
+    line-height: 1.4;
+}
+
+.visibility-option:has(input:checked) {
+    border-color: var(--blue);
+    background: var(--blue-soft);
+}
+
+.visibility-form > .btn {
+    min-height: 42px;
+}
+
+.visibility-message {
+    padding: 10px 12px;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    background: var(--blue-soft);
+}
+
+@media (max-width: 600px) {
+    .visibility-options {
+        grid-template-columns: 1fr;
+    }
+
+    .visibility-form > .btn {
         width: 100%;
     }
 }

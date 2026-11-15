@@ -9,6 +9,28 @@
 
 // ===== SCROLL ANIMATION (fade in one time) =====
 
+// Apply the chosen theme and keep the preference in this browser.
+const themeToggle = document.getElementById("darkModeToggle");
+const themeStatus = document.getElementById("themeStatus");
+
+if (themeToggle) {
+    themeToggle.addEventListener("change", () => {
+        const theme = themeToggle.checked ? "dark" : "light";
+        document.documentElement.dataset.theme = theme;
+
+        try {
+            localStorage.setItem("rebyulusyon-theme", theme);
+            if (themeStatus) {
+                themeStatus.textContent = themeToggle.checked
+                    ? "Dark mode is on. Your preference is saved in this browser."
+                    : "Dark mode is off. Your preference is saved in this browser.";
+            }
+        } catch {
+            if (themeStatus) themeStatus.textContent = "Your browser could not save this preference.";
+        }
+    });
+}
+
 // This finds every part of the page that has "data-reveal" in its HTML.
 // For example: the hero text, the feature cards, the About page cards, and the blue banner.
 const revealTargets = document.querySelectorAll("[data-reveal]");

@@ -34,19 +34,17 @@
             <h1>Welcome back</h1>
             <p class="auth-sub">Log in to continue reviewing.</p>
 
-            @* This is for the yellow notice. It only shows AFTER the form was sent (Submitted is true).
-               It says that this page is only a design preview. "role=status" tells screen readers to read it *@
-            @if (Model.Submitted)
-            {
-                <div class="form-alert form-alert-info" role="status">
-                    This is a design preview. You were not logged in yet.
-                </div>
-            }
-
             @* This is the form. "method=post" means it sends the information to the C# file (OnPost).
                ASP.NET adds a hidden security code to the form by itself, to block fake forms.
                "auth-form" is the name that auth.js looks for to check the form *@
             <form method="post" class="auth-form">
+                <input type="hidden" asp-for="ReturnUrl" />
+
+                    @if (!ViewData.ModelState.IsValid)
+                    {
+                     <div asp-validation-summary="ModelOnly"class="form-alert form-alert-error"role="alert">
+                     </div>
+                    }
 
                 @* ----- BOX 1: USERNAME OR EMAIL ADDRESS -----
                    One box that will accept either one, once real login is added.
@@ -60,7 +58,7 @@
                            data-required-message="Please enter your username or email address."
                            aria-describedby="UserNameOrEmail-error" />
                     @* This empty line is where auth.js writes the red message for this box *@
-                    <span class="field-error" id="UserNameOrEmail-error" aria-live="polite"></span>
+                    <span asp-validation-for="UserNameOrEmail"class="field-error"id="UserNameOrEmail-error"aria-live="polite"></span>
                 </div>
 
                 @* ----- BOX 2: PASSWORD (with the show/hide eye button) ----- *@
@@ -81,7 +79,7 @@
                             <span class="eye-hide"><partial name="_Icon" model='"eyeoff"' /></span>
                         </button>
                     </div>
-                    <span class="field-error" id="Password-error" aria-live="polite"></span>
+                    <span asp-validation-for="Password"lass="field-error"id="Password-error"aria-live="polite"></span>
                 </div>
 
                 @* ----- REMEMBER ME -----

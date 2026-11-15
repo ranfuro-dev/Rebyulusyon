@@ -1,0 +1,168 @@
+﻿@page "{reviewerId:int}"
+@model MyReviewerDetailsModel
+
+@{
+    // Use the logged-in layout and show the reviewer title in the browser tab.
+    Layout = "_DashboardLayout";
+    ViewData["Title"] = Model.Reviewer.Title;
+
+    // Show only the first three questions in the preview.
+    var previewCards = Model.Cards.Take(3).ToList();
+    var more = Model.Cards.Count - previewCards.Count;
+    var creatorName = Model.Reviewer.Owner.UserName ?? "you";
+}
+
+@section Styles {
+    @* Reuse the styles from the public reviewer details page. *@
+    <link rel="stylesheet" href="~/css/reviewers.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/reviewer-details.css" asp-append-version="true" />
+}
+
+@* The subject badge, reviewer title, and creator. *@
+<section class="details-hero my-reviewer-details-hero">
+    <div class="container" data-reveal>
+        <a class="back-link" href="/MyReviewers">
+            <span class="back-arrow"><partial name="_Icon" model='"arrow"' /></span>
+            Back to My Reviewers
+        </a>
+
+        <span class="reviewer-tag tone-@Model.Reviewer.Subject.Tone">@Model.Reviewer.Subject.Name</span>
+
+        <h1>@Model.Reviewer.Title</h1>
+
+        <p class="details-by">
+            <partial name="_Icon" model='"user"' />
+            <span>Created by <strong>@("@" + creatorName)</strong></span>
+        </p>
+    </div>
+</section>
+
+@* The about card and question preview appear side by side. *@
+<section class="details-section">
+    <div class="container details-grid">
+
+        @* Reviewer description and actions. *@
+        <article class="details-card" data-reveal>
+            <h2>About this reviewer</h2>
+
+            @if (!string.IsNullOrWhiteSpace(Model.Reviewer.Description))
+            {
+                <p class="details-text">@Model.Reviewer.Description</p>
+            }
+            else
+            {
+                <p class="details-text">No description has been added yet.</p>
+            }
+
+            <ul class="reviewer-meta">
+                <li>
+                    <partial name="_Icon" model='"layers"' />
+                    <span>@Model.Cards.Count flashcards</span>
+                </li>
+                <li>
+                    <partial name="_Icon" model='"user"' />
+                    <span>Created by <strong>@("@" + creatorName)</strong></span>
+                </li>
+            </ul>
+
+            <div class="details-actions">
+                <a class="btn btn-primary btn-lg" href="/Study/@Model.Reviewer.Id">
+                    <partial name="_Icon" model='"flashcard"' /> Start Studying
+                </a>
+            </div>
+
+            @* These actions open the page where this reviewer’s flashcards can be added or deleted. *@
+            <section class="details-flashcard-tools" aria-labelledby="flashcardToolsTitle">
+                <h3 id="flashcardToolsTitle">Manage flashcards</h3>
+                <p>Add a new flashcard or open the list to remove one.</p>
+                <div class="details-actions">
+                    <a class="btn btn-primary btn-sm"
+                       href="/ReviewerCards/@Model.Reviewer.Id#addFlashcard">
+                        Add a flashcard
+                    </a>
+                    <a class="btn btn-outline btn-sm"
+                       href="/ReviewerCards/@Model.Reviewer.Id#flashcards">
+                        Delete a flashcard
+                    </a>
+                </div>
+            </section>
+
+            @* Choose whether this reviewer can appear in Explore Reviewers. *@
+            <section class="reviewer-visibility" aria-labelledby="reviewerVisibilityTitle">
+                <h3 id="reviewerVisibilityTitle">Reviewer visibility</h3>
+                <p>Public reviewers can be discovered by other users. Private reviewers stay in your account.</p>
+
+                @if (TempData["VisibilityMessage"] is string visibilityMessage)
+                {
+                    <p class="visibility-message" role="status">@visibilityMessage</p>
+                }
+
+                <form method="post"
+                      asp-page-handler="UpdateVisibility"
+                      asp-route-reviewerId="@Model.Reviewer.Id"
+                      class="visibility-form">
+                    <div class="visibility-options" role="radiogroup" aria-label="Reviewer visibility">
+                        <label class="visibility-option">
+                            <input asp-for="IsPublic" type="radio" value="true" />
+                            <span>
+                                <strong>Public</strong>
+                                <small>Show in Explore Reviewers</small>
+                            </span>
+                        </label>
+                        <label class="visibility-option">
+                            <input asp-for="IsPublic" type="radio" value="false" />
+                            <span>
+                                <strong>Private</strong>
+                                <small>Only you can access it</small>
+                            </span>
+                        </label>
+                    </div>
+                    <button type="submit" class="btn btn-outline btn-sm">Save visibility</button>
+                </form>
+            </section>
+        </article>
+
+        @* Show up to three questions. Answers are not rendered in this preview. *@
+        <aside class="details-card" data-reveal data-delay="1">
+            <h2>Preview</h2>
+
+            @if (previewCards.Count > 0)
+            {
+                <p class="details-sub">
+                    Here are the first questions. The answers stay hidden until you study.
+                </p>
+
+                <ol class="preview-list">
+                    @for (var index = 0; index < previewCards.Count; index++)
+                    {
+                        <li>
+                            <span class="preview-num">@(index + 1)</span>
+                            <div class="preview-body">
+                                <strong>@previewCards[index].Question</strong>
+                                <span class="answer-bar" aria-hidden="true"></span>
+                                <span class="sr-only">Answer hidden</span>
+                            </div>
+                        </li>
+                    }
+                </ol>
+
+                @if (more > 0)
+                {
+                    <p class="preview-more">
+                        And @more more @(more == 1 ? "flashcard" : "flashcards") inside.
+                    </p>
+                }
+            }
+            else
+            {
+                <p class="details-sub">
+                    No flashcards yet. Add some before studying this reviewer.
+                </p>
+                <a class="btn btn-outline btn-sm" href="/ReviewerCards/@Model.Reviewer.Id">
+                    Add flashcards
+                </a>
+            }
+        </aside>
+
+    </div>
+</section>

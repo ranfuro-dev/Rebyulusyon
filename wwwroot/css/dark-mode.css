@@ -1,0 +1,297 @@
+/* Color tokens used by the dark theme across public and signed-in pages. */
+html[data-theme="dark"] {
+    color-scheme: dark;
+    --ink: #edf2ff;
+    --muted: #b4c0d5;
+    --bg: #111a2a;
+    --line: #35445e;
+    --blue-soft: #1b3158;
+    --red-soft: #43262e;
+    --yellow-soft: #443b1b;
+}
+
+html[data-theme="dark"] body,
+html[data-theme="dark"] .app-shell,
+html[data-theme="dark"] .app-body,
+html[data-theme="dark"] .app-main,
+html[data-theme="dark"] .reviewers-page,
+html[data-theme="dark"] .details-hero,
+html[data-theme="dark"] .details-section,
+html[data-theme="dark"] .dash,
+html[data-theme="dark"] .app-page,
+html[data-theme="dark"] .study-section,
+html[data-theme="dark"] .auth-page,
+html[data-theme="dark"] .features,
+html[data-theme="dark"] .about-section,
+html[data-theme="dark"] .routine {
+    color: var(--ink);
+    background: var(--bg) !important;
+}
+
+/* These are the reusable white surfaces on the site's cards and navigation. */
+html[data-theme="dark"] :is(
+    .site-header, .site-footer, .sidebar, .app-topbar, .auth-card,
+    .feature-card, .stat-card, .art-card, .progress-card, .ai-card,
+    .about-panel, .contact-info, .contact-card, .reviewer-card, .chip,
+    .details-card, .kpi, .panel, .action-card, .app-empty, .subject-card,
+    .study-app, .study-results, .flip-front, .search-box, .settings-card,
+    .empty-state, .reviewers-toolbar, .flashcard-card
+) {
+    color: var(--ink);
+    background: #19263a !important;
+    border-color: var(--line);
+}
+
+html[data-theme="dark"] :is(
+    .site-header, .site-footer, .sidebar, .app-topbar, .details-card,
+    .reviewer-card, .kpi, .panel, .action-card, .auth-card, .feature-card,
+    .subject-card, .settings-card
+) {
+    box-shadow: 0 12px 30px rgba(0, 0, 0, .18);
+}
+
+html[data-theme="dark"] :is(
+    .hero, .closing, .cta, .reviewers-toolbar, .search-form,
+    .week-chart, .week-days, .dash-row, .done, .visibility-option
+) {
+    background-color: #19263a;
+    background-image: none;
+    border-color: var(--line);
+}
+
+html[data-theme="dark"] :is(
+    p, li, label, .page-sub, .lead, .eyebrow, .details-text,
+    .details-sub, .details-by, .reviewer-desc, .reviewer-meta,
+    .results-info, .panel-sub, .kpi-note, .dash-row-meta,
+    .done-count, .study-by, .flip-hint, .footer-tagline,
+    .footer-links a, .footer-bottom p, .app-sub, .subject-card-copy > span,
+    .settings-card p, .theme-setting-copy > span
+) {
+    color: var(--muted);
+}
+
+html[data-theme="dark"] :is(
+    h1, h2, h3, h4, strong, .brand-name, .footer-logo-name,
+    .kpi-value, .subject-card-copy strong, .reviewer-card h3,
+    .details-card h2, .details-flashcard-tools h3
+) {
+    color: var(--ink);
+}
+
+html[data-theme="dark"] :is(input, textarea, select, .form-input, .search-input) {
+    color: var(--ink);
+    background-color: #111a2a;
+    border-color: var(--line);
+}
+
+html[data-theme="dark"] input::placeholder,
+html[data-theme="dark"] textarea::placeholder {
+    color: #9aa9c2;
+}
+
+html[data-theme="dark"] :is(.preview-list li, .week-chart, .week-days li, .answer-bar) {
+    background-color: #22314a;
+    border-color: var(--line);
+}
+
+html[data-theme="dark"] .btn-outline,
+html[data-theme="dark"] .step-btn,
+html[data-theme="dark"] .toggle-password {
+    color: var(--ink);
+    background: #19263a;
+    border-color: var(--line);
+}
+
+html[data-theme="dark"] .btn-outline:hover,
+html[data-theme="dark"] .step-btn:hover {
+    background: #243653;
+}
+
+.settings-card {
+    max-width: 720px;
+    margin-top: 28px;
+    padding: 28px;
+    color: var(--ink);
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: 20px;
+}
+
+.settings-card + .settings-card {
+    margin-top: 18px;
+}
+
+.settings-form {
+    display: grid;
+    gap: 14px;
+    max-width: 560px;
+}
+
+.settings-form .form-field {
+    display: grid;
+    gap: 6px;
+}
+
+/* Settings text boxes match the rounded, light-outline fields used in the reference. */
+.settings-form :is(input.form-input, select.form-input) {
+    display: block;
+    width: 100%;
+    min-height: 36px;
+    padding: 7px 11px;
+    border: 1px solid #d2ddfa;
+    border-radius: 10px;
+    color: var(--ink);
+    background: #fff;
+    font: inherit;
+    font-size: 14px;
+    line-height: 1.4;
+    outline: none;
+    transition: border-color .16s ease, box-shadow .16s ease;
+}
+
+.settings-form :is(input.form-input, select.form-input):focus {
+    border-color: var(--blue);
+    box-shadow: 0 0 0 3px rgba(0, 56, 168, .12);
+}
+
+.settings-password-field {
+    position: relative;
+}
+
+.settings-password-field input.form-input {
+    padding-right: 46px;
+}
+
+.settings-password-toggle {
+    position: absolute;
+    top: 50%;
+    right: 8px;
+    display: grid;
+    place-items: center;
+    width: 32px;
+    height: 32px;
+    padding: 5px;
+    transform: translateY(-50%);
+    color: var(--muted);
+    background: transparent;
+    border: 0;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.settings-password-toggle:hover,
+.settings-password-toggle:focus-visible {
+    color: var(--blue);
+    background: var(--blue-soft);
+    outline: none;
+}
+
+.settings-password-toggle .icon {
+    width: 19px;
+    height: 19px;
+}
+
+html[data-theme="dark"] .settings-form :is(input.form-input, select.form-input) {
+    color: var(--ink);
+    background: #111a2a;
+    border-color: var(--line);
+}
+
+.settings-form .form-field label,
+.week-start-options legend {
+    font-weight: 700;
+}
+
+.settings-form .validation-summary-valid {
+    display: none;
+}
+
+.settings-current {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+    margin: 18px 0 12px;
+}
+
+.settings-divider {
+    height: 1px;
+    margin: 24px 0;
+    background: var(--line);
+}
+
+.settings-help,
+.settings-note {
+    margin: 0;
+    color: var(--muted);
+    font-size: 14px;
+}
+
+.settings-notice {
+    margin: 12px 0;
+    padding: 10px 13px;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    background: var(--blue-soft);
+}
+
+
+.settings-card-heading {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 22px;
+}
+
+.settings-card-heading h2,
+.settings-card-heading p {
+    margin: 0;
+}
+
+.settings-card-heading h2 {
+    font-family: var(--font-head);
+}
+
+.settings-card-heading p,
+.settings-note {
+    color: var(--muted);
+}
+
+.theme-setting {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    padding: 18px 0;
+    border-top: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+    cursor: pointer;
+}
+
+.theme-setting-copy {
+    display: grid;
+    gap: 3px;
+}
+
+.theme-setting-copy > span {
+    color: var(--muted);
+}
+
+#darkModeToggle {
+    width: 46px;
+    height: 26px;
+    flex: none;
+    accent-color: var(--blue);
+    cursor: pointer;
+}
+
+.settings-note {
+    margin: 12px 0 0;
+    font-size: 14px;
+}
+
+@media (max-width: 600px) {
+    html[data-theme="dark"] .settings-card {
+        padding: 22px;
+    }
+}

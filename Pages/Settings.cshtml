@@ -1,29 +1,196 @@
-﻿@page
+@page
+@model SettingsModel
 
 @{
-    // This tells the page to use the dashboard layout (the sidebar on the left).
+    // This is the signed-in Settings page and its browser-tab title.
     Layout = "_DashboardLayout";
-
-    // This is for the name on the browser tab. It shows "Settings - Rebyulusyon".
     ViewData["Title"] = "Settings";
 }
 
-@* ============================================================
-   This file is the Settings PAGE (the page you see at "/Settings").
-   It is NOT built yet. It only shows a "coming soon" message, so the link in the sidebar has a page to open.
-   Only people who are logged in can open it (the list of protected pages is in Program.cs).
-   ============================================================ *@
-<section class="app-page">
+<section class="app-page settings-page">
     <div class="container">
         <p class="eyebrow">Your account</p>
         <h1 class="app-title">Settings</h1>
-        <p class="app-sub">Change how Rebyulusyon works for you.</p>
+        <p class="app-sub">Manage your username, study preferences, and account security.</p>
 
-        <div class="app-empty">
-            <span class="icon-chip tone-yellow"><partial name="_Icon" model='"settings"' /></span>
-            <h2>Coming soon</h2>
-            <p>You will change your account and your daily goal here.</p>
-            <a class="btn btn-primary btn-sm" href="/Dashboard">Back to dashboard</a>
-        </div>
+        @if (TempData["ProfileMessage"] is string profileMessage)
+        {
+            <p class="settings-notice" role="status">@profileMessage</p>
+        }
+
+        @* Update the public username shown beside reviewers you share. *@
+        <section class="settings-card" aria-labelledby="profileTitle">
+            <div class="settings-card-heading">
+                <span class="icon-chip tone-blue"><partial name="_Icon" model='"user"' /></span>
+                <div>
+                    <h2 id="profileTitle">Account profile</h2>
+                    <p>Update the username connected to your account.</p>
+                </div>
+            </div>
+
+            <p class="settings-current"><strong>Current username:</strong> @Model.CurrentUsername</p>
+            <form method="post" asp-page-handler="ChangeUsername" class="settings-form">
+                <div asp-validation-summary="ModelOnly" class="form-alert form-alert-error" role="alert"></div>
+                <div class="form-field">
+                    <label asp-for="NewUsername">New username</label>
+                    <input asp-for="NewUsername" class="form-input" minlength="3" maxlength="20" autocomplete="username" />
+                    <span asp-validation-for="NewUsername" class="field-error"></span>
+                </div>
+                <div class="form-field">
+                    <label asp-for="UsernamePassword">Current password to confirm</label>
+                    <div class="settings-password-field">
+                        <input asp-for="UsernamePassword" type="password" class="form-input" autocomplete="current-password" />
+                        <button type="button" class="settings-password-toggle" data-password-target="UsernamePassword" aria-label="Show password" aria-pressed="false">
+                            <span data-eye-open><partial name="_Icon" model='"eye"' /></span>
+                            <span data-eye-closed hidden><partial name="_Icon" model='"eyeoff"' /></span>
+                        </button>
+                    </div>
+                    <span asp-validation-for="UsernamePassword" class="field-error"></span>
+                </div>
+                <button type="submit" class="btn btn-primary btn-sm">Save username</button>
+            </form>
+
+        </section>
+
+        @* Save these values to the account so they work on every device. *@
+        <section class="settings-card" aria-labelledby="studyPreferencesTitle">
+            <div class="settings-card-heading">
+                <span class="icon-chip tone-yellow"><partial name="_Icon" model='"flashcard"' /></span>
+                <div>
+                    <h2 id="studyPreferencesTitle">Study preferences</h2>
+                    <p>Choose your daily target and the first day shown in the weekly chart.</p>
+                </div>
+            </div>
+
+            @if (TempData["PreferencesMessage"] is string preferencesMessage)
+            {
+                <p class="settings-notice" role="status">@preferencesMessage</p>
+            }
+            <form method="post" asp-page-handler="SaveStudyPreferences" class="settings-form">
+                <div asp-validation-summary="ModelOnly" class="form-alert form-alert-error" role="alert"></div>
+                <div class="form-field">
+                    <label asp-for="DailyGoal">Daily card goal</label>
+                    <select asp-for="DailyGoal" class="form-input">
+                        @for (var goal = 5; goal <= 100; goal += 5)
+                        {
+                            <option value="@goal">@goal cards per day</option>
+                        }
+                    </select>
+                    <span asp-validation-for="DailyGoal" class="field-error"></span>
+                </div>
+
+                <div class="form-field">
+                    <label asp-for="WeekStartsOnDay">Week starts on</label>
+                    <select asp-for="WeekStartsOnDay" class="form-input">
+                        @foreach (var day in Enum.GetValues<DayOfWeek>())
+                        {
+                            <option value="@((int)day)">@day</option>
+                        }
+                    </select>
+                    <span asp-validation-for="WeekStartsOnDay" class="field-error"></span>
+                </div>
+                <button type="submit" class="btn btn-primary btn-sm">Save study preferences</button>
+            </form>
+        </section>
+
+        @* Change the password through ASP.NET Identity's password checks. *@
+        <section class="settings-card" aria-labelledby="securityTitle">
+            <div class="settings-card-heading">
+                <span class="icon-chip tone-red"><partial name="_Icon" model='"lock"' /></span>
+                <div>
+                    <h2 id="securityTitle">Password</h2>
+                    <p>Change the password you use to sign in.</p>
+                </div>
+            </div>
+
+            @if (TempData["SecurityMessage"] is string securityMessage)
+            {
+                <p class="settings-notice" role="status">@securityMessage</p>
+            }
+            <form method="post" asp-page-handler="ChangePassword" class="settings-form">
+                <div asp-validation-summary="ModelOnly" class="form-alert form-alert-error" role="alert"></div>
+                <div class="form-field">
+                    <label asp-for="CurrentPassword">Current password</label>
+                    <div class="settings-password-field">
+                        <input asp-for="CurrentPassword" type="password" class="form-input" autocomplete="current-password" />
+                        <button type="button" class="settings-password-toggle" data-password-target="CurrentPassword" aria-label="Show password" aria-pressed="false">
+                            <span data-eye-open><partial name="_Icon" model='"eye"' /></span>
+                            <span data-eye-closed hidden><partial name="_Icon" model='"eyeoff"' /></span>
+                        </button>
+                    </div>
+                    <span asp-validation-for="CurrentPassword" class="field-error"></span>
+                </div>
+                <div class="form-field">
+                    <label asp-for="NewPassword">New password</label>
+                    <div class="settings-password-field">
+                        <input asp-for="NewPassword" type="password" class="form-input" autocomplete="new-password" />
+                        <button type="button" class="settings-password-toggle" data-password-target="NewPassword" aria-label="Show password" aria-pressed="false">
+                            <span data-eye-open><partial name="_Icon" model='"eye"' /></span>
+                            <span data-eye-closed hidden><partial name="_Icon" model='"eyeoff"' /></span>
+                        </button>
+                    </div>
+                    <span asp-validation-for="NewPassword" class="field-error"></span>
+                </div>
+                <div class="form-field">
+                    <label asp-for="ConfirmNewPassword">Confirm new password</label>
+                    <div class="settings-password-field">
+                        <input asp-for="ConfirmNewPassword" type="password" class="form-input" autocomplete="new-password" />
+                        <button type="button" class="settings-password-toggle" data-password-target="ConfirmNewPassword" aria-label="Show password" aria-pressed="false">
+                            <span data-eye-open><partial name="_Icon" model='"eye"' /></span>
+                            <span data-eye-closed hidden><partial name="_Icon" model='"eyeoff"' /></span>
+                        </button>
+                    </div>
+                    <span asp-validation-for="ConfirmNewPassword" class="field-error"></span>
+                </div>
+                <button type="submit" class="btn btn-primary btn-sm">Change password</button>
+            </form>
+
+        </section>
+
+        @* Dark mode is saved in this browser, while account preferences above are saved to PostgreSQL. *@
+        <section class="settings-card" aria-labelledby="appearanceTitle">
+            <div class="settings-card-heading">
+                <span class="icon-chip tone-yellow"><partial name="_Icon" model='"settings"' /></span>
+                <div>
+                    <h2 id="appearanceTitle">Appearance</h2>
+                    <p>Choose the theme you want to use in Rebyulusyon.</p>
+                </div>
+            </div>
+            <label class="theme-setting" for="darkModeToggle">
+                <span class="theme-setting-copy">
+                    <strong>Dark mode</strong>
+                    <span>Use a darker color theme across the website.</span>
+                </span>
+                <input id="darkModeToggle" type="checkbox" role="switch" />
+            </label>
+            <p class="settings-note" id="themeStatus" role="status" aria-live="polite">
+                Your theme preference is saved in this browser.
+            </p>
+        </section>
     </div>
 </section>
+
+@section Scripts {
+    <script>
+        // Match the switch to the theme saved by site.js.
+        const darkModeToggle = document.getElementById("darkModeToggle");
+        if (darkModeToggle) {
+            darkModeToggle.checked = document.documentElement.dataset.theme === "dark";
+        }
+
+        // Show or hide the password field connected to each eye button.
+        document.querySelectorAll(".settings-password-toggle").forEach((button) => {
+            button.addEventListener("click", () => {
+                const input = document.getElementById(button.dataset.passwordTarget);
+                if (!input) return;
+
+                const showPassword = input.type === "password";
+                input.type = showPassword ? "text" : "password";
+                button.setAttribute("aria-pressed", String(showPassword));
+                button.setAttribute("aria-label", showPassword ? "Hide password" : "Show password");
+                button.querySelector("[data-eye-open]").hidden = showPassword;
+                button.querySelector("[data-eye-closed]").hidden = !showPassword;
+            });
+        });
+    </script>
+}

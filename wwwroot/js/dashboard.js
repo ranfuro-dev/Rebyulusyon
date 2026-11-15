@@ -3,8 +3,7 @@
 // It is used by the Dashboard page only. It makes the daily goal buttons ("-" and "+") work.
 // When the goal changes, it updates the goal bar, the sentence under it, the dashed goal line on the chart,
 // and the height of the bars, so the chart always makes sense.
-// The goal is kept in THIS browser only (in "localStorage"), so it is still there when you come back.
-// NOTE: It is not saved on a server or in a database yet. Later, the database will save it for each person.
+// The goal is saved to the signed-in user's account, so it follows them across devices.
 // ==========================================================
 
 (function () {
@@ -21,9 +20,6 @@
     const step = Number(root.dataset.goalStep);        // how much a click on "-" or "+" changes the goal
     let goal = Number(root.dataset.defaultGoal);       // the goal now (it starts as the default)
 
-    // The name of the place in the browser where the goal is kept.
-    const STORAGE_KEY = "rebyulusyon.dailyGoal";
-
     // ===== THE PARTS OF THE PAGE =====
     // These lines find the parts by their "id" in Dashboard.cshtml.
     const goalValue = document.getElementById("goalValue");      // the number between "-" and "+"
@@ -35,22 +31,13 @@
     const goalDown = document.getElementById("goalDown");        // the "-" button
     const goalUp = document.getElementById("goalUp");            // the "+" button
     const goalLine = document.getElementById("goalLine");        // the dashed line on the chart
+    const goalSaveStatus = document.getElementById("goalSaveStatus");
+    const goalUrl = root.dataset.goalUrl;
+    const requestToken = root.querySelector('input[name="__RequestVerificationToken"]')?.value;
     const bars = Array.from(document.querySelectorAll("#weekChart [data-value]")); // the bars of the chart
 
     // If something important is missing, we stop here, so the page still works without the buttons.
     if (!goalValue || !goalOf || !goalFill || !goalNote || !goalDown || !goalUp) return;
-
-    // ===== READ THE SAVED GOAL =====
-    // If the browser has a saved goal and it is a good number (a whole number, in range, and a multiple of the step),
-    // we use it. If not, we keep the default goal.
-    try {
-        const saved = Number(window.localStorage.getItem(STORAGE_KEY));
-        if (Number.isInteger(saved) && saved >= minGoal && saved <= maxGoal && saved % step === 0) {
-            goal = saved;
-        }
-    } catch (error) {
-        // Some browsers do not let a page keep things (for example in private mode). That is fine. We just use the default.
-    }
 
     // ===== SHOW EVERYTHING FOR THE CURRENT GOAL =====
     function render() {
@@ -99,17 +86,34 @@
 
     // ===== CHANGE THE GOAL =====
     // "amount" is +5 or -5. The new goal always stays between the smallest and the biggest goal.
-    function changeGoal(amount) {
+    async function changeGoal(amount) {
+        const previousGoal = goal;
         goal = Math.min(maxGoal, Math.max(minGoal, goal + amount));
-
-        // Keep the goal in this browser. If the browser does not allow it, nothing bad happens.
-        try {
-            window.localStorage.setItem(STORAGE_KEY, String(goal));
-        } catch (error) {
-            // We ignore this. The goal still works until the page is closed.
-        }
-
+        goalDown.disabled = true;
+        goalUp.disabled = true;
         render();
+
+        try {
+            const response = await fetch(goalUrl, {
+                method: "POST",
+                headers: { "Content-Type": "application/x-www-form-urlencoded" },
+                body: new URLSearchParams({
+                    dailyGoal: String(goal),
+                    __RequestVerificationToken: requestToken || ""
+                }),
+                credentials: "same-origin"
+            });
+
+            if (!response.ok) throw new Error("Could not save the daily goal.");
+            if (goalSaveStatus) goalSaveStatus.textContent = "Daily goal saved to your account.";
+        } catch {
+            goal = previousGoal;
+            render();
+            if (goalSaveStatus) goalSaveStatus.textContent = "The daily goal could not be saved. Please try again.";
+        } finally {
+            goalDown.disabled = goal <= minGoal;
+            goalUp.disabled = goal >= maxGoal;
+        }
     }
 
     // The two buttons.

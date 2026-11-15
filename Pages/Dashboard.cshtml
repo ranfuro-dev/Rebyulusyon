@@ -2,12 +2,11 @@
    This file is the DASHBOARD PAGE (the page you see at "/Dashboard").
    It opens from the "Dashboard" link in the footer.
    It has these parts, from top to bottom:
-   1) The top part: a welcome, the "Continue studying" button, and the preview notice
+   1) The top part: a welcome and the "Continue studying" button
    2) Four number cards: studied today (with the goal buttons), study streak, last 7 days, and mastered cards
    3) Two boxes side by side: "Continue studying" (the reviewers) and the "Cards studied" chart
    4) Two quick action cards
-   IMPORTANT: This is a PREVIEW. All the numbers are SAMPLE numbers of a pretend student (Samples/DashboardSamples.cs).
-   Nothing comes from a database, and nobody has to be logged in yet.
+   Study counts and reviewer progress are loaded from this signed-in user's saved study activity.
    The top bar and the footer are NOT here. They come from _Layout.cshtml.
    ============================================================ *@
 @page
@@ -35,7 +34,9 @@
          data-default-goal="@Model.Goal"
          data-min-goal="@Model.MinGoal"
          data-max-goal="@Model.MaxGoal"
-         data-goal-step="@Model.GoalStep">
+         data-goal-step="@Model.GoalStep"
+         data-goal-url="/Dashboard?handler=UpdateGoal">
+    @Html.AntiForgeryToken()
     <div class="container">
 
         @* ===== PART 1: THE TOP PART ===== *@
@@ -60,10 +61,10 @@
 
             @* This is for the main button of the page. It goes straight to the study page of the next reviewer.
                If there is no next reviewer, it opens Explore Reviewers instead. *@
-            <div>
+            <div class="dash-head-actions">
                 @if (Model.Next is not null)
                 {
-                    <a class="btn btn-primary btn-lg" href="/FlashcardStudy/@(Model.Next.Reviewer.Slug)">
+                    <a class="btn btn-primary btn-lg" href="/Study/@(Model.Next.Reviewer.Id)">
                         <partial name="_Icon" model='"flashcard"' /> Continue studying
                     </a>
                 }
@@ -73,13 +74,19 @@
                         <partial name="_Icon" model='"search"' /> Explore reviewers
                     </a>
                 }
+                <form method="post" asp-page-handler="ResetProgress" class="dash-reset-form"
+                      onsubmit="return confirm('Reset all your study progress? This clears your streak, study history, and mastery totals. Your reviewers and flashcards will stay.');">
+                    <button type="submit" class="btn btn-outline btn-sm">
+                        Reset progress
+                    </button>
+                </form>
             </div>
         </header>
 
-        @* This is for the yellow notice. It says that the numbers on this page are not real yet. *@
-        <p class="dash-notice" role="note">
-            Preview with sample numbers. Your real progress will appear here after sign-in is built.
-        </p>
+        @if (TempData["ProgressResetMessage"] is string progressResetMessage)
+        {
+            <p class="dash-notice" role="status">@progressResetMessage</p>
+        }
 
         @* ===== PART 2: THE FOUR NUMBER CARDS ===== *@
         <div class="kpi-grid" data-reveal>
@@ -101,6 +108,7 @@
 
                 @* This is the sentence under the bar. "aria-live" makes screen readers read it when it changes. *@
                 <p class="kpi-note" id="goalNote" aria-live="polite">@Model.GoalNote</p>
+                <p class="sr-only" id="goalSaveStatus" role="status" aria-live="polite"></p>
 
                 @* These are the goal buttons. They only show when JavaScript works (the CSS hides them otherwise),
                    because without JavaScript they could not do anything.
@@ -154,26 +162,26 @@
                         {
                             <li class="dash-row">
                                 <div class="dash-row-main">
-                                    @* This is the small colored tag with the category name (the colors are in site.css) *@
-                                    <span class="dash-tag tone-@(Model.ToneOf(r.Reviewer.Category))">@r.Reviewer.Category</span>
+                                    @* This tag shows the subject that the reviewer belongs to. *@
+                                    <span class="dash-tag">@r.SubjectName</span>
 
                                     @* The title is a link to the Reviewer Details page *@
-                                    <h3 class="dash-row-title"><a href="/ReviewerDetails/@(r.Reviewer.Slug)">@r.Reviewer.Title</a></h3>
-                                    <p class="dash-row-meta">@r.LastStudiedText &middot; by @("@" + r.Reviewer.Creator)</p>
+                                    <h3 class="dash-row-title"><a href="/Study/@(r.Reviewer.Id)">@r.Reviewer.Title</a></h3>
+                                    <p class="dash-row-meta">@r.LastStudiedText &middot; by @("@" + Model.Username)</p>
 
                                     @* This is the progress bar of the reviewer, and the words next to it *@
                                     <div class="dash-row-progress">
                                         <div class="bar" role="progressbar" aria-label="Cards mastered in @r.Reviewer.Title"
-                                             aria-valuemin="0" aria-valuemax="@r.Reviewer.CardCount" aria-valuenow="@r.Mastered">
+                                             aria-valuemin="0" aria-valuemax="@r.CardCount" aria-valuenow="@r.Mastered">
                                             <div class="bar-fill" style="width: @(r.Percent)%"></div>
                                         </div>
-                                        <span>@r.Mastered of @r.Reviewer.CardCount mastered</span>
+                                        <span>@r.Mastered of @r.CardCount mastered</span>
                                     </div>
                                 </div>
 
                                 @* This is the "Study" button. It opens the Flashcard Study page of this reviewer.
                                    aria-label gives the button the full name for screen readers. *@
-                                <a class="btn btn-primary btn-sm" href="/FlashcardStudy/@(r.Reviewer.Slug)" aria-label="Study @r.Reviewer.Title">Study</a>
+                                <a class="btn btn-primary btn-sm" href="/Study/@(r.Reviewer.Id)" aria-label="Study @r.Reviewer.Title">Study</a>
                             </li>
                         }
                     </ul>
@@ -183,8 +191,8 @@
                     @* This is shown when there is nothing left to continue: no reviewers yet, or all of them are finished. *@
                     <div class="dash-empty">
                         <h3>@(Model.TotalReviewers == 0 ? "No reviewers yet" : "Everything is finished")</h3>
-                        <p>@(Model.TotalReviewers == 0 ? "Open a public reviewer to start studying." : "You mastered every card in your reviewers. Find a new one to keep going.")</p>
-                        <a class="btn btn-outline btn-sm" href="/Reviewers">Explore reviewers</a>
+                        <p>@(Model.TotalReviewers == 0 ? "Create a reviewer and add flashcards to start tracking your progress." : "You mastered every card in your reviewers. Keep reviewing or create another one.")</p>
+                        <a class="btn btn-outline btn-sm" href="/MyReviewers">My reviewers</a>
                     </div>
                 }
 
@@ -198,8 +206,18 @@
                             {
                                 <li>
                                     <span class="done-check"><partial name="_Icon" model='"check"' /></span>
-                                    <a href="/ReviewerDetails/@(r.Reviewer.Slug)">@r.Reviewer.Title</a>
-                                    <span class="done-count">@r.Mastered of @r.Reviewer.CardCount</span>
+                                    <a href="/Study/@(r.Reviewer.Id)">@r.Reviewer.Title</a>
+                                    <span class="done-count">@r.Mastered of @r.CardCount</span>
+                                    <form method="post" asp-page-handler="RemoveReviewer"
+                                          asp-route-reviewerId="@r.Reviewer.Id"
+                                          class="done-remove-form"
+                                          onsubmit="return confirm('@(r.IsOwnedByCurrentUser ? "Delete this reviewer and all of its flashcards? This cannot be undone." : "Remove this public reviewer from your dashboard and clear your study history for it?")');">
+                                        <button type="submit" class="done-remove-button"
+                                                aria-label="@(r.IsOwnedByCurrentUser ? "Delete reviewer " : "Remove reviewer ")@r.Reviewer.Title"
+                                                title="@(r.IsOwnedByCurrentUser ? "Delete reviewer" : "Remove from dashboard")">
+                                            <partial name="_Icon" model='"trash"' />
+                                        </button>
+                                    </form>
                                 </li>
                             }
                         </ul>
@@ -213,11 +231,13 @@
                 <div class="panel-head">
                     <h2 id="weeklyTitle">Cards studied</h2>
 
-                    @* This is the switch between the last 7 days and the 7 days before. They are plain links, so they work without JavaScript.
+                    @* This is the switch between this calendar week and the previous one.
+                       The first day follows the Sunday or Monday preference in Settings.
+                       These are plain links, so they work without JavaScript.
                        aria-current tells screen readers which one is chosen now. *@
                     <nav class="seg" aria-label="Choose which days to show">
-                        <a class="seg-link @(Model.ShowPrevious ? "" : "is-active")" href="/Dashboard#weekly" aria-current="@(Model.ShowPrevious ? null : "true")">Last 7 days</a>
-                        <a class="seg-link @(Model.ShowPrevious ? "is-active" : "")" href="/Dashboard?week=last#weekly" aria-current="@(Model.ShowPrevious ? "true" : null)">Previous 7 days</a>
+                        <a class="seg-link @(Model.ShowPrevious ? "" : "is-active")" href="/Dashboard#weekly" aria-current="@(Model.ShowPrevious ? null : "true")">This week</a>
+                        <a class="seg-link @(Model.ShowPrevious ? "is-active" : "")" href="/Dashboard?week=last#weekly" aria-current="@(Model.ShowPrevious ? "true" : null)">Previous week</a>
                     </nav>
                 </div>
 
@@ -265,7 +285,7 @@
                 </span>
                 <span class="action-arrow"><partial name="_Icon" model='"arrow"' /></span>
             </a>
-            <a class="action-card" href="/ReviewerCreate">
+            <a class="action-card" href="/MyReviewers#createReviewer">
                 <span class="icon-chip tone-red"><partial name="_Icon" model='"pencil"' /></span>
                 <span class="action-text">
                     <strong>Create a reviewer</strong>

@@ -1,23 +1,26 @@
 ﻿namespace Rebyulusyon.Data;
 
-// One reviewer (a set of flashcards).
-// This is only the foundation: no page uses it yet.
+// One reviewer belongs to a subject and contains flashcards.
 public class Reviewer
 {
     public int Id { get; set; }
 
     public string Title { get; set; } = "";
-    public string? Description { get; set; }    // the "?" means this one may be empty
+    public string? Description { get; set; }
 
-    // false = private: only the owner can open it. This is the default, so nothing is
-    // shared by accident. true = public: other users can discover it.
+    // False means private. Nothing is shared unless the owner makes it public.
     public bool IsPublic { get; set; } = false;
 
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
-    // The creator's user ID. Later, cards will show "Created by @" + Owner.UserName.
-    // When we build reviewer pages, EVERY query must be filtered on the server, for example:
-    //   reviewers.Where(r => r.IsPublic || r.OwnerId == currentUserId)
+    // The subject this reviewer is organized under.
+    public int SubjectId { get; set; }
+    public Subject Subject { get; set; } = null!;
+
+    // The creator of this reviewer.
     public string OwnerId { get; set; } = "";
     public ApplicationUser Owner { get; set; } = null!;
+
+    // The flashcards in this reviewer.
+    public ICollection<Flashcard> Cards { get; set; } = new List<Flashcard>();
 }

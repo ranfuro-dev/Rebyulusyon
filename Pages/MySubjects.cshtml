@@ -1,18 +1,15 @@
 ﻿@page
+@model MySubjectsModel
 
 @{
-    // This tells the page to use the dashboard layout (the sidebar on the left).
     Layout = "_DashboardLayout";
-
-    // This is for the name on the browser tab. It shows "My Subjects - Rebyulusyon".
     ViewData["Title"] = "My Subjects";
 }
 
-@* ============================================================
-   This file is the My Subjects PAGE (the page you see at "/MySubjects").
-   It is NOT built yet. It only shows a "coming soon" message, so the link in the sidebar has a page to open.
-   Only people who are logged in can open it (the list of protected pages is in Program.cs).
-   ============================================================ *@
+@section Styles {
+    <link rel="stylesheet" href="~/css/auth.css" asp-append-version="true" />
+}
+
 <section class="app-page">
     <div class="container">
         <p class="eyebrow">Your library</p>
@@ -20,10 +17,58 @@
         <p class="app-sub">Organize your reviewers under the subjects you study.</p>
 
         <div class="app-empty">
-            <span class="icon-chip tone-blue"><partial name="_Icon" model='"folder"' /></span>
-            <h2>Coming soon</h2>
-            <p>You will create subjects here, like Mathematics or Board Exam, and keep your reviewers in them.</p>
-            <a class="btn btn-primary btn-sm" href="/Dashboard">Back to dashboard</a>
+            <h2>Add a subject</h2>
+
+            <form method="post">
+                <div class="form-field">
+                    <label asp-for="Name">Subject name</label>
+                    <input asp-for="Name" class="form-input" maxlength="100" required />
+                    <span asp-validation-for="Name" class="field-error"></span>
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-sm">Add subject</button>
+            </form>
         </div>
+
+        @if (Model.Subjects.Count == 0)
+        {
+            <div class="app-empty">
+                <h2>No subjects yet</h2>
+                <p>Add a subject above to start organizing your reviewers.</p>
+            </div>
+        }
+        else
+        {
+            @* Each subject is a card that opens its reviewers and has its own delete action. *@
+            <div class="subject-grid">
+                @foreach (var subject in Model.Subjects)
+                {
+                    <article class="subject-card">
+                        <a class="subject-card-link" href="/MyReviewers?subjectId=@subject.Id">
+                            <span class="subject-icon tone-@subject.Tone"><partial name="_Icon" model='"folder"' /></span>
+                            <span class="subject-card-copy">
+                                <strong>@subject.Name</strong>
+                                <span>View reviewers in this subject</span>
+                            </span>
+                            <span class="subject-card-arrow"><partial name="_Icon" model='"arrow"' /></span>
+                        </a>
+
+                        @* Ask before deleting a subject and everything organized under it. *@
+                        <form method="post"
+                              asp-page-handler="Delete"
+                              asp-route-subjectId="@subject.Id"
+                              class="subject-delete-form"
+                              onsubmit="return confirm('Are you sure you want to delete this subject? This will permanently delete its reviewers and flashcards too. This action cannot be undone.');">
+                            <button type="submit"
+                                    class="subject-delete-button"
+                                    aria-label="Delete subject @subject.Name"
+                                    title="Delete subject">
+                                <partial name="_Icon" model='"trash"' />
+                            </button>
+                        </form>
+                    </article>
+                }
+            </div>
+        }
     </div>
 </section>

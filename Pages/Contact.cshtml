@@ -4,7 +4,7 @@
    It has these parts, from top to bottom:
    1) The title "Contact"
    2) Two columns: the info card on the left and the message form on the right
-   For now the form is a DESIGN PREVIEW: it does not send anything.
+   Messages are sent to the email address configured in User Secrets.
    The top bar and the footer are NOT here. They come from _Layout.cshtml.
    ============================================================ *@
 @page
@@ -72,16 +72,17 @@
             <h2 class="contact-form-title">Send us a message</h2>
             <p class="contact-form-sub">Have a question or an idea? Write to us below.</p>
 
-            @* This is for the yellow notice. It only shows AFTER the form was sent (Submitted is true).
-               It says that this page is only a design preview. "role=status" tells screen readers to read it *@
-            @if (Model.Submitted)
+            @* Show a success or error notice after the form is submitted. *@
+            @if (!string.IsNullOrWhiteSpace(Model.SuccessMessage))
             {
-                <div class="form-alert form-alert-info" role="status">
-                    This is a design preview. Your message was not sent.
-                </div>
+                <div class="form-alert form-alert-success" role="status">@Model.SuccessMessage</div>
+            }
+            @if (!string.IsNullOrWhiteSpace(Model.ErrorMessage))
+            {
+                <div class="form-alert form-alert-error" role="alert">@Model.ErrorMessage</div>
             }
 
-            @* This is the form. "method=post" means it sends the information to the C# file (OnPost).
+            @* This is the form. "method=post" sends the information to the C# file (OnPostAsync).
                ASP.NET adds a hidden security code to the form by itself, to block fake forms.
                "auth-form" is the name that auth.js looks for to check the form *@
             <form method="post" class="auth-form">
@@ -91,7 +92,7 @@
                    data-required-message is the red message shown when it is empty. *@
                 <div class="form-field">
                     <label for="Username">Username</label>
-                    <input id="Username" name="Username" type="text" class="form-input"
+                    <input asp-for="Username" id="Username" type="text" class="form-input"
                            autocomplete="username" required maxlength="20"
                            data-rule="required" data-required-message="Please enter your username."
                            aria-describedby="Username-error" />
@@ -104,7 +105,7 @@
                    The other choices come from the "subjects" list at the top of this file *@
                 <div class="form-field">
                     <label for="Subject">Subject</label>
-                    <select id="Subject" name="Subject" class="form-input" required
+                    <select asp-for="Subject" id="Subject" class="form-input" required
                             data-rule="required" data-required-message="Please choose a subject."
                             aria-describedby="Subject-error">
                         <option value="">Choose a subject</option>
@@ -122,7 +123,7 @@
                    data-rule="message" tells auth.js to use the message check (10 to 1000 letters) *@
                 <div class="form-field">
                     <label for="Message">Message</label>
-                    <textarea id="Message" name="Message" rows="6" class="form-input"
+                    <textarea asp-for="Message" id="Message" rows="6" class="form-input"
                               required maxlength="1000"
                               data-rule="message" aria-describedby="Message-error"></textarea>
                     <span class="field-error" id="Message-error" aria-live="polite"></span>

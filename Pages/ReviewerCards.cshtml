@@ -1,0 +1,95 @@
+﻿@page "{reviewerId:int}"
+@model ReviewerCardsModel
+
+@{
+    Layout = "_DashboardLayout";
+    ViewData["Title"] = "Manage Flashcards";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/auth.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/reviewers.css" asp-append-version="true" />
+}
+
+<section class="app-page">
+    <div class="container">
+        <a class="back-link" href="/MyReviewerDetails/@Model.Reviewer.Id">← Back to reviewer details</a>
+
+        <p class="eyebrow">Your reviewer</p>
+        <h1 class="app-title">@Model.Reviewer.Title</h1>
+        <p class="app-sub">Subject: @Model.Reviewer.Subject.Name</p>
+
+        <div class="app-empty" id="addFlashcard">
+            <h2>Add a flashcard</h2>
+
+            <form method="post">
+                @if (!ViewData.ModelState.IsValid)
+                {
+                    <div asp-validation-summary="ModelOnly"
+                         class="form-alert form-alert-error"
+                         role="alert"></div>
+                }
+
+                <div class="form-field">
+                    <label asp-for="Question">Question</label>
+                    <textarea asp-for="Question"
+                              class="form-input"
+                              maxlength="5000"
+                              rows="3"
+                              required></textarea>
+                    <span asp-validation-for="Question" class="field-error"></span>
+                </div>
+
+                <div class="form-field">
+                    <label asp-for="Answer">Answer</label>
+                    <textarea asp-for="Answer"
+                              class="form-input"
+                              maxlength="5000"
+                              rows="3"
+                              required></textarea>
+                    <span asp-validation-for="Answer" class="field-error"></span>
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-sm">Add flashcard</button>
+            </form>
+        </div>
+
+        <h2 class="app-title" id="flashcards" style="margin-top: 32px; margin-bottom: 16px;">Flashcards</h2>
+
+        @if (Model.Cards.Count == 0)
+        {
+            <div class="app-empty">
+                <p>This reviewer doesn’t have any flashcards yet.</p>
+            </div>
+        }
+        else
+        {
+            <div class="flashcard-management-grid">
+                @foreach (var card in Model.Cards)
+                {
+                    <article class="reviewer-card flashcard-management-item">
+                        @* Delete only this flashcard after the user confirms. *@
+                        <form method="post"
+                              asp-page-handler="Delete"
+                              asp-route-reviewerId="@Model.Reviewer.Id"
+                              asp-route-flashcardId="@card.Id"
+                              class="flashcard-delete-form"
+                              onsubmit="return confirm('Are you sure you want to delete this flashcard? This action cannot be undone.');">
+                            <button type="submit"
+                                    class="reviewer-delete-button"
+                                    aria-label="Delete flashcard">
+                                <partial name="_Icon" model='"trash"' />
+                            </button>
+                        </form>
+
+                        <h3>Question</h3>
+                        <p>@card.Question</p>
+
+                        <h3>Answer</h3>
+                        <p>@card.Answer</p>
+                    </article>
+                }
+            </div>
+        }
+    </div>
+</section>

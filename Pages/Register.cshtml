@@ -32,20 +32,16 @@
             <h1>Create your account</h1>
             <p class="auth-sub">Start building your reviewers. It is free.</p>
 
-            @* This is for the yellow notice. It only shows AFTER the form was sent (Submitted is true).
-               It says that this page is only a design preview. "role=status" tells screen readers to read it *@
-            @if (Model.Submitted)
-            {
-                <div class="form-alert form-alert-info" role="status">
-                    This is a design preview. No account was created yet.
-                </div>
-            }
-
             @* This is the form. "method=post" means it sends the information to the C# file (OnPost).
                ASP.NET adds a hidden security code to the form by itself, to block fake forms.
                "auth-form" is the name that auth.js looks for to check the form *@
             <form method="post" class="auth-form">
-
+                @if (!ViewData.ModelState.IsValid)
+                {
+                    <div asp-validation-summary="All"
+                         class="form-alert form-alert-error"
+                         role="alert"></div>
+                }
                 @* ----- BOX 1: USERNAME ----- *@
                 <div class="form-field">
                     <label for="Username">Username</label>
@@ -55,8 +51,10 @@
                            autocomplete="username" required minlength="3" maxlength="20"
                            data-rule="username" aria-describedby="Username-error" />
                     @* This empty line is where auth.js writes the red message for this box *@
-                    <span class="field-error" id="Username-error" aria-live="polite"></span>
-                    <span class="field-hint">This is your display name on Rebyulusyon.</span>
+                    <span asp-validation-for="Username" class="field-error"></span>
+                    <span asp-validation-for="Email" class="field-error"></span>
+                    <span asp-validation-for="Password" class="field-error"></span>
+                    <span asp-validation-for="ConfirmPassword" class="field-error"></span>
                 </div>
 
                 @* ----- BOX 2: EMAIL ADDRESS ----- *@

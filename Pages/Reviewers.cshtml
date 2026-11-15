@@ -6,13 +6,12 @@
    2) The search bar and the category chips
    3) The line "Showing X of Y public reviewers"
    4) The reviewer cards (or "No reviewers found")
-   The cards come from sample data in Samples/ReviewerSamples.cs. They do NOT come from a database yet.
+   The cards come from public reviewers saved by users in PostgreSQL. Private reviewers are filtered out server-side.
    The top bar and the footer are NOT here. They come from _Layout.cshtml.
    ============================================================ *@
 @page
 
-@* This is for connecting this page to its C# file (Reviewers.cshtml.cs).
-   That file decides which sample reviewers to show. *@
+@* This is for connecting this page to its C# file (Reviewers.cshtml.cs), which loads public reviewers. *@
 @model ReviewersModel
 
 @{
@@ -59,7 +58,7 @@
 
             @* This is the search form. method="get" means the search words go into the web address
                (for example /Reviewers?q=python). The C# file reads them and does the search.
-               The search is done in C# and not in JavaScript, so private reviewers are never sent to the browser.
+               The search is done against public database rows, so private reviewers are never sent to the browser.
                role="search" tells screen readers that this is a search area. *@
             <form method="get" role="search" class="search-form">
                 @if (insideDashboard)
@@ -105,7 +104,7 @@
                 }
                 <a class="chip @(allActive ? "is-active" : "")" href="@Model.PageLink(null)" aria-current="@(allActive ? "true" : null)">All Reviewers</a>
 
-                @* This makes one chip for each category name in the list in Reviewers.cshtml.cs.
+                @* This makes one chip for each subject that has a public reviewer.
                    "name" means the category it is working on now. *@
                 @foreach (var name in Model.CategoryNames)
                 {
@@ -149,29 +148,30 @@
                     @* This is for one reviewer card. "article" is the web page tag for a small block like a card *@
                     <article class="reviewer-card">
 
-                        @* This is for the small colored tag with the category name.
-                           "tone-blue", "tone-red", or "tone-yellow" is chosen by the ToneOf method in the C# file *@
-                        <span class="reviewer-tag tone-@(Model.ToneOf(r.Category))">@r.Category</span>
+                        @* The badge uses the subject's saved, consistent color. *@
+                        <span class="reviewer-tag tone-@r.Subject.Tone">@r.Subject.Name</span>
 
                         @* These two lines show the title and the short description *@
                         <h3>@r.Title</h3>
-                        <p class="reviewer-desc">@r.Description</p>
+                        @if (!string.IsNullOrWhiteSpace(r.Description))
+                        {
+                            <p class="reviewer-desc">@r.Description</p>
+                        }
 
                         @* This is the bottom part of the card: the facts and the button *@
                         <div class="reviewer-foot">
                             <ul class="reviewer-meta">
                                 @* This is for the number of flashcards *@
-                                <li><partial name="_Icon" model='"layers"' /> <span>@r.CardCount flashcards</span></li>
+                                <li><partial name="_Icon" model='"layers"' /> <span>@r.Cards.Count flashcards</span></li>
 
-                                @* This is for the creator. @("@" + r.Creator) puts a @ sign before the username.
+                                @* This is for the creator. @("@" + r.Owner.UserName) puts a @ sign before the username.
                                    Razor makes the username safe, so special letters cannot break the page. *@
-                                <li><partial name="_Icon" model='"user"' /> <span>Created by <strong>@("@" + r.Creator)</strong></span></li>
+                                <li><partial name="_Icon" model='"user"' /> <span>Created by <strong>@("@" + (r.Owner.UserName ?? "student"))</strong></span></li>
                             </ul>
 
                             @* This is the "Open Reviewer" button.
-                               CHANGED: It now goes to /ReviewerDetails/ and the reviewer's SLUG,
-                               for example /ReviewerDetails/algebra-basics-factoring (it used the number before). *@
-                            <a class="btn btn-primary btn-sm" href="/ReviewerDetails/@(r.Slug)">
+                               It opens the selected public reviewer's database-backed details. *@
+                            <a class="btn btn-primary btn-sm" href="/ReviewerDetails/@(r.Id)">
                                 Open Reviewer <partial name="_Icon" model='"arrow"' />
                             </a>
                         </div>

@@ -7,7 +7,7 @@
    ========================================================== */
 /* This is for the part of the page under the title. It has the two columns. */
 .contact-section {
-    padding: 24px 0 88px;
+    padding: 24px 0 0;
 }
 
 /* This is for the two columns: the small info cards on the left (narrower) and the form on the right (wider). */

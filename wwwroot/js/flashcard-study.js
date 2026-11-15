@@ -3,8 +3,7 @@
 // It makes the Flashcard Study page work: it turns the card, moves between cards,
 // counts "I got it" and "I missed it", and shows the results at the end.
 // The cards come from the page itself (a plain list that the C# file made).
-// NOTE: Your results are only kept while the page is open. Nothing is saved yet.
-// Later, the database will save them.
+// Ratings from the signed-in Study page are saved to PostgreSQL for dashboard progress.
 // ==========================================================
 
 
@@ -18,6 +17,7 @@ if (deckList && studyApp) {
     // This reads every card from the plain list. Each card has a question and an answer.
     // "textContent" reads only the words (it never runs any code), so it is safe.
     const cards = Array.from(deckList.querySelectorAll("li")).map((item) => ({
+        id: item.dataset.cardId,
         question: item.querySelector("[data-question]").textContent.trim(),
         answer: item.querySelector("[data-answer]").textContent.trim()
     }));
@@ -127,7 +127,34 @@ if (deckList && studyApp) {
         }
 
         // This saves "I got it" (true) or "I missed it" (false) for the card, then moves on.
-        function rate(value) {
+        async function rate(value) {
+            const recordUrl = studyApp.dataset.recordUrl;
+            if (recordUrl) {
+                const token = studyApp.querySelector('input[name="__RequestVerificationToken"]')?.value;
+                const body = new URLSearchParams({
+                    flashcardId: cards[index].id,
+                    gotIt: String(value),
+                    __RequestVerificationToken: token || ""
+                });
+
+                btnGot.disabled = true;
+                btnMissed.disabled = true;
+                try {
+                    const response = await fetch(recordUrl, {
+                        method: "POST",
+                        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+                        body,
+                        credentials: "same-origin"
+                    });
+                    if (!response.ok) throw new Error("Could not save study progress.");
+                } catch {
+                    say("Your rating could not be saved. Please try again.");
+                    return;
+                } finally {
+                    btnGot.disabled = false;
+                    btnMissed.disabled = false;
+                }
+            }
             ratings[index] = value;
             go(1);
         }

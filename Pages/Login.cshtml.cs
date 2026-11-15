@@ -1,59 +1,113 @@
-// This line lets us use "IActionResult", which lets a page answer with a redirect.
+// This line lets us check passwords and find the user's account.
+using Microsoft.AspNetCore.Identity;
+
+// This line lets us check that required form fields were entered.
+using System.ComponentModel.DataAnnotations;
+
+// This line lets us use "IActionResult" and redirects.
 using Microsoft.AspNetCore.Mvc;
 
-// This line lets us use "PageModel", the starting point for a Razor Page's C# code.
+// This line lets us use "BindProperty" and "PageModel".
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
-// This is the "address" of this code inside your project. It is the same as your other pages.
+// This line lets us use our custom account class.
+using Rebyulusyon.Data;
+
+// This is the "address" of this code inside your project.
 namespace Rebyulusyon.Pages;
 
-// This is for the C# side of the LOG IN page (Pages/Login.cshtml).
-// The form is still only a design preview: it does NOT check any login details yet.
+// This is for the C# side of the LOG IN page.
 public class LoginModel : PageModel
 {
-    // This is for the yellow notice at the top of the form.
-    // It is false when the page first opens, and it becomes true after the form is sent.
-    public bool Submitted { get; private set; }
+    private readonly UserManager<ApplicationUser> _userManager;
+    private readonly SignInManager<ApplicationUser> _signInManager;
 
-    // This is the page the person wanted to open before they were sent to the Login page (for example /Dashboard).
-    // The website fills it in by itself, from the web address: /Login?ReturnUrl=%2FDashboard
+    // ASP.NET gives us the account tools needed to find the user and check their password.
+    public LoginModel(
+        UserManager<ApplicationUser> userManager,
+        SignInManager<ApplicationUser> signInManager)
+    {
+        _userManager = userManager;
+        _signInManager = signInManager;
+    }
+
+    // These properties receive the values entered in the login form.
+    [BindProperty]
+    [Required(ErrorMessage = "Please enter your username or email address.")]
+    public string UserNameOrEmail { get; set; } = "";
+
+    [BindProperty]
+    [Required(ErrorMessage = "Please enter your password.")]
+    public string Password { get; set; } = "";
+
+    [BindProperty]
+    public bool RememberMe { get; set; }
+
+    // This is the page the visitor wanted before they were sent to Login.
     [BindProperty(SupportsGet = true)]
     public string? ReturnUrl { get; set; }
 
-    // "OnGet" runs when someone OPENS the page.
-    // If the person is already logged in, there is no reason to show the Login page, so we send them to the Dashboard.
+    // If someone is already signed in, send them to their requested page or the Dashboard.
     public IActionResult OnGet()
     {
         if (User.Identity?.IsAuthenticated == true)
         {
-            return RedirectToPage("/Dashboard");
+            return RedirectAfterLogin();
         }
 
         return Page();
     }
 
-    // "OnPost" runs when someone SENDS the form (by clicking "Log in").
-    // We do NOT read the username or the password here, so nothing is checked or kept.
-    public IActionResult OnPost()
+    // This runs when someone submits the login form.
+    public async Task<IActionResult> OnPostAsync()
     {
         if (User.Identity?.IsAuthenticated == true)
         {
-            return RedirectToPage("/Dashboard");
+            return RedirectAfterLogin();
         }
 
-        Submitted = true;
+        if (!ModelState.IsValid)
+        {
+            return Page();
+        }
 
-        // LATER, when the real login is built: after the password is checked and the person is signed in,
-        // the next line is what sends them to the Dashboard:
-        //     return RedirectAfterLogin();
+        // An address containing "@" is treated as an email; otherwise it is treated as a username.
+        var loginName = UserNameOrEmail.Trim();
+        var user = loginName.Contains('@')
+            ? await _userManager.FindByEmailAsync(loginName)
+            : await _userManager.FindByNameAsync(loginName);
+
+        if (user is null)
+        {
+            ModelState.AddModelError(string.Empty, "Invalid username/email or password.");
+            return Page();
+        }
+
+        // Identity checks the password and applies the configured lockout rules.
+        var result = await _signInManager.PasswordSignInAsync(
+            user.UserName!,
+            Password,
+            RememberMe,
+            lockoutOnFailure: true);
+
+        if (result.Succeeded)
+        {
+            return RedirectAfterLogin();
+        }
+
+        if (result.IsLockedOut)
+        {
+            ModelState.AddModelError(string.Empty, "Too many unsuccessful attempts. Try again later.");
+        }
+        else
+        {
+            ModelState.AddModelError(string.Empty, "Invalid username/email or password.");
+        }
 
         return Page();
     }
 
-    // THE RULE FOR "WHERE TO GO AFTER A SUCCESSFUL LOGIN". It is ready, but nothing calls it yet,
-    // because there is no real login yet.
-    // If the person was sent here from a protected page, go back to that page. Otherwise go to the Dashboard.
-    // "Url.IsLocalUrl" only allows addresses inside this website, so nobody can use ReturnUrl to send people to another website.
+    // Only send the visitor to a local page; otherwise open the Dashboard.
     private IActionResult RedirectAfterLogin()
     {
         if (!string.IsNullOrEmpty(ReturnUrl) && Url.IsLocalUrl(ReturnUrl))

@@ -1,29 +1,202 @@
 ﻿@page
+@model MyReviewersModel
 
 @{
-    // This tells the page to use the dashboard layout (the sidebar on the left).
+    // This tells the page to use the dashboard layout with the sidebar.
     Layout = "_DashboardLayout";
 
-    // This is for the name on the browser tab. It shows "My Reviewers - Rebyulusyon".
+    // This is the name shown on the browser tab.
     ViewData["Title"] = "My Reviewers";
 }
 
-@* ============================================================
-   This file is the My Reviewers PAGE (the page you see at "/MyReviewers").
-   It is NOT built yet. It only shows a "coming soon" message, so the link in the sidebar has a page to open.
-   Only people who are logged in can open it (the list of protected pages is in Program.cs).
-   ============================================================ *@
+@* This loads the form styles used by the subject and account forms. *@
+@section Styles {
+    <link rel="stylesheet" href="~/css/auth.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/reviewers.css" asp-append-version="true" />
+}
+
 <section class="app-page">
     <div class="container">
         <p class="eyebrow">Your library</p>
         <h1 class="app-title">My Reviewers</h1>
-        <p class="app-sub">The reviewers you created.</p>
+        <p class="app-sub">Create reviewers and organize them under your subjects.</p>
 
-        <div class="app-empty">
-            <span class="icon-chip tone-red"><partial name="_Icon" model='"book"' /></span>
-            <h2>Coming soon</h2>
-            <p>The reviewers you create will be listed here, and you will choose which ones are public or private.</p>
-            <a class="btn btn-primary btn-sm" href="/Dashboard">Back to dashboard</a>
-        </div>
+        @* A reviewer must belong to a subject, so send the user there if they have none. *@
+        @if (Model.Subjects.Count == 0)
+        {
+            <div class="app-empty">
+                <h2>Create a subject first</h2>
+                <p>Each reviewer belongs to one of your subjects.</p>
+                <a class="btn btn-primary btn-sm" href="/MySubjects">Go to My Subjects</a>
+            </div>
+        }
+        else
+        {
+            @* This form sends a new reviewer to the OnPostAsync handler. *@
+            <div class="app-empty" id="createReviewer">
+                <h2>Create a reviewer</h2>
+
+                <form method="post">
+                    @* Show server-side errors only when the form has an error. *@
+                    @if (!ViewData.ModelState.IsValid)
+                    {
+                        <div asp-validation-summary="ModelOnly"
+                             class="form-alert form-alert-error"
+                             role="alert"></div>
+                    }
+
+                    @* The reviewer title is required. *@
+                    <div class="form-field">
+                        <label asp-for="Title">Reviewer title</label>
+                        <input asp-for="Title" class="form-input" maxlength="150" required />
+                        <span asp-validation-for="Title" class="field-error"></span>
+                    </div>
+
+                    @* A description is optional. *@
+                    <div class="form-field">
+                        <label asp-for="Description">Description (optional)</label>
+                        <textarea asp-for="Description"
+                                  class="form-input"
+                                  maxlength="1000"
+                                  rows="3"></textarea>
+                        <span asp-validation-for="Description" class="field-error"></span>
+                    </div>
+
+                    @* Choose one of this user's subjects or add a new subject. *@
+                    <div class="form-field">
+                        <label asp-for="SubjectId">Subject</label>
+                        <select asp-for="SubjectId" class="form-input">
+                            <option value="">Choose a subject</option>
+                            @foreach (var subject in Model.Subjects)
+                            {
+                                <option value="@subject.Id">@subject.Name</option>
+                            }
+                            <option value="-1">+ Add a Subject</option>
+                        </select>
+                        <span asp-validation-for="SubjectId" class="field-error"></span>
+                    </div>
+
+                    @* This field appears when "+ Add a Subject" is selected. *@
+                    <div class="form-field" id="newSubjectField" hidden>
+                        <label asp-for="NewSubjectName">New Subject Name</label>
+                        <input asp-for="NewSubjectName" class="form-input" maxlength="100" />
+                        <span asp-validation-for="NewSubjectName" class="field-error"></span>
+                    </div>
+
+                    @* Choose whether other people can view this reviewer. *@
+                    <div class="form-field">
+                        <label asp-for="IsPublic">Visibility</label>
+                        <select asp-for="IsPublic" class="form-input">
+                        <option value="false">Private — only you can view it</option>
+                        <option value="true">Public — other people can view it</option>
+                        </select>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary btn-sm">Create reviewer</button>
+                    <p class="field-hint">New reviewers are private by default.</p>
+                </form>
+            </div>
+        }
+
+        @* Show the reviewers already saved by this person. *@
+        <h2 class="app-title" style="margin-top: 32px; margin-bottom: 24px;">
+            @(Model.FilteredSubject is null ? "Your reviewers" : $"Reviewers in {Model.FilteredSubject.Name}")
+        </h2>
+
+        @if (Model.FilteredSubject is not null)
+        {
+            <p class="app-sub" style="margin-bottom: 20px;">
+                <a href="/MyReviewers">View all your reviewers</a>
+            </p>
+        }
+
+        @if (Model.Reviewers.Count == 0)
+        {
+            <div class="app-empty">
+                <p>
+                    @(Model.FilteredSubject is null
+                        ? "You haven’t created any reviewers yet."
+                        : "This subject doesn’t have any reviewers yet.")
+                </p>
+            </div>
+        }
+        else
+        {
+            @* This grid displays your reviewers using the Explore Reviewers card design. *@
+                <div class="reviewer-grid">
+                 @foreach (var reviewer in Model.Reviewers)
+            {
+            <article class="reviewer-card">
+                <div class="reviewer-card-top">
+                    @* The subject appears as the colored badge. *@
+                    <span class="reviewer-tag tone-@reviewer.Subject.Tone">@reviewer.Subject.Name</span>
+
+                    @* Submit a protected delete request for this reviewer's card. *@
+                    <form method="post"
+                          asp-page-handler="Delete"
+                          asp-route-reviewerId="@reviewer.Id"
+                          class="reviewer-delete-form"
+                          onsubmit="return confirm('Delete this reviewer and all its flashcards?');">
+                        <button type="submit"
+                                class="reviewer-delete-button"
+                                aria-label="Delete reviewer @reviewer.Title"
+                                title="Delete reviewer">
+                            <partial name="_Icon" model='"trash"' />
+                        </button>
+                    </form>
+                </div>
+
+                <h3>@reviewer.Title</h3>
+
+                @* Show the reviewer description when one was provided. *@
+                @if (!string.IsNullOrWhiteSpace(reviewer.Description))
+                {
+                    <p class="reviewer-desc">@reviewer.Description</p>
+                }
+
+                <div class="reviewer-foot">
+                    <ul class="reviewer-meta">
+                        @* Show how many flashcards are in this reviewer. *@
+                        <li>
+                            <partial name="_Icon" model='"layers"' />
+                            <span>@reviewer.Cards.Count flashcards</span>
+                        </li>
+
+                        @* Show who created the reviewer. *@
+                        <li>
+                            <partial name="_Icon" model='"user"' />
+                            <span>
+                                Created by
+                                <strong>@("@" + (User.Identity?.Name ?? "you"))</strong>
+                            </span>
+                        </li>
+                    </ul>
+
+                    @* Open this reviewer's study page. *@
+                    <a class="btn btn-primary btn-sm" href="/MyReviewerDetails/@reviewer.Id">
+                        Open Reviewer <partial name="_Icon" model='"arrow"' />
+                    </a>
+                </div>
+            </article>
+           }
+            </div>
+        }
     </div>
 </section>
+
+@section Scripts {
+    <script>
+        // Show the new subject name field only when "+ Add a Subject" is selected.
+        const subjectSelect = document.getElementById("SubjectId");
+        const newSubjectField = document.getElementById("newSubjectField");
+
+        function updateNewSubjectField() {
+            if (subjectSelect && newSubjectField) {
+                newSubjectField.hidden = subjectSelect.value !== "-1";
+            }
+        }
+
+        subjectSelect?.addEventListener("change", updateNewSubjectField);
+        updateNewSubjectField();
+    </script>
+}

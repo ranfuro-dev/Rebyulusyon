@@ -1,52 +1,67 @@
-// This line lets us use "IActionResult", which lets a page answer with "not found".
 using Microsoft.AspNetCore.Mvc;
-
-// This line lets us use "PageModel", the starting point for a Razor Page's C# code.
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
+using Rebyulusyon.Data;
 
-// This line lets us use the shared sample reviewers (Samples/ReviewerSamples.cs).
-using Rebyulusyon.Samples;
-
-// This is the "address" of this code inside your project. It is the same as your other pages.
 namespace Rebyulusyon.Pages;
 
-// This is for the C# side of the REVIEWER DETAILS page (Pages/ReviewerDetails.cshtml).
-// It finds ONE reviewer by its slug (the name in the web address) and checks that it is public.
-// IMPORTANT: The class in this file must be called ReviewerDetailsModel, because ReviewerDetails.cshtml uses that name.
-// NOTE: the reviewers are sample data for now. They do NOT come from a database.
+// Loads one public reviewer and its preview from PostgreSQL.
 public class ReviewerDetailsModel : PageModel
 {
-    // This is the reviewer that the page shows (the title, the creator, and so on).
-    // "private set" means only this file can change it.
-    // "null!" means: it is empty at the start, but we fill it in OnGet before the page is shown.
-    public SampleReviewer Reviewer { get; private set; } = null!;
+    private readonly ApplicationDbContext _db;
+    private readonly UserManager<ApplicationUser> _userManager;
 
-    // These are the first flashcards for the "Preview" card.
-    // We only keep the QUESTIONS in the page. The answers stay hidden.
-    public IReadOnlyList<SampleCard> Preview { get; private set; } = Array.Empty<SampleCard>();
-
-    // "OnGet" runs when someone OPENS this page, for example /ReviewerDetails/algebra-basics-factoring.
-    // The "slug" is the name from the web address. ASP.NET fills it in by itself.
-    // "IActionResult" means this method can answer in two ways: show the page, or say "not found".
-    public IActionResult OnGet(string slug)
+    public ReviewerDetailsModel(ApplicationDbContext db, UserManager<ApplicationUser> userManager)
     {
-        // THE PRIVACY RULE: look for the reviewer by its slug, but ONLY among the PUBLIC reviewers.
-        var reviewer = ReviewerSamples.FindPublicBySlug(slug);
+        _db = db;
+        _userManager = userManager;
+    }
 
-        // If there is no public reviewer with this slug, say "not found".
-        // This happens for slugs that do not exist AND for PRIVATE reviewers, with the SAME answer.
-        // So nobody can tell if a private reviewer exists. (Later, the owner will be able to open their own.)
+    public Reviewer Reviewer { get; private set; } = null!;
+    public List<Flashcard> Preview { get; private set; } = new();
+
+    // Only public reviewers can be opened from Explore Reviewers.
+    public async Task<IActionResult> OnGetAsync(int reviewerId)
+    {
+        var reviewer = await _db.Reviewers
+            .AsNoTracking()
+            .Include(item => item.Subject)
+            .Include(item => item.Owner)
+            .Include(item => item.Cards)
+            .FirstOrDefaultAsync(item => item.Id == reviewerId && item.IsPublic);
+
         if (reviewer is null)
         {
             return NotFound();
         }
 
-        // The reviewer was found and it is public, so we save it and its preview for the page.
         Reviewer = reviewer;
-        Preview = ReviewerSamples.PreviewFor(reviewer);
+        Preview = reviewer.Cards.OrderBy(card => card.SortOrder).Take(3).ToList();
+
+        // If the visitor is signed in, add this public reviewer to their dashboard history.
+        var userId = _userManager.GetUserId(User);
+        if (userId is not null)
+        {
+            var visit = await _db.ReviewerStudies.FirstOrDefaultAsync(item =>
+                item.UserId == userId && item.ReviewerId == reviewerId);
+            if (visit is null)
+            {
+                _db.ReviewerStudies.Add(new ReviewerStudy
+                {
+                    UserId = userId,
+                    ReviewerId = reviewerId,
+                    LastOpenedAtUtc = DateTime.UtcNow
+                });
+            }
+            else
+            {
+                visit.LastOpenedAtUtc = DateTime.UtcNow;
+            }
+
+            await _db.SaveChangesAsync();
+        }
+
         return Page();
     }
-
-    // This is for the color of the category tag (blue, red, or yellow).
-    public string ToneOf(string category) => ReviewerSamples.ToneOf(category);
 }

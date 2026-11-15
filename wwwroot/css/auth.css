@@ -55,6 +55,11 @@
     margin-bottom: 18px;
 }
 
+/* Respect the hidden attribute even though form fields normally use display: grid. */
+.form-field[hidden] {
+    display: none;
+}
+
     /* This is for the label above a box (like "Username"). */
     .form-field label {
         font-size: 15px;
@@ -112,7 +117,6 @@
     color: var(--muted);
     font-size: 13px;
 }
-
 
 /* ===== THE SHOW / HIDE PASSWORD BUTTON ===== */
 
@@ -240,6 +244,20 @@
     color: #5a4500;
     background: var(--yellow-soft);
     border: 1px solid #f3dc7a;
+}
+
+/* This is the green notice shown after a Contact message is sent successfully. */
+.form-alert-success {
+    color: #14532d;
+    background: #effaf2;
+    border: 1px solid #a7dfb5;
+}
+
+/* This is for errors returned by the server after registration is submitted. */
+.form-alert-error {
+    color: #7a1a1a;
+    background: #fff0f0;
+    border: 1px solid #f2b8b5;
 }
 
 /* This is for the line under the form, like "Already have an account? Log in". */

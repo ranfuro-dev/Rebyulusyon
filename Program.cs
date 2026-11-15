@@ -18,10 +18,10 @@ builder.Services.AddRazorPages(options =>
 });
 
 // ----- Database -----
-// Reads the connection string from appsettings.json and connects to SQL Server.
+// Reads the connection string from appsettings.json and connects to PostgreSQL.
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
     ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
-builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(connectionString));
+builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseNpgsql(connectionString));
 
 // ----- Accounts (ASP.NET Core Identity) -----
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>

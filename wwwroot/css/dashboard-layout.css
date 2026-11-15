@@ -52,6 +52,12 @@
 .app-main {
     flex: 1;
     min-width: 0;
+    /* A soft flag-inspired backdrop ties the logged-in pages together without competing with their white cards. */
+    background:
+        radial-gradient(ellipse at 8% 0%, rgba(0, 56, 168, .08), transparent 38%),
+        radial-gradient(ellipse at 94% 12%, rgba(252, 209, 22, .11), transparent 34%),
+        radial-gradient(ellipse at 82% 92%, rgba(207, 32, 55, .045), transparent 42%),
+        linear-gradient(180deg, #f7f9ff 0%, #eef3ff 100%);
 }
 
     /* The browser draws a ring around the content when the skip link sends you there. We do not need it. */
@@ -325,6 +331,140 @@ body.no-scroll {
     background: #fff;
     border: 1px solid #d5def5;
     border-radius: 22px;
+}
+
+/* ===== SUBJECT CARDS ON THE MY SUBJECTS PAGE ===== */
+
+/* This grid keeps the subject cards evenly spaced and responsive. */
+.subject-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 280px), 1fr));
+    gap: 18px;
+    margin-top: 28px;
+}
+
+/* Each subject is a clickable white card with an icon and supporting text. */
+.subject-card {
+    position: relative;
+    display: flex;
+    min-height: 112px;
+    align-items: center;
+    padding: 20px 64px 20px 20px;
+    background: #fff;
+    border: 1px solid #d5def5;
+    border-radius: 20px;
+    box-shadow: 0 2px 8px rgba(0, 56, 168, .05);
+    transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease;
+}
+
+.subject-card:hover {
+    transform: translateY(-2px);
+    border-color: #b9c9f2;
+    box-shadow: 0 12px 28px rgba(0, 56, 168, .1);
+}
+
+/* The stretched link makes the subject card clickable around the delete button. */
+.subject-card-link {
+    position: static;
+    display: flex;
+    min-width: 0;
+    flex: 1;
+    align-items: center;
+    gap: 14px;
+    color: inherit;
+}
+
+.subject-card-link::after {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    content: "";
+}
+
+.subject-icon {
+    display: grid;
+    width: 46px;
+    height: 46px;
+    flex: none;
+    place-items: center;
+    color: var(--blue);
+    background: #e8efff;
+    border-radius: 15px;
+}
+
+.subject-icon .icon {
+    width: 22px;
+    height: 22px;
+}
+
+/* Match the subject folder icon to the same three colors used by the reviewer badges. */
+.subject-icon.tone-blue {
+    color: var(--blue);
+    background: var(--blue-soft);
+}
+
+.subject-icon.tone-red {
+    color: var(--red);
+    background: var(--red-soft);
+}
+
+.subject-icon.tone-yellow {
+    color: #5a4500;
+    background: var(--yellow-soft);
+}
+
+.subject-card-copy {
+    display: grid;
+    min-width: 0;
+    gap: 5px;
+}
+
+.subject-card-copy strong {
+    overflow-wrap: anywhere;
+    color: var(--ink);
+    font-family: var(--font-head);
+    font-size: 18px;
+}
+
+.subject-card-copy > span {
+    color: var(--muted);
+    font-size: 14px;
+}
+
+.subject-card-arrow {
+    margin-left: auto;
+    color: var(--blue);
+}
+
+.subject-delete-form {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    z-index: 2;
+    margin: 0;
+}
+
+.subject-delete-button {
+    display: grid;
+    width: 34px;
+    height: 34px;
+    place-items: center;
+    padding: 0;
+    color: #b42318;
+    background: #fff1f0;
+    border: 1px solid #ffd2cf;
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+.subject-delete-button:hover {
+    color: #fff;
+    background: #b42318;
+}
+
+.subject-delete-button .icon {
+    width: 16px;
+    height: 16px;
 }
 
     .app-empty .icon-chip {

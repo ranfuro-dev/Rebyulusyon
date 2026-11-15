@@ -1084,6 +1084,11 @@ main {
     background: linear-gradient(180deg, #f4f6ff, #e6ecff);
 }
 
+/* Add a clear gap before the footer on the Contact page. */
+.site-footer.contact-footer {
+    margin-top: 48px;
+}
+
 /* This is for the top row of the footer: the logo part on the left and the link lists on the right.
    "auto" means the links part is only as wide as it needs to be. */
 .footer-top {

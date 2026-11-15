@@ -1,18 +1,15 @@
 ﻿@* ============================================================
-   This file is the REVIEWER DETAILS PAGE (for example "/ReviewerDetails/algebra-basics-factoring").
+   This file is the REVIEWER DETAILS PAGE (for example "/ReviewerDetails/12").
    It opens when someone clicks "Open Reviewer" on a card on the Explore Reviewers page.
    It has these parts, from top to bottom:
    1) The top part: the back link, the category tag, the title, and the creator
    2) Two cards: "About this reviewer" (left) and "Preview" (right)
-   The reviewer comes from sample data. It does NOT come from a database yet.
+   The reviewer and its preview questions come from PostgreSQL and must be public.
    The top bar and the footer are NOT here. They come from _Layout.cshtml.
    ============================================================ *@
 
-@* "@page" gives this file its own web address.
-   CHANGED: "{slug}" means the address ends with a name, for example /ReviewerDetails/algebra-basics-factoring.
-   That name is the "slug" that the C# file uses to find the reviewer.
-   (It was "{id:int}" before, which needed a number.) *@
-@page "{slug}"
+@* The reviewer ID in the web address selects one public database reviewer. *@
+@page "{reviewerId:int}"
 
 @* This is for connecting this page to its C# file (ReviewerDetails.cshtml.cs). *@
 @model ReviewerDetailsModel
@@ -22,9 +19,8 @@
     // "Algebra Basics: Factoring Practice - Rebyulusyon".
     ViewData["Title"] = Model.Reviewer.Title;
 
-    // This is how many flashcards are NOT shown in the preview.
-    // Example: a reviewer with 5 flashcards and 3 in the preview has 2 more.
-    var more = Model.Reviewer.CardCount - Model.Preview.Count;
+    // This is how many flashcards are NOT shown in the three-card preview.
+    var more = Model.Reviewer.Cards.Count - Model.Preview.Count;
 }
 
 @* This loads two style files into the "Styles" spot in the head of _Layout.cshtml:
@@ -46,9 +42,8 @@
             Back to Explore Reviewers
         </a>
 
-        @* This is for the small colored tag with the category name.
-           The color (blue, red, or yellow) is chosen by the ToneOf method in the C# file *@
-        <span class="reviewer-tag tone-@(Model.ToneOf(Model.Reviewer.Category))">@Model.Reviewer.Category</span>
+        @* This is for the subject badge and its consistent color. *@
+        <span class="reviewer-tag tone-@Model.Reviewer.Subject.Tone">@Model.Reviewer.Subject.Name</span>
 
         @* This is for the big title. Razor makes the text safe, so special letters cannot break the page *@
         <h1>@Model.Reviewer.Title</h1>
@@ -56,7 +51,7 @@
         @* This is for the creator. @("@" + ...) puts a @ sign before the username *@
         <p class="details-by">
             <partial name="_Icon" model='"user"' />
-            <span>Created by <strong>@("@" + Model.Reviewer.Creator)</strong></span>
+            <span>Created by <strong>@("@" + (Model.Reviewer.Owner.UserName ?? "student"))</strong></span>
         </p>
     </div>
 </section>
@@ -74,17 +69,24 @@
 
             @* This is for the list of facts. It uses the same style as the cards on the Explore Reviewers page *@
             <ul class="reviewer-meta">
-                <li><partial name="_Icon" model='"layers"' /> <span>@Model.Reviewer.CardCount flashcards</span></li>
-                <li><partial name="_Icon" model='"user"' /> <span>Created by <strong>@("@" + Model.Reviewer.Creator)</strong></span></li>
+                <li><partial name="_Icon" model='"layers"' /> <span>@Model.Reviewer.Cards.Count flashcards</span></li>
+                <li><partial name="_Icon" model='"user"' /> <span>Created by <strong>@("@" + (Model.Reviewer.Owner.UserName ?? "student"))</strong></span></li>
             </ul>
 
-            @* This is for the big blue "Start Studying" button.
-               CHANGED: It goes to /FlashcardStudy/ and the reviewer's SLUG,
-               for example /FlashcardStudy/algebra-basics-factoring (it used the number before). *@
+            @* Signed-in users can study the public reviewer and save their progress. *@
             <div class="details-actions">
-                <a class="btn btn-primary btn-lg" href="/FlashcardStudy/@(Model.Reviewer.Slug)">
-                    <partial name="_Icon" model='"flashcard"' /> Start Studying
-                </a>
+                @if (User.Identity?.IsAuthenticated == true)
+                {
+                    <a class="btn btn-primary btn-lg" href="/Study/@Model.Reviewer.Id">
+                        <partial name="_Icon" model='"flashcard"' /> Start Studying
+                    </a>
+                }
+                else
+                {
+                    <a class="btn btn-primary btn-lg" href="/Login?returnUrl=%2FStudy%2F@Model.Reviewer.Id">
+                        <partial name="_Icon" model='"flashcard"' /> Log in to study
+                    </a>
+                }
             </div>
         </article>
 

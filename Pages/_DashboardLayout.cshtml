@@ -23,15 +23,20 @@
    A page chooses this layout by writing   Layout = "_DashboardLayout";   at the top of the page.
    ============================================================ *@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="js">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - Rebyulusyon</title>
 
-    @* This adds the word "js" to the page when JavaScript works. The phone menu only turns into a drawer when this word is there,
-       so without JavaScript the sidebar is simply shown at the top of the page. *@
-    <script>document.documentElement.classList.add("js");</script>
+    @* Read the saved theme before loading styles so dark mode does not flash light first. *@
+    <script>
+        try {
+            if (localStorage.getItem("rebyulusyon-theme") === "dark") {
+                document.documentElement.dataset.theme = "dark";
+            }
+        } catch { }
+    </script>
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous" />
@@ -43,6 +48,33 @@
 
     @* A page can add its OWN style file here (the Dashboard uses it for dashboard.css). *@
     @await RenderSectionAsync("Styles", required: false)
+    <link rel="stylesheet" href="~/css/dark-mode.css" asp-append-version="true" />
+
+    @* Without JavaScript, keep the full sidebar visible so every page link still works. *@
+    <noscript>
+        <style>
+            @@media (max-width: 900px) {
+                html.js .sidebar {
+                    position: static;
+                    top: auto;
+                    bottom: auto;
+                    left: auto;
+                    width: 100%;
+                    height: auto;
+                    overflow-y: visible;
+                    visibility: visible;
+                    transform: none;
+                    border-right: 0;
+                    border-bottom: 1px solid var(--line);
+                }
+
+                html.js .app-topbar,
+                html.js .sidebar-close {
+                    display: none;
+                }
+            }
+        </style>
+    </noscript>
 </head>
 <body>
 
@@ -94,11 +126,6 @@
                                 </a>
                             </li>
                         </ul>
-                    </li>
-                    <li>
-                        <a class="@SideClass("/Progress")" href="/Progress" aria-current="@Current("/Progress")">
-                            <partial name="_Icon" model='"chart"' /> Progress
-                        </a>
                     </li>
                     <li>
                         <a class="@SideClass("/Settings")" href="/Settings" aria-current="@Current("/Settings")">

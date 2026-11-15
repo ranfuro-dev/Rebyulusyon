@@ -34,7 +34,14 @@
     @* This tells the page that JavaScript is working, by adding the word "js" to the page.
        The scroll animation in site.css only hides things when this word is there,
        so if JavaScript fails, nothing stays hidden *@
-    <script>document.documentElement.classList.add("js");</script>
+    <script>
+        document.documentElement.classList.add("js");
+        try {
+            if (localStorage.getItem("rebyulusyon-theme") === "dark") {
+                document.documentElement.dataset.theme = "dark";
+            }
+        } catch { }
+    </script>
 
     @* These two lines connect to Google's font servers early, so the fonts load faster *@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -56,6 +63,7 @@
        For example, the Explore Reviewers page uses it to load reviewers.css.
        Pages that do not need it simply leave this spot empty *@
     @await RenderSectionAsync("Styles", required: false)
+    <link rel="stylesheet" href="~/css/dark-mode.css" asp-append-version="true" />
 </head>
 <body>
 
