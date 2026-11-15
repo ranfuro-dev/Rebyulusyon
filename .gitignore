@@ -35,6 +35,7 @@ Thumbs.db
 !.env.example
 
 # ASP.NET Core local development
+appsettings.Development.json
 appsettings.Local.json
 
 # Test results
