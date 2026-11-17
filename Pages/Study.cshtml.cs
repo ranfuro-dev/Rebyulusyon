@@ -72,6 +72,7 @@ public class StudyModel : PageModel
         else
         {
             visit.LastOpenedAtUtc = DateTime.UtcNow;
+            visit.IsHiddenFromDashboard = false;
         }
         await _db.SaveChangesAsync();
 

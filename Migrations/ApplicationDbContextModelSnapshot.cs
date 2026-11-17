@@ -308,6 +308,9 @@ namespace Rebyulusyon.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
+                    b.Property<bool>("IsHiddenFromDashboard")
+                        .HasColumnType("boolean");
+
                     b.Property<DateTime>("LastOpenedAtUtc")
                         .HasColumnType("timestamp with time zone");
 

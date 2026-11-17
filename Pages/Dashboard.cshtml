@@ -211,10 +211,10 @@
                                     <form method="post" asp-page-handler="RemoveReviewer"
                                           asp-route-reviewerId="@r.Reviewer.Id"
                                           class="done-remove-form"
-                                          onsubmit="return confirm('@(r.IsOwnedByCurrentUser ? "Delete this reviewer and all of its flashcards? This cannot be undone." : "Remove this public reviewer from your dashboard and clear your study history for it?")');">
+                                          onsubmit="return confirm('Are you sure you want to remove this reviewer from your dashboard? The reviewer, its flashcards, and your saved study history will remain unchanged. Open it again to show it on your dashboard.');">
                                         <button type="submit" class="done-remove-button"
-                                                aria-label="@(r.IsOwnedByCurrentUser ? "Delete reviewer " : "Remove reviewer ")@r.Reviewer.Title"
-                                                title="@(r.IsOwnedByCurrentUser ? "Delete reviewer" : "Remove from dashboard")">
+                                                aria-label="Remove @r.Reviewer.Title from dashboard"
+                                                title="Remove from dashboard">
                                             <partial name="_Icon" model='"trash"' />
                                         </button>
                                     </form>

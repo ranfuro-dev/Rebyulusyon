@@ -35,7 +35,10 @@
     <meta property="og:description" content="Your personal Rebyulusyon study workspace." />
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="Rebyulusyon" />
-    <link rel="icon" href="~/favicon.ico" sizes="any" />
+    @* Keep the same Rebyulusyon icon in the signed-in dashboard pages. *@
+    <link rel="icon" type="image/svg+xml" href="~/favicon.svg" asp-append-version="true" />
+    <link rel="icon" type="image/png" sizes="256x256" href="~/favicon.png" asp-append-version="true" />
+    <link rel="alternate icon" type="image/x-icon" href="~/favicon.ico" asp-append-version="true" />
 
     @* Read the saved theme before loading styles so dark mode does not flash light first. *@
     <script>

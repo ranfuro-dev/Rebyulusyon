@@ -7,6 +7,7 @@
     var pageDescription = ViewData["MetaDescription"] as string
         ?? "Create subject-based flashcard reviewers, study with active recall, and track your learning on Rebyulusyon.";
     var robotsDirective = ViewData["Robots"] as string ?? "index, follow";
+    var socialImageUrl = $"{Context.Request.Scheme}://{Context.Request.Host}/images/rebyulusyon-og.png";
 
     // This is a small helper for the top menu links.
     // If the link belongs to the page that is open, it gives back "nav-link active" (a blue pill).
@@ -40,7 +41,16 @@
     <meta property="og:description" content="@pageDescription" />
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="Rebyulusyon" />
-    <link rel="icon" href="~/favicon.ico" sizes="any" />
+    <meta property="og:image" content="@socialImageUrl" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Rebyulusyon flashcard study preview" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:image" content="@socialImageUrl" />
+    @* Use the sharp SVG mark where supported, with PNG and ICO files for browser compatibility. *@
+    <link rel="icon" type="image/svg+xml" href="~/favicon.svg" asp-append-version="true" />
+    <link rel="icon" type="image/png" sizes="256x256" href="~/favicon.png" asp-append-version="true" />
+    <link rel="alternate icon" type="image/x-icon" href="~/favicon.ico" asp-append-version="true" />
 
     @* This tells the page that JavaScript is working, by adding the word "js" to the page.
        The scroll animation in site.css only hides things when this word is there,

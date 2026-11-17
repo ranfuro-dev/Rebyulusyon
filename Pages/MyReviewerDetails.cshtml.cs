@@ -66,6 +66,7 @@ public class MyReviewerDetailsModel : PageModel
         else
         {
             visit.LastOpenedAtUtc = DateTime.UtcNow;
+            visit.IsHiddenFromDashboard = false;
         }
         IsPublic = reviewer.IsPublic;
         Cards = reviewer.Cards

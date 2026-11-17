@@ -13,4 +13,7 @@ public class ReviewerStudy
 
     // Save this in UTC so the dashboard can sort recently opened reviewers.
     public DateTime LastOpenedAtUtc { get; set; } = DateTime.UtcNow;
+
+    // Hide this reviewer from this user's dashboard without deleting the reviewer or progress.
+    public bool IsHiddenFromDashboard { get; set; }
 }

@@ -85,11 +85,16 @@ public class DashboardModel : PageModel
             .ToListAsync();
         var openedReviewerIds = openedReviewers.Select(item => item.ReviewerId).ToHashSet();
         var openedReviewerIdList = openedReviewerIds.ToList();
+        var hiddenReviewerIdList = openedReviewers
+            .Where(item => item.IsHiddenFromDashboard)
+            .Select(item => item.ReviewerId)
+            .ToList();
         var lastOpenedByReviewer = openedReviewers.ToDictionary(item => item.ReviewerId, item => item.LastOpenedAtUtc);
 
         // Mastery uses the latest saved rating for each card, while the list can also include a reviewer just opened.
         var reviewers = await _db.Reviewers
-            .Where(item => item.OwnerId == userId || (item.IsPublic && openedReviewerIdList.Contains(item.Id)))
+            .Where(item => !hiddenReviewerIdList.Contains(item.Id)
+                && (item.OwnerId == userId || (item.IsPublic && openedReviewerIdList.Contains(item.Id))))
             .Include(item => item.Subject)
             .Include(item => item.Cards)
             .ToListAsync();
@@ -111,8 +116,7 @@ public class DashboardModel : PageModel
                 return new ReviewerProgress(reviewer, reviewer.Subject.Name, mastered,
                     reviewer.Cards.Count, lastStudied,
                     reviewer.Cards.Count > 0 && mastered == reviewer.Cards.Count,
-                    lastOpened == default ? null : lastOpened,
-                    reviewer.OwnerId == userId);
+                    lastOpened == default ? null : lastOpened);
             })
             .OrderBy(item => item.LastActivityAtUtc.HasValue ? 0 : 1)
             .ThenByDescending(item => item.LastActivityAtUtc)
@@ -167,7 +171,7 @@ public class DashboardModel : PageModel
         return RedirectToPage();
     }
 
-    // Delete this user's reviewer, or remove another user's public reviewer from this dashboard.
+    // Hide this reviewer from the signed-in user's dashboard without deleting its content or study history.
     public async Task<IActionResult> OnPostRemoveReviewerAsync(int reviewerId)
     {
         var userId = _userManager.GetUserId(User)!;
@@ -179,37 +183,27 @@ public class DashboardModel : PageModel
             return NotFound();
         }
 
-        if (reviewer.OwnerId == userId)
+        var visit = await _db.ReviewerStudies.FirstOrDefaultAsync(item =>
+            item.UserId == userId && item.ReviewerId == reviewerId);
+        if (visit is null)
         {
-            // The database cascades this deletion to its flashcards and related study records.
-            _db.Reviewers.Remove(reviewer);
-            await _db.SaveChangesAsync();
-            TempData["ProgressResetMessage"] = "Your reviewer and its flashcards were deleted.";
+            // Save the dashboard choice separately from the reviewer's content and card history.
+            visit = new ReviewerStudy
+            {
+                UserId = userId,
+                ReviewerId = reviewerId,
+                LastOpenedAtUtc = DateTime.UtcNow,
+                IsHiddenFromDashboard = true
+            };
+            _db.ReviewerStudies.Add(visit);
         }
         else
         {
-            // Keep the creator's public reviewer, but remove this user's dashboard and learning history.
-            var publicCardIds = await _db.Flashcards
-                .Where(card => card.ReviewerId == reviewerId)
-                .Select(card => card.Id)
-                .ToListAsync();
-            if (publicCardIds.Count > 0)
-            {
-                await _db.StudyActivities
-                    .Where(item => item.UserId == userId && publicCardIds.Contains(item.FlashcardId))
-                    .ExecuteDeleteAsync();
-            }
-
-            var visit = await _db.ReviewerStudies.FirstOrDefaultAsync(item =>
-                item.UserId == userId && item.ReviewerId == reviewerId);
-            if (visit is not null)
-            {
-                _db.ReviewerStudies.Remove(visit);
-                await _db.SaveChangesAsync();
-            }
-
-            TempData["ProgressResetMessage"] = "The public reviewer was removed from your dashboard. The creator's reviewer is unchanged.";
+            visit.IsHiddenFromDashboard = true;
         }
+
+        await _db.SaveChangesAsync();
+        TempData["ProgressResetMessage"] = $"“{reviewer.Title}” was removed from your dashboard. The reviewer, flashcards, and saved study history are unchanged.";
 
         return RedirectToPage();
     }
@@ -266,7 +260,6 @@ public class DashboardModel : PageModel
         public DateTime? LastStudiedAtUtc { get; }
         public DateTime? LastOpenedAtUtc { get; }
         public bool IsComplete { get; }
-        public bool IsOwnedByCurrentUser { get; }
         public int Percent => DashboardModel.Percent(Mastered, CardCount);
         public DateTime? LastActivityAtUtc
         {
@@ -289,8 +282,7 @@ public class DashboardModel : PageModel
             $"{action} {activityAt:MMM d}";
 
         public ReviewerProgress(Reviewer reviewer, string subjectName, int mastered, int cardCount,
-            DateTime? lastStudiedAtUtc, bool isComplete, DateTime? lastOpenedAtUtc,
-            bool isOwnedByCurrentUser)
+            DateTime? lastStudiedAtUtc, bool isComplete, DateTime? lastOpenedAtUtc)
         {
             Reviewer = reviewer;
             SubjectName = subjectName;
@@ -299,7 +291,6 @@ public class DashboardModel : PageModel
             LastStudiedAtUtc = lastStudiedAtUtc;
             LastOpenedAtUtc = lastOpenedAtUtc;
             IsComplete = isComplete;
-            IsOwnedByCurrentUser = isOwnedByCurrentUser;
         }
     }
 }
