@@ -36,9 +36,9 @@
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="Rebyulusyon" />
     @* Keep the same Rebyulusyon icon in the signed-in dashboard pages. *@
-    <link rel="icon" type="image/svg+xml" href="~/favicon.svg" asp-append-version="true" />
-    <link rel="icon" type="image/png" sizes="256x256" href="~/favicon.png" asp-append-version="true" />
-    <link rel="alternate icon" type="image/x-icon" href="~/favicon.ico" asp-append-version="true" />
+    <link rel="icon" type="image/svg+xml" href="~/favicon.svg?v=2" asp-append-version="true" />
+    <link rel="icon" type="image/png" sizes="256x256" href="~/favicon.png?v=2" asp-append-version="true" />
+    <link rel="alternate icon" type="image/x-icon" href="~/favicon.ico?v=2" asp-append-version="true" />
 
     @* Read the saved theme before loading styles so dark mode does not flash light first. *@
     <script>
@@ -100,7 +100,8 @@
             @* The logo (same as the public top bar). It goes to the Dashboard. The "X" button is only for phones: it closes the menu. *@
             <div class="sidebar-top">
                 <a class="brand" href="/Dashboard">
-                    <span class="brand-mark"><partial name="_Icon" model='"flashcard"' /></span>
+                    @* Keep the dashboard logo consistent with the updated browser icon. *@
+                    <img class="brand-mark" src="~/favicon.svg" asp-append-version="true" alt="" />
                     <span class="brand-text">
                         <span class="brand-name">Rebyu<span class="accent">lusyon</span></span>
                         <span class="brand-tag">Rebyu. Tandaan. Pumasa.</span>
@@ -174,7 +175,7 @@
                     <partial name="_Icon" model='"menu"' />
                 </button>
                 <a class="brand" href="/Dashboard">
-                    <span class="brand-mark"><partial name="_Icon" model='"flashcard"' /></span>
+                    <img class="brand-mark" src="~/favicon.svg" asp-append-version="true" alt="" />
                     <span class="brand-text">
                         <span class="brand-name">Rebyu<span class="accent">lusyon</span></span>
                     </span>

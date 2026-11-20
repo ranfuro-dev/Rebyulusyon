@@ -48,9 +48,9 @@
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:image" content="@socialImageUrl" />
     @* Use the sharp SVG mark where supported, with PNG and ICO files for browser compatibility. *@
-    <link rel="icon" type="image/svg+xml" href="~/favicon.svg" asp-append-version="true" />
-    <link rel="icon" type="image/png" sizes="256x256" href="~/favicon.png" asp-append-version="true" />
-    <link rel="alternate icon" type="image/x-icon" href="~/favicon.ico" asp-append-version="true" />
+    <link rel="icon" type="image/svg+xml" href="~/favicon.svg?v=2" asp-append-version="true" />
+    <link rel="icon" type="image/png" sizes="256x256" href="~/favicon.png?v=2" asp-append-version="true" />
+    <link rel="alternate icon" type="image/x-icon" href="~/favicon.ico?v=2" asp-append-version="true" />
 
     @* This tells the page that JavaScript is working, by adding the word "js" to the page.
        The scroll animation in site.css only hides things when this word is there,
@@ -97,10 +97,8 @@
 
             @* LEFT SIDE: the Rebyulusyon logo. Clicking it goes to the Home page ("/") *@
             <a class="brand" href="/">
-                @* This is for the blue square with the flashcard picture.
-                   "partial" brings in the picture from _Icon.cshtml,
-                   and "flashcard" tells it which picture to draw *@
-                <span class="brand-mark"><partial name="_Icon" model='"flashcard"' /></span>
+                @* This uses the same custom mark as the browser tab icon. *@
+                <img class="brand-mark" src="~/favicon.svg" asp-append-version="true" alt="" />
 
                 @* The name and the small tagline. The CSS puts the tagline under the name *@
                 <span class="brand-text">
